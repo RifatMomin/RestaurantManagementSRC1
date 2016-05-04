@@ -1,0 +1,18 @@
+/* 
+    Created on : 03-may-2016, 9:13:18
+    Author     : Victor / Rifat
+*/
+
+body { padding-top: 70px; }
+
+.footer-brand{
+    font-size: 16px;
+}
+
+.img-thumbnail{
+    margin-top: -14px;
+}
+
+.center-block{
+    float:none;
+}
