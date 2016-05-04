@@ -25,9 +25,9 @@ class DBConnect {
     private function setConnection() {
 
         $this->server = 'localhost';
-        $this->dataBase = 'daw1614';
-        $this->user = 'daw16-14';
-        $this->password = 'Shee8o';
+        $this->dataBase = 'ProjectDAW2_Restaurant';
+        $this->user = 'admin';
+        $this->password = 'admin';
     }
 
     /* Evitem el clonatge de l'obejcte: Patró Singleton */

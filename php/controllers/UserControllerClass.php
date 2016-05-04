@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 /**
  * toDoClass class
  * it controls the hole server part of the application
@@ -75,6 +77,7 @@ class UserController implements ControllerInterface {
             foreach ($userList as $user) {
                 $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
                 $usersArray[] = $userObject->getAll();
+                $_SESSION['connectedUser'] = $userObject->getId();
                 $_SESSION['role'] = $userObject->getRole();
             }
 
