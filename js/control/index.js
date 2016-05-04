@@ -22,12 +22,12 @@ $(document).ready(function () {
 
         //scope variables
         $scope.user = new UserObj();
+        $scope.registerUser = new UserObj();
         $scope.usernameValid = true;
         $scope.passwordValid = true;
        
 
-        $scope.connection = function ()
-        {
+        $scope.connection = function (){
             //copy 
             $scope.user = angular.copy($scope.user);
             
@@ -40,7 +40,7 @@ $(document).ready(function () {
                     createLocalSession(data[1][0]);
                     
                     //alert("Welcome "+data[1][0].name+data[1][0].surname);
-                   // window.open("main.html","_self");
+                   window.open("main.php","_self");
                     
                 }else{
                     if(angular.isArray(data[1])){
@@ -50,7 +50,9 @@ $(document).ready(function () {
                     }
                 }        
             });
-        }
+        };
+        
+        
 
     });
 

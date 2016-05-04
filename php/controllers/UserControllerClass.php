@@ -46,6 +46,9 @@ class UserController implements ControllerInterface {
             case 10010:
                 $this->loginUser();
                 break;
+            case 10600:
+                $this->logOut();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -99,6 +102,12 @@ class UserController implements ControllerInterface {
         }
 
         return $outPutData;
+    }
+    
+    private function logOut(){
+        session_destroy();
+        
+        $this->data [] = true;
     }
 
 }

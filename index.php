@@ -127,34 +127,34 @@ and open the template in the editor.
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title text-center" id="myModalLabel">Sign Up</h4>
+                            <h4 class="modal-title text-center">Sign Up</h4>
                         </div>
                         <div class="modal-body">
-                            <form class="row">
+                            <form name="registerForm" novalidate ng-submit="register()" class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Username *</label>
-                                        <input type="text" class="form-control" />
+                                        <input type="text" class="form-control" ng-model="registerUser.username" required/>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Password *</label>
-                                        <input type="password" class="form-control" />                                    
+                                        <input type="password" class="form-control" ng-model="registerUser.password" required/>                                    
                                     </div>
 
                                     <div class="form-group">
                                         <label>Repeat password *</label>
-                                        <input type="password" class="form-control" />
+                                        <input type="password" class="form-control" required/>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Name *</label>
-                                        <input type="text" class="form-control" />
+                                        <input type="text" class="form-control" ng-model="registerUser.name" required/>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Surname *</label>
-                                        <input type="text" class="form-control" />
+                                        <input type="text" class="form-control" ng-model="registerUser.surname" required/>
                                     </div>
 
 
@@ -162,19 +162,19 @@ and open the template in the editor.
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Email *</label>
-                                        <input type="email" class="form-control" />
+                                        <input type="email" class="form-control" ng-model="registerUser.email" required/>
                                     </div>
                                     <div class="form-group">
                                         <label>Phone *</label>
-                                        <input type="text" class="form-control" />
+                                        <input type="text" class="form-control" ng-model="registerUser.phone" required/>
                                     </div>
                                     <div class="form-group">
                                         <label>Address *</label>
-                                        <input type="text" class="form-control" />
+                                        <input type="text" class="form-control" ng-model="registerUser.address" required/>
                                     </div>
                                     <div class="form-group">
                                         <label>City *</label>
-                                        <select class="form-control">
+                                        <select class="form-control" ng-model="registerUser.city">
                                             <option>Barcelona</option>
                                             <option>Madrid</option>
                                             <option>Bilbao</option>
@@ -182,14 +182,14 @@ and open the template in the editor.
                                     </div>
                                     <div class="form-group">
                                         <label>Zip Code *</label>
-                                        <input type="text" class="form-control" style="width: 75px;"/>
+                                        <input type="text" class="form-control" style="width: 75px;" ng-model="registerUser.zip_code" required/>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>User Image *</label>
-                                        <input type="file" file="image" accept="image/*" id="userImage" required/>
+                                        <input type="file" file="image" accept="image/*" id="registerUserImage" required/>
                                     </div>
 
                                 </div>
@@ -199,8 +199,9 @@ and open the template in the editor.
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Login</button>
+                            <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
                         </div>
+                       
                     </div>
                 </div>
             </div>
