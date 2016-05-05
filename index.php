@@ -83,8 +83,8 @@ and open the template in the editor.
             <menus-template></menus-template>
             <contact-template></contact-template>
         </div>   
-        
-        <div ng-show="userAction==1" class="container">
+
+        <div ng-show="userAction == 1" class="container">
             <retrieve-template></retrieve-template>
         </div> 
 
@@ -98,7 +98,7 @@ and open the template in the editor.
 
         <!-- Modal -->
         <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="modalLogin">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -116,7 +116,7 @@ and open the template in the editor.
                                     <label>Password</label>
                                     <input type="password" class="form-control" ng-model="user.password" required/>
                                 </div>
-                                <a href="" ng-click="userAction=1">Lost Your Password? Retrieve it here.</a>
+                                <a href="" ng-click="userAction = 1">Lost Your Password? Retrieve it here.</a>
 
                             </div>
                             <div class="modal-footer">
@@ -127,91 +127,7 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
-        </div>
-
-            <!-- Modal -->
-            <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title text-center">Sign Up</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form name="registerForm" novalidate ng-submit="register()" class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Username *</label>
-                                        <input type="text" class="form-control" ng-model="registerUser.username" required/>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Password *</label>
-                                        <input type="password" class="form-control" ng-model="registerUser.password" required/>                                    
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Repeat password *</label>
-                                        <input type="password" class="form-control" required/>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Name *</label>
-                                        <input type="text" class="form-control" ng-model="registerUser.name" required/>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Surname *</label>
-                                        <input type="text" class="form-control" ng-model="registerUser.surname" required/>
-                                    </div>
-
-
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Email *</label>
-                                        <input type="email" class="form-control" ng-model="registerUser.email" required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Phone *</label>
-                                        <input type="text" class="form-control" ng-model="registerUser.phone" required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Address *</label>
-                                        <input type="text" class="form-control" ng-model="registerUser.address" required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>City *</label>
-                                        <select class="form-control" ng-model="registerUser.city">
-                                            <option>Barcelona</option>
-                                            <option>Madrid</option>
-                                            <option>Bilbao</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Zip Code *</label>
-                                        <input type="text" class="form-control" style="width: 75px;" ng-model="registerUser.zip_code" required/>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>User Image *</label>
-                                        <input type="file" file="image" accept="image/*" id="registerUserImage" required/>
-                                    </div>
-
-                                </div>
-
-
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
-                        </div>
-
-
-       
+        </div>      
 
         <!-- Modal -->
         <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
@@ -286,13 +202,13 @@ and open the template in the editor.
                             </div>
 
 
-                        
+
                     </div>
                     <div class="modal-footer"> 
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
                     </div>
-                </form>
+                    </form>
                 </div>
             </div>
         </div>
