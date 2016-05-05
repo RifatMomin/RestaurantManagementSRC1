@@ -100,12 +100,12 @@ function showErrors(errors)
     $.each(errors, function (index, error) {
         errorString += error + "\n";
     });
-    
+
     alert(errorString);
 }
 
 
-function showNormalError(msg){
+function showNormalError(msg) {
     alert(msg);
 }
 
@@ -141,6 +141,6 @@ function mypasswordmatch()
     }
     else
     {
-        $( "#reset" ).submit();
+        $("#reset").submit();
     }
 }
