@@ -83,8 +83,8 @@ and open the template in the editor.
             <menus-template></menus-template>
             <contact-template></contact-template>
         </div>   
-        
-        <div ng-show="userAction==1" class="container">
+
+        <div ng-show="userAction == 1" class="container">
             <retrieve-template></retrieve-template>
         </div> 
 
@@ -98,7 +98,7 @@ and open the template in the editor.
 
         <!-- Modal -->
         <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="modalLogin">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -116,7 +116,7 @@ and open the template in the editor.
                                     <label>Password</label>
                                     <input type="password" class="form-control" ng-model="user.password" required/>
                                 </div>
-                                <a href="" ng-click="userAction=1">Lost Your Password? Retrieve it here.</a>
+                                <a href="" ng-click="userAction = 1">Lost Your Password? Retrieve it here.</a>
 
                             </div>
                             <div class="modal-footer">
@@ -128,6 +128,7 @@ and open the template in the editor.
                 </div>
             </div>
         </div>
+
 
         <!-- Modal -->
         <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
@@ -188,7 +189,7 @@ and open the template in the editor.
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>City</label>
+                                    <label>Citi</label>
                                     <select class="form-control" ng-model="city" name="registerCity" ng-change="loadZipCode()" ng-options="object.DMUN50 for object in cities track by object.CMUM">
                                     </select>
                                 </div>
@@ -202,13 +203,13 @@ and open the template in the editor.
                             </div>
 
 
-                        
+
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer"> 
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
                     </div>
-                </form>
+                    </form>
                 </div>
             </div>
         </div>
