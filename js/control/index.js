@@ -20,7 +20,7 @@ $(document).ready(function () {
 
     mainApp.controller("sessionController", function ($http, $scope, accessService, $log, GeoAPI) {
 
-        //scope variables
+        //scope variables        
         $scope.user = new UserObj();
         $scope.registerUser = new UserObj();
         $scope.usernameValid = true;
@@ -28,7 +28,9 @@ $(document).ready(function () {
         $scope.userAction= 0;
         $scope.provinces = [];
         $scope.cities = [];
-
+        $scope.availableUser = true;
+        $scope.availableEmail = true;
+        
         //Initialize registerUser
         $scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
 
@@ -98,8 +100,6 @@ $(document).ready(function () {
                     $scope.registerUser.setZip_code("00000");
                 }
             });
-
-
         };
 
 
@@ -111,22 +111,22 @@ $(document).ready(function () {
          */
         $scope.connection = function () {
             //copy 
+            $scope.user.cryptPassword();
             $scope.user = angular.copy($scope.user);
-
+            
             //Server conenction to verify user's data
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10010, JSONData: JSON.stringify($scope.user)});
 
             promise.then(function (data) {
+                $scope.user.setPassword("");
                 if (data[0] === true) {
                     //Create local session
                     createLocalSession(data[1][0]);
 
                     window.open("main.php", "_self");
-
-                } else {
+                } else {                    
                     //If user is incorrect, show errors
                     if (angular.isArray(data[1])) {
-
                         showErrors(data[1]);
                     } else {
                         showNormalError("An error occurred in the server, please come back later!");
@@ -134,7 +134,13 @@ $(document).ready(function () {
                 }
             });
         };
-
+        
+        /**
+         * @description Shows the user to retrieve his password
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/04
+         */
         $scope.retrievePassword = function (){
             $scope.user = angular.copy($scope.user);
             //Server conenction to verify user's data
@@ -145,7 +151,6 @@ $(document).ready(function () {
                     window.open("templates/reset.php","_self"); 
                 }else{
                     if(angular.isArray(data[1])){
-
                         showErrors(data[1]);
                     } else {
                         showNormalError("An error occurred in the server, please come back later!");
@@ -162,7 +167,57 @@ $(document).ready(function () {
          */
         $scope.register = function () {
             console.log($scope.registerUser);
+            
+            $scope.registerUser = angular.copy($scope.registerUser);
+            
+            var promise = accessService.getData("php/controllers/MainController.php",true,"POST",{controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
+        
+            promise.then(function(data){
+                if(data[0]===true){
+                    $("#modalRegisteredUser").modal("show");
+                }else{
+                    if(angular.isArray(data[1])){
+                        showErrors(data[1]);
+                    } else {
+                        showNormalError("An error occurred in the server, please come back later!");
+                    }
+                }
+            });
         };
+        
+        $scope.changeRegisterToLogin = function(){
+            $("#signUpModal").modal("hide");
+            $("#loginModal").modal("show");            
+        };
+        
+        $scope.checkNick = function(){
+            var nick = $scope.registerUser.getUsername();
+            var promise = accessService.getData("php/controllers/MainController.php",true,"POST",{controllerType: 0, action: 10250, JSONData: JSON.stringify({nick: nick})});
+            
+            promise.then(function(data){
+                console.log(data);
+                if(data[0]===true){
+                    $scope.availableUser = false;
+                }else{
+                    $scope.availableUser = true
+                }
+            });
+        };
+        
+        $scope.checkEmail = function(){
+            var email = $scope.registerUser.getEmail();
+            var promise = accessService.getData("php/controllers/MainController.php",true,"POST",{controllerType: 0, action: 10251, JSONData: JSON.stringify({nick: email})});
+            
+            promise.then(function(data){
+                console.log(data);
+                if(data[0]===true){
+                    $scope.availableEmail = false;
+                }else{
+                    $scope.availableEmail = true
+                }
+            });
+        };
+        
     });
 
 

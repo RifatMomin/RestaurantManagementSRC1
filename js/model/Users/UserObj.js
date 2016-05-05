@@ -18,7 +18,7 @@ UserObj = function () {
     this.zip_code = null;
     this.image = null;
     this.register_date = null;
-    this.role=null;
+    this.role = null;
 
 
     this.construct = function (userId, username, password, name, surname, email, phone, address, city, zipCode, image, registerDate, role) {
@@ -115,22 +115,35 @@ UserObj = function () {
     this.getRole = function () {
         return this.role;
     }
-    
+
     /*
-    * @name: toString()
-    * @author: Rifat/Victor
-    * @version: 3.1
-    * @description: convert object to string
-    * @date: 04/03/2015
-   */
+     * @name: toString()
+     * @author: Rifat/Victor
+     * @version: 3.1
+     * @description: convert object to string
+     * @date: 04/03/2015
+     */
     this.toString = function ()
     {
-	var userString ="userId="+this.getUserId()+" username="+this.getName()+" password="+this.getPassword();
-	userString +=" name="+this.getName()+" surname="+this.getSurname()+" email="+this.getEmail()+" phone="+this.getPhone();
-	userString +=" address="+this.getAddress()+" city="+this.getCity()+" zip code="+this.getZip_code()()+" image="+this.getImage()+" register date="+this.getRegister_date()+" role="+this.getRole()();
-	
-	return userString;		
+        var userString = "userId=" + this.getUserId() + " username=" + this.getName() + " password=" + this.getPassword();
+        userString += " name=" + this.getName() + " surname=" + this.getSurname() + " email=" + this.getEmail() + " phone=" + this.getPhone();
+        userString += " address=" + this.getAddress() + " city=" + this.getCity() + " zip code=" + this.getZip_code()() + " image=" + this.getImage() + " register date=" + this.getRegister_date() + " role=" + this.getRole()();
+
+        return userString;
     }
+
+    /*
+     * @name: toString()
+     * @author: Victor Moreno García
+     * @version: 3.1
+     * @description: convert object to string
+     * @date: 04/03/2015
+     */
+    this.cryptPassword = function () {
+        var pass = CryptoJS.SHA1(this.getPassword()).toString();
+
+        this.password = pass;
+    };
 
 
 

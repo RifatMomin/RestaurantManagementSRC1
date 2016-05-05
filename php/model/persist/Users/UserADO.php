@@ -11,6 +11,14 @@ require_once "../model/Users/UserClass.php";
 
 class UserADO implements EntityInterfaceADO {
 
+    //Constants of the QUERIES
+    const SELECT_NICK_PASS = "SELECT * FROM users WHERE username = ? AND user_password = ?";
+    const SELECT_EMAIL = "SELECT id FROM users WHERE email = :email";
+    const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
+    const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
+    const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`, `role`) VALUES (?,SHA1(?),?,?,?,?,?,?,?,0)";
+    
+    
     private $dataSource;
 
     public function __construct() {
@@ -35,9 +43,9 @@ class UserADO implements EntityInterfaceADO {
 
     public function findByEmail($user) {
         //$cons = "select * from `".UserADO::$tableName."` where ".UserADO::$colNameNick." = \"".$user->getNick()."\" and ".UserADO::$colNamePassword." = \"".$user->getPassword()."\"";
-        $sql = "SELECT id FROM users where email='" . $email . "'";
+        $sql = "SELECT id FROM users WHERE email = :email";
 
-        $array = [$user->getEmail()];
+        $array = [":email" => $user->getEmail()];
 
         $result = $this->dataSource->execution($sql, $array);
 
@@ -57,12 +65,26 @@ class UserADO implements EntityInterfaceADO {
             mail($to, $subject, $body, $headers);
         }
     }
-    public function resetPassword(){
+
+    public function resetPassword() {
         
     }
-    
-    public function create($entity) {
+
+    public function create($userObj) {
+
+        $array = [
+            $userObj->getUsername(),
+            $userObj->getPassword(),
+            $userObj->getName(),
+            $userObj->getSurname(),
+            $userObj->getEmail(),
+            $userObj->getPhone(),
+            $userObj->getAddress(),
+            $userObj->getCity(),
+            $userObj->getZipCode(),
+        ];
         
+        return $this->dataSource->execution(self::INSERT,$array);
     }
 
     public function delete($entity) {
@@ -76,11 +98,14 @@ class UserADO implements EntityInterfaceADO {
     public function findAll() {
         
     }
-
-    public function findByQuery($cons, $vector) {
+    
+    public function findByNick($nick){
+        $array = [$nick];
         
+        return $this->dataSource->execution(self::SELECT_BY_NICK,$array);
     }
 
+    
 }
 
 ?>

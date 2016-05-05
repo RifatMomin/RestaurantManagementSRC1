@@ -22,7 +22,7 @@ class UserController implements ControllerInterface {
     function __construct($action, $jsonData) {
         $this->setAction($action);
         $this->setJsonData($jsonData);
-        $this->userADO = new UserADO();
+        $this->helperAdo = new UserADO();
     }
 
     public function getAction() {
@@ -49,8 +49,17 @@ class UserController implements ControllerInterface {
             case 10600:
                 $this->logOut();
                 break;
+            case 10150:
+                $this->register();
+                break;
             case 10200:
                 $this->retrievePasswd();
+                break;
+            case 10250:
+                $this->checkNick();
+                break;
+            case 10251:
+                $this->checkEmail();
                 break;
             default:
                 $errors = array();
@@ -63,14 +72,74 @@ class UserController implements ControllerInterface {
 
         return $this->data;
     }
+    
+    function checkNick(){
+        $json = json_decode(stripslashes($this->getJsonData()));
+        
+        
+        $result = $this->helperAdo->findByNick($json->nick);
+        
+        
+        if($result->rowCount()>0){
+            $this->data[]=true;
+        }else{
+            $this->data[]=false;
+        }
+        
+    }
+    
+    function checkEmail(){
+        $json = json_decode(stripslashes($this->getJsonData()));
+        
+        $user = new UserClass();
+        $user->setEmail($json->email);
+        
+        $result = $this->helperAdo->findByEmail($user);       
+        
+        if($result->rowCount()>0){
+            $this->data[]=true;
+        }else{
+            $this->data[]=false;
+        }
+    }
 
+    function register(){
+        $userObj = json_decode(stripslashes($this->getJsonData()));
+        
+        $user = new UserClass("", 
+                                $userObj->username,
+                                $userObj->password , 
+                                $userObj->name, 
+                                $userObj->surname, 
+                                $userObj->email, 
+                                $userObj->phone, 
+                                $userObj->address, 
+                                $userObj->city, 
+                                $userObj->zip_code, 
+                                "", "");
+        
+        
+        
+        $result = $this->helperAdo->create($user);
+        
+        if($result->rowCount()>0){
+            $this->data[]=true;
+            $this->data[]= $user->getAll();
+        }else{
+            $this->data[]=false;
+            $this->errors[]="An error occurred while register in the app, come bakc later and try again.";
+            $this->data[]=$this->errors;
+            
+        }
+    }
+    
     function loginUser() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
 
         $user = new UserClass(0, $userObj->username, $userObj->password);
 
 
-        $userList = $this->userADO->findByNickAndPass($user);
+        $userList = $this->helperAdo->findByNickAndPass($user);
 
         if (count($userList) == 0) {
             $this->data [] = false;

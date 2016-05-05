@@ -76,7 +76,7 @@ class UserClass implements EntityInterface {
     }
 
     public function getZipCode() {
-        return $this->zipcode;
+        return $this->zipCode;
     }
 
     public function getRegisterDate() {

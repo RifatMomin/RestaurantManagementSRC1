@@ -5,8 +5,6 @@ session_start();
 
 if (isset($_SESSION['connectedUser'])) {
     header("Location: main.php");
-} else {
-    echo "No hay user";
 }
 ?>
 <!--
@@ -41,7 +39,7 @@ and open the template in the editor.
 
         <!--Library to MD5 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
-        <script src="js/frameworks/cryptoJS/components/md5.js" type="text/javascript"></script>
+        <script src="js/frameworks/cryptoJS/components/sha1-min.js" type="text/javascript"></script>
 
         <!--Model-->
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
@@ -72,8 +70,8 @@ and open the template in the editor.
                         <li><a href="#">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#" data-toggle="modal" data-target="#signUpModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#loginModal" ><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#signUpModal"  ng-click="signUp()" ><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -106,15 +104,17 @@ and open the template in the editor.
                     </div>
                     <div class="modal-body">
                         <form name="loginForm" ng-submit="connection()" novalidate>                            
-                            <div class="col-lg-6 col-md-6 col-xs-12 center-block" ng-class="{'has-error': loginForm.username.$invalid }">
-                                <div class="form-group">
-                                    <label>Username</label>
-                                    <input type="text" class="form-control" ng-keydown="showInfoForm()" ng-model="user.username"  required/>
-                                </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12 center-block">
+                                <div class="form-group has-feedback" ng-class="{'has-error': loginForm.loginUser.$invalid , 'has-success':loginForm.loginUser.$valid}">
 
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" class="form-control" ng-model="user.password" required/>
+                                    <input type="text" class="form-control" placeholder="Username" ng-model="user.username" name="loginUser"  required/>
+                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+
+                                </div>
+                                <div class="form-group has-feedback" ng-class="{'has-error': loginForm.loginPassword.$invalid , 'has-success':loginForm.loginPassword.$valid}">
+                                    
+                                    <input type="password" class="form-control" placeholder="Password" ng-model="user.password" name="loginPassword" required/>
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                 </div>
                                 <a href="" ng-click="userAction = 1">Lost Your Password? Retrieve it here.</a>
 
@@ -142,9 +142,11 @@ and open the template in the editor.
                     <div class="modal-body">
                         <form name="registerForm" novalidate ng-submit="register()" class="row">
                             <div class="col-md-6">
-                                <div class="form-group" ng-class="{'has-error': registerForm.registerUsername.$invalid, 'has-success':registerForm.registerUsername.$valid}">
-                                    <label>Username *</label>
-                                    <input type="text" class="form-control" ng-model="registerUser.username" name="registerUsername"  required/>
+                                <div class="form-group" ng-class="{'has-error': registerForm.registerUsername.$invalid || !availableUser , 'has-success':registerForm.registerUsername.$valid}">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-user"></span></span>
+                                        <input type="text" class="form-control" placeholder="Username" ng-model="registerUser.username" ng-blur="checkNick()" name="registerUsername"  required/>
+                                    </div>
                                 </div>
 
                                 <div class="form-group" ng-class="{'has-error': registerForm.registerPassword.$invalid, 'has-success':registerForm.registerPassword.$valid}">
@@ -170,9 +172,9 @@ and open the template in the editor.
 
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group" ng-class="{'has-error': registerForm.registerEmail.$invalid, 'has-success':registerForm.registerEmail.$valid}">
+                                <div class="form-group" ng-class="{'has-error': registerForm.registerEmail.$invalid || !availableEmail, 'has-success':registerForm.registerEmail.$valid}">
                                     <label>Email *</label>
-                                    <input type="email" class="form-control" ng-model="registerUser.email" ng-pattern="/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/" name="registerEmail" required/>
+                                    <input type="email" class="form-control" ng-model="registerUser.email" ng-blur="checkEmail()" ng-pattern="/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/" name="registerEmail" required/>
                                 </div>
                                 <div class="form-group" ng-class="{'has-error': registerForm.registerPhone.$invalid, 'has-success':registerForm.registerPhone.$valid}">
                                     <label>Phone *</label>
@@ -212,5 +214,28 @@ and open the template in the editor.
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modalRegisteredUser" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-center" id="modalSignUp">Register Succesfully!</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <h3>Welcome aboard {{registerUser.name}}! You want to log in now? </h3>
+                            <button class="btn-lg btn-info" data-dismiss="modal" ng-click="changeRegisterToLogin()">
+                                Log In
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
     </body>
 </html>
