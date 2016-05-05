@@ -272,7 +272,7 @@ and open the template in the editor.
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>City</label>
+                                    <label>Citi</label>
                                     <select class="form-control" ng-model="city" name="registerCity" ng-change="loadZipCode()" ng-options="object.DMUN50 for object in cities track by object.CMUM">
                                     </select>
                                 </div>
@@ -288,7 +288,7 @@ and open the template in the editor.
 
                         
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer"> 
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
                     </div>
