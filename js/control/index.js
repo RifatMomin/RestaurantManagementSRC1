@@ -16,44 +16,132 @@ $(document).ready(function () {
 });
 
 (function () {
-    var mainApp = angular.module("mainRestaurantApp", []);
+    var mainApp = angular.module("mainRestaurantApp", ["GeoAPI"]);
 
-    mainApp.controller("sessionController", function ($http, $scope, accessService, $log) {
+    mainApp.controller("sessionController", function ($http, $scope, accessService, $log, GeoAPI) {
 
         //scope variables
         $scope.user = new UserObj();
         $scope.registerUser = new UserObj();
         $scope.usernameValid = true;
         $scope.passwordValid = true;
-       
+        $scope.provinces = [];
+        $scope.cities = [];
 
-        $scope.connection = function (){
+        //Initialize registerUser
+        $scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
+
+        //Configuration of the GeoAPI
+        GeoAPI.setConfig("key", "06649ff9b93c721316323326b30bda68f5dc8744b8f31a0c2c5961daf87c575e");
+        GeoAPI.setConfig("type", "JSON");
+        GeoAPI.setConfig("sandbox", 0);
+
+        /**
+         * @description Loads the provencies from SPAIN using a GET service API
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/05
+         */
+        $scope.loadProvinces = function () {
+            GeoAPI.provincias({
+                //Charge the comunities from Spain in JSON format
+            }).then(function (data) {
+                $scope.provinces = data['data'];
+                $scope.province = data['data'][0];
+                $scope.chargeCity();
+            });
+        };
+
+        /**
+         * @description Loads the cities depending on the province using a GET service API
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/05
+         */
+        $scope.chargeCity = function () {
+            GeoAPI.municipios({
+                //Charge the cities depending on the province selected
+                CPRO: $scope.province.CPRO
+            }).then(function (data) {
+                $scope.cities = data['data'];
+                $scope.city = data['data'][0];
+                $scope.registerUser.setCity(data['data'][0].DMUN50);
+                $scope.loadZipCode();
+            });
+        };
+
+        /**
+         * @description Loads the zip code of the city using a GET service API
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/05
+         */
+        $scope.loadZipCode = function () {
+            //console.log($scope.city);
+
+            GeoAPI.nucleos({
+                CPRO: $scope.province.CPRO,
+                CMUM: $scope.city.CMUM,
+                NENTSI50: $scope.city.DMUN50
+            }).then(function (data) {
+                try {
+                    $scope.city.CUN = data['data'][0].CUN;
+                    GeoAPI.cps({
+                        CPRO: $scope.province.CPRO,
+                        CUN: $scope.city.CUN,
+                        CMUM: $scope.city.CMUM
+                    }).then(function (dataCP) {
+                        $scope.registerUser.setZip_code(dataCP['data'][0].CPOS);
+                    });
+                } catch (e) {
+                    $scope.registerUser.setZip_code("00000");
+                }
+            });
+
+
+        };
+
+
+        /**
+         * @description Logins to the app connecting to the server
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/04
+         */
+        $scope.connection = function () {
             //copy 
             $scope.user = angular.copy($scope.user);
-            
+
             //Server conenction to verify user's data
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10010, JSONData: JSON.stringify($scope.user)});
 
             promise.then(function (data) {
-                if(data[0]===true){
+                if (data[0] === true) {
                     //Create local session
                     createLocalSession(data[1][0]);
-                    
-                    //alert("Welcome "+data[1][0].name+data[1][0].surname);
-                   window.open("main.php","_self");
-                    
-                }else{
-                    if(angular.isArray(data[1])){
+
+                    window.open("main.php", "_self");
+
+                } else {
+                    //If user is incorrect, show errors
+                    if (angular.isArray(data[1])) {
                         showErrors(data[1]);
-                    }else{
+                    } else {
                         showNormalError("An error occurred in the server, please come back later!");
                     }
-                }        
+                }
             });
         };
-        
-        
 
+        /**
+         * @description Sends to the server the user to register in the App
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/05
+         */
+        $scope.register = function () {
+            console.log($scope.registerUser);
+        };
     });
 
 
@@ -80,26 +168,26 @@ $(document).ready(function () {
             controllerAs: 'contactTemplate'
         };
     });
-    
-    mainApp.factory('accessService', function($http, $log, $q) {
+
+    mainApp.factory('accessService', function ($http, $log, $q) {
         return {
-            getData: function(url, async, method, params, data) {
+            getData: function (url, async, method, params, data) {
                 var deferred = $q.defer();
                 $http({
-                    url: url, 
+                    url: url,
                     method: method,
                     asyn: async,
                     params: params,
-                    data: data 
+                    data: data
                 })
-                .success(function(response, status, headers, config)  {
-                    deferred.resolve(response);						   
-                })
-                .error(function(msg, code) {
-                    deferred.reject(msg);
-                    $log.error(msg, code);
-                    alert("There has been an error in the server, try later");
-                });
+                        .success(function (response, status, headers, config) {
+                            deferred.resolve(response);
+                        })
+                        .error(function (msg, code) {
+                            deferred.reject(msg);
+                            $log.error(msg, code);
+                            alert("There has been an error in the server, try later");
+                        });
 
                 return deferred.promise;
             }

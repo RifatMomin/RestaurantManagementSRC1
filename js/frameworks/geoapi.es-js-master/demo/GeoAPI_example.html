@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.17/angular.min.js"></script>
+		<script type="text/javascript" src="https://rawgit.com/GeoAPI-es/geoapi.es-js/1.0.2/GeoAPI.js"></script>
+		<script>
+
+			var app = angular.module('app', ['GeoAPI']);
+
+			app.controller('MainCtrl', function($scope, $timeout, GeoAPI){
+
+				// Configurar GeoAPI
+				GeoAPI.setConfig("key", "");
+				GeoAPI.setConfig("type", "JSON");
+				GeoAPI.setConfig("sandbox", 1);
+
+				// Cargar las comunidades
+				GeoAPI.comunidades({
+					//
+				}).then(function(data){
+					$scope.comunidades = data.data;
+				});
+
+			});
+
+		</script>
+		<style>
+			pre {
+				background-color: ghostwhite;
+				border: 1px solid silver;
+				padding: 10px 20px;
+				margin: 20px; 
+			}
+		</style>
+	</head>
+	<body ng-app="app">
+		<div ng-controller="MainCtrl">
+			<h1>GeoAPI Test (sandbox is ON)</h1>
+
+			<span>Comunidades:</span>
+			<br />
+			<pre>
+{{ comunidades | json }}
+			</pre>
+
+			<span>
+				Ten en cuenta que la mayoria de los navegadores no soportan CORS desde el sistema de archivos local,
+				por lo que vas a tener que ejecutar un servidor web para abrir esta demo ("php -S" es suficiente)
+			</span>
+		</div>
+	</body>
+</html>
