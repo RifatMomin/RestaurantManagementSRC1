@@ -129,7 +129,6 @@ and open the template in the editor.
             </div>
         </div>
 
-<<<<<<< HEAD
             <!-- Modal -->
             <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
@@ -211,7 +210,9 @@ and open the template in the editor.
                             <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
                         </div>
 
-=======
+
+       
+
         <!-- Modal -->
         <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
             <div class="modal-dialog modal-lg" role="document">
@@ -219,7 +220,7 @@ and open the template in the editor.
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title text-center" id="modalSignUp">Sign Up</h4>
->>>>>>> origin/master
+
                     </div>
 
                     <div class="modal-body">
@@ -296,8 +297,4 @@ and open the template in the editor.
             </div>
         </div>
     </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> origin/master

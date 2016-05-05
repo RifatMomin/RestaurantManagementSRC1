@@ -126,6 +126,7 @@ $(document).ready(function () {
                 } else {
                     //If user is incorrect, show errors
                     if (angular.isArray(data[1])) {
+
                         showErrors(data[1]);
                     } else {
                         showNormalError("An error occurred in the server, please come back later!");
@@ -144,11 +145,12 @@ $(document).ready(function () {
                     window.open("templates/reset.php","_self"); 
                 }else{
                     if(angular.isArray(data[1])){
+
                         showErrors(data[1]);
-                    }else{
+                    } else {
                         showNormalError("An error occurred in the server, please come back later!");
                     }
-                }        
+                }
             });
         };
 
@@ -188,20 +190,7 @@ $(document).ready(function () {
         };
     });
 
-    
-    mainApp.directive("retrieveTemplate", function () {
-        return {
-            restrict: 'E',
-            templateUrl: "templates/retrieveTemplate.html",
-            controller: function () {
-
-            },
-            controllerAs: 'retrieveTemplate'
-        };
-    });
-
     mainApp.factory('accessService', function ($http, $log, $q) {
-
         return {
             getData: function (url, async, method, params, data) {
                 var deferred = $q.defer();
