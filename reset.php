@@ -26,21 +26,21 @@ and open the template in the editor.
         <link href="../css/index.css" rel="stylesheet" type="text/css"/>
 
         <!--AngularJS and jQUeryJS-->
-        <script src="../js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
-        <script src="../js/frameworks/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
-        <script src="../js/frameworks/angular/angular.min.js" type="text/javascript"></script>
-        <script src="../js/frameworks/angular/dirPagination.js" type="text/javascript"></script>
-        <script src="../js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
-        <script src="../css/bootstrap-3.3.6-dist/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
+        <script src="js/frameworks/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
+        <script src="js/frameworks/angular/angular.min.js" type="text/javascript"></script>
+        <script src="js/frameworks/angular/dirPagination.js" type="text/javascript"></script>
+        <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
+        <script src="css/bootstrap-3.3.6-dist/js/bootstrap.min.js" type="text/javascript"></script>
         <!--Library to MD5 CRYOPT-->
-        <script src="../js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
-        <script src="../js/frameworks/cryptoJS/components/md5.js" type="text/javascript"></script>
+        <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
+        <script src="js/frameworks/cryptoJS/components/md5.js" type="text/javascript"></script>
 
         <!--Model-->
-        <script src="../js/model/Users/UserObj.js" type="text/javascript"></script>
+        <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
         <!-- Index Control-->
-        <script src="../js/control/generalFunctions.js" type="text/javascript"></script>
-        <script src="../js/control/index.js" type="text/javascript"></script>
+        <script src="js/control/generalFunctions.js" type="text/javascript"></script>
+        <script src="js/control/index.js" type="text/javascript"></script>
 
     </head>
     <body>
@@ -58,15 +58,26 @@ and open the template in the editor.
                     </a>
                     <a class="navbar-brand">"Restaurant Name"</a>
                 </div>
-                <div class="collapse navbar-collapse" id="myNavbar">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#">Menus</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#" data-toggle="modal" data-target="#signUpModal"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    </ul>
+
+                <div class="modal fade" id="retrieveModal" tabindex="-1" role="dialog" aria-labelledby="modalRetrieve">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title text-center" id="modalLogin">Reset Password</h4>
+                            </div>
+                            <div class="modal-body">                        
+                                <form action="" method="POST" name="resetForm" ng-submit="resetPassword()" novalidate >
+                                    <div class="form-group">
+                                        <label for="usr">Password:</label>
+                                        <input type="text" name="password1" class="form-control" id="usr1">
+                                        <input type="text" name="password2" class="form-control" id="usr2">
+                                        <input type="submit" name="reset" ng-disabled="resetForm.$invalid">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -85,14 +96,6 @@ and open the template in the editor.
         </footer>
         <div class="form-group">
 
-            <form action="" method="POST" name="retrieveForm" ng-submit="retrievePassword()" novalidate >
-                <div class="form-group">
-                    <label for="usr">Password:</label>
-                    <input type="email" name="password1" class="form-control" id="usr">
-                    <input type="email" name="password2" class="form-control" id="usr">
-                    <input type="submit" name="reset" ng-disabled="retrieveForm.$invalid">
-                </div>
-            </form>
 
         </div>
 

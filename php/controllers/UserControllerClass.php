@@ -155,35 +155,34 @@ class UserController implements ControllerInterface {
                 $_SESSION['connectedUser'] = $userObject->getId();
                 $_SESSION['role'] = $userObject->getRole();
             }
-
-
             $this->data [] = $usersArray;
         }
     }
-    
+
     function retrievePasswd() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
-
-        $user = new UserClass(0, $userObj->email);
-
+        $user = new UserClass("", "", "", "", "", $userObj->email);
         $userList = $this->userADO->findByEmail($user);
+        
+        if ($userList != null) {
+            $encrypt = md5(1290 * 3 + $userList->getEmail());
+            $message = "Your password reset link has been sent to your e-mail address.";
+            $to = $userList->getEmail();
+            $subject = "Forget Password";
+            $from = 'proinsprov@gmail.com';
+            $body = 'Hi, <br/> <br/>Your Membership ID is <br><br>Click here to reset your password http://localhost/RestaurantManagement_1/reset.php?encrypt=' . $encrypt . '&action=reset   <br/> <br/>';
+            $headers = "From: " . strip_tags($from) . "\r\n";
+            $headers .= "Reply-To: " . strip_tags($from) . "\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
-        if (count($userList) == 0) {
+            mail($to, $subject, $body, $headers);
+
+            $this->data [] = $userList;
+        } else {
             $this->data [] = false;
             $this->errors [] = "Invalid Email.";
             $this->data [] = $this->errors;
-        } else {
-            $this->data [] = true;
-            $usersArray = array();
-
-            foreach ($userList as $user) {
-                $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
-                $usersArray[] = $userObject->getAll();
-                $_SESSION['connectedUser'] = $userObject->getId();
-                $_SESSION['role'] = $userObject->getRole();
-            }
-            
-            $this->data [] = $usersArray;
         }
     }
 
@@ -201,10 +200,10 @@ class UserController implements ControllerInterface {
 
         return $outPutData;
     }
-    
-    private function logOut(){
+
+    private function logOut() {
         session_destroy();
-        
+
         $this->data [] = true;
     }
 

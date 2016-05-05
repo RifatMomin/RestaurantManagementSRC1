@@ -27,7 +27,6 @@ and open the template in the editor.
 
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
-
         <!--AngularJS and jQUeryJS-->
         <script src="js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
         <script src="js/frameworks/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
@@ -82,7 +81,7 @@ and open the template in the editor.
             <contact-template></contact-template>
         </div>   
 
-        <div ng-show="userAction == 1" class="container">
+        <div ng-show="userAction = 1" class="container">
             <retrieve-template></retrieve-template>
         </div> 
 
@@ -116,7 +115,7 @@ and open the template in the editor.
                                     <input type="password" class="form-control" placeholder="Password" ng-model="user.password" name="loginPassword" required/>
                                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                 </div>
-                                <a href="" ng-click="userAction = 1">Lost Your Password? Retrieve it here.</a>
+                                <a href="#" data-toggle="modal" data-target="#retrieveModal" ng-click="userAction == 1; changeModals()">Lost Your Password? Retrieve it here.</a>
 
                             </div>
                             <div class="modal-footer">
@@ -127,7 +126,8 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
-        </div>      
+        </div>
+
 
         <!-- Modal -->
         <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
@@ -190,7 +190,7 @@ and open the template in the editor.
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Citi</label>
+                                    <label>City</label>
                                     <select class="form-control" ng-model="city" name="registerCity" ng-change="loadZipCode()" ng-options="object.DMUN50 for object in cities track by object.CMUM">
                                     </select>
                                 </div>
@@ -202,8 +202,6 @@ and open the template in the editor.
                                     <input type="file" file="image" accept="image/*" id="registerUserImage" name="registerUserImage" required/>
                                 </div>
                             </div>
-
-
 
                     </div>
                     <div class="modal-footer"> 

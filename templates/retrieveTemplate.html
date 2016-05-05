@@ -1,0 +1,23 @@
+<!-- Modal -->
+<div class="modal fade" id="retrieveModal" tabindex="-1" role="dialog" aria-labelledby="modalRetrieve">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center" id="modalLogin">Retrieve Password</h4>
+            </div>
+            <div class="modal-body">                        
+                    <form action="" method="POST" name="retrieveForm" ng-submit="retrievePassword()" novalidate >
+                        <div class="form-group">
+                            <label for="usr">Email:</label>
+                            <input type="email" ng-model="user.email" name="email" class="form-control" id="usr">
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="retrieveForm.$invalid">Retrieve</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

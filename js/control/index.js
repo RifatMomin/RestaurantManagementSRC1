@@ -158,6 +158,8 @@ $(document).ready(function () {
                 }
             });
         };
+        
+        
 
         /**
          * @description Sends to the server the user to register in the App
@@ -218,6 +220,9 @@ $(document).ready(function () {
             });
         };
         
+        $scope.changeModals = function (){
+            $("#loginModal").modal("hide");
+        }
     });
 
 
@@ -233,7 +238,6 @@ $(document).ready(function () {
         };
     });
 
-    //Templates
     mainApp.directive("contactTemplate", function () {
         return {
             restrict: 'E',
@@ -244,7 +248,18 @@ $(document).ready(function () {
             controllerAs: 'contactTemplate'
         };
     });
+    
+    mainApp.directive("retrieveTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/retrieveTemplate.html",
+            controller: function () {
 
+            },
+            controllerAs: 'retrieveTemplate'
+        };
+    });
+    
     mainApp.factory('accessService', function ($http, $log, $q) {
         return {
             getData: function (url, async, method, params, data) {

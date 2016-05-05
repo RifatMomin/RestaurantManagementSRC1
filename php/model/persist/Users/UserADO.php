@@ -48,22 +48,12 @@ class UserADO implements EntityInterfaceADO {
         $array = [":email" => $user->getEmail()];
 
         $result = $this->dataSource->execution($sql, $array);
-
-        //return $result->fetchAll();
-        if (count($$esult) == 1) {
-            $encrypt = md5(1290 * 3 + $result['email']);
-            $message = "Your password reset link send to your e-mail address.";
-            $to = $email;
-            $subject = "Forget Password";
-            $from = 'proinsprov@gmail.com';
-            $body = 'Hi, <br/> <br/>Your Membership ID is ' . $Results['id'] . ' <br><br>Click here to reset your password http://localhost/RestaurantManagement_1/reset.php?encrypt=' . $encrypt . '&action=reset   <br/> <br/>';
-            $headers = "From: " . strip_tags($from) . "\r\n";
-            $headers .= "Reply-To: " . strip_tags($from) . "\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-
-            mail($to, $subject, $body, $headers);
+        
+        foreach ($result as $user) {
+            $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
         }
+ 
+        return $userObject;
     }
 
     public function resetPassword() {
