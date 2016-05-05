@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <?php
-    session_start();
-    
-    
-    if(isset($_SESSION['connectedUser'])){
-        header("Location: main.php");
-    }else{
-        echo "No hay user";
-    }
-    
+session_start();
+
+
+if (isset($_SESSION['connectedUser'])) {
+    header("Location: main.php");
+} else {
+    echo "No hay user";
+}
 ?>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -39,11 +38,11 @@ and open the template in the editor.
         <!--Library to MD5 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
         <script src="js/frameworks/cryptoJS/components/md5.js" type="text/javascript"></script>
-        
+
         <!--Model-->
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
-        
-        
+
+
         <!-- Index Control-->
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/index.js" type="text/javascript"></script>
@@ -79,7 +78,11 @@ and open the template in the editor.
         <div class="container">
             <menus-template></menus-template>
             <contact-template></contact-template>
-        </div>    
+        </div>   
+        
+        <div ng-show="userAction==1" class="container">
+            <retrieve-template></retrieve-template>
+        </div> 
 
         <footer class="navbar navbar-default navbar-fixed-bottom">
             <div class="container-fluid">
@@ -109,7 +112,7 @@ and open the template in the editor.
                                     <label>Password</label>
                                     <input type="password" class="form-control" ng-model="user.password" required/>
                                 </div>
-                                <a href="#">Lost Your Password? Retrieve it here.</a>
+                                <a href="" ng-click="userAction=1">Lost Your Password? Retrieve it here.</a>
 
                             </div>
                             <div class="modal-footer">
@@ -201,11 +204,9 @@ and open the template in the editor.
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid">Register</button>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
     </body>
 </html>
-hola
-adios

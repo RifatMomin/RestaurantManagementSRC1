@@ -49,6 +49,9 @@ class UserController implements ControllerInterface {
             case 10600:
                 $this->logOut();
                 break;
+            case 10200:
+                $this->retrievePasswd();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -85,6 +88,32 @@ class UserController implements ControllerInterface {
             }
 
 
+            $this->data [] = $usersArray;
+        }
+    }
+    
+    function retrievePasswd() {
+        $userObj = json_decode(stripslashes($this->getJsonData()));
+
+        $user = new UserClass(0, $userObj->email);
+
+        $userList = $this->userADO->findByEmail($user);
+
+        if (count($userList) == 0) {
+            $this->data [] = false;
+            $this->errors [] = "Invalid Email.";
+            $this->data [] = $this->errors;
+        } else {
+            $this->data [] = true;
+            $usersArray = array();
+
+            foreach ($userList as $user) {
+                $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
+                $usersArray[] = $userObject->getAll();
+                $_SESSION['connectedUser'] = $userObject->getId();
+                $_SESSION['role'] = $userObject->getRole();
+            }
+            
             $this->data [] = $usersArray;
         }
     }

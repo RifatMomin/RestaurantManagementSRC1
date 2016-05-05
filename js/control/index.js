@@ -25,7 +25,7 @@ $(document).ready(function () {
         $scope.registerUser = new UserObj();
         $scope.usernameValid = true;
         $scope.passwordValid = true;
-       
+        $scope.userAction= 0;
 
         $scope.connection = function (){
             //copy 
@@ -52,7 +52,23 @@ $(document).ready(function () {
             });
         };
         
-        
+        $scope.retrievePassword = function (){
+            $scope.user = angular.copy($scope.user);
+            //Server conenction to verify user's data
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10200, JSONData: JSON.stringify($scope.user)});
+            
+            promise.then(function (data) {
+                if(data[0]===true){
+                    window.open("templates/reset.php","_self"); 
+                }else{
+                    if(angular.isArray(data[1])){
+                        showErrors(data[1]);
+                    }else{
+                        showNormalError("An error occurred in the server, please come back later!");
+                    }
+                }        
+            });
+        };
 
     });
 
@@ -78,6 +94,17 @@ $(document).ready(function () {
 
             },
             controllerAs: 'contactTemplate'
+        };
+    });
+    
+    mainApp.directive("retrieveTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/retrieveTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'retrieveTemplate'
         };
     });
     
