@@ -34,7 +34,7 @@ UserObj = function () {
         this.setZip_code(zipCode);
         this.setImage(image);
         this.setRegister_date(registerDate);
-        this.role(role);
+        this.setRole(role);
     };
 
     this.setUserId = function (userId) {
