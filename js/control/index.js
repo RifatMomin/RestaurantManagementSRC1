@@ -28,12 +28,13 @@ $(document).ready(function () {
         $scope.userAction = 0;
         $scope.provinces = [];
         $scope.cities = [];
+        $scope.zipCode;
         $scope.availableUser = true;
         $scope.availableEmail = true;
         $scope.equalPasswords = false;
 
         //Initialize registerUser
-        $scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
+        //$scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
 
         //Configuration of the GeoAPI
         GeoAPI.setConfig("key", "06649ff9b93c721316323326b30bda68f5dc8744b8f31a0c2c5961daf87c575e");
@@ -95,10 +96,10 @@ $(document).ready(function () {
                         CUN: $scope.city.CUN,
                         CMUM: $scope.city.CMUM
                     }).then(function (dataCP) {
-                        $scope.registerUser.setZip_code(dataCP['data'][0].CPOS);
+                        $scope.zipCode = dataCP['data'][0].CPOS;
                     });
                 } catch (e) {
-                    $scope.registerUser.setZip_code("00000");
+                    $scope.zipCode = 00000;
                 }
             });
         };
@@ -136,15 +137,21 @@ $(document).ready(function () {
             });
         };
 
-        $scope.reloadLogin = function(){
+        /**
+         * @description Reloads the login form and the user object
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
+        $scope.reloadLogin = function () {
             $scope.user = new UserObj();
             $scope.loginForm.$setPristine();
         };
-        
+
         /**
          * @description Shows the user to retrieve his password
          * @version 1
-         * @author Victor Moreno García
+         * @author Rifat Momin
          * @date 2016/05/04
          */
         $scope.retrievePassword = function () {
@@ -154,7 +161,7 @@ $(document).ready(function () {
 
             promise.then(function (data) {
                 if (data[0] === true) {
-                    window.open("templates/reset.php", "_self");
+                    window.open("reset.php", "_self");
                 } else {
                     if (angular.isArray(data[1])) {
                         showErrors(data[1]);
@@ -164,8 +171,6 @@ $(document).ready(function () {
                 }
             });
         };
-
-
 
         /**
          * @description Sends to the server the user to register in the App
@@ -174,16 +179,21 @@ $(document).ready(function () {
          * @date 2016/05/05
          */
         $scope.register = function () {
+            $scope.registerUser.cryptPassword();
+            $scope.registerUser.setCity($scope.city.DMUN50);
+            $scope.registerUser.setZip_code($scope.zipCode);
+            
             console.log($scope.registerUser);
-
             $scope.registerUser = angular.copy($scope.registerUser);
+
+
 
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
 
             promise.then(function (data) {
                 if (data[0] === true) {
                     $("#modalRegisteredUser").modal("show");
-                    $scope.registerForm.$setPristine();
+                    $scope.reloadRegister();
                 } else {
                     if (angular.isArray(data[1])) {
                         showErrors(data[1]);
@@ -193,17 +203,36 @@ $(document).ready(function () {
                 }
             });
         };
-        
-        $scope.reloadRegister = function(){
+
+        /**
+         * @description Reloads the register form and the registerUser object
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
+        $scope.reloadRegister = function () {
             $scope.registerUser = new UserObj();
             $scope.loginForm.$setPristine();
         };
 
+        /**
+         * @description Changes the modal from the register to the Login
+         * to see if is available
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
         $scope.changeRegisterToLogin = function () {
             $("#signUpModal").modal("hide");
             $("#loginModal").modal("show");
         };
 
+        /**
+         * @description Changes the modal from the register to the Login
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
         $scope.checkNick = function () {
             if ($scope.registerForm.registerUsername.$valid) {
                 var nick = $scope.registerUser.getUsername();
@@ -220,6 +249,13 @@ $(document).ready(function () {
             }
         };
 
+        /**
+         * @description Checks in real time the email introduced by the user to
+         * see if is available
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
         $scope.checkEmail = function () {
             if ($scope.registerForm.registerEmail.$valid) {
                 var email = $scope.registerUser.getEmail();
@@ -238,6 +274,13 @@ $(document).ready(function () {
 
         };
 
+        /**
+         * @description Compares the two passwords introduced by the user, and sets 
+         * the scope to false if they aren't equals
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
         $scope.checkPasswords = function () {
             if ($scope.registerForm.registerPassword.$valid) {
                 if ($scope.registerUser.password == $scope.repeatPassword) {
@@ -248,6 +291,12 @@ $(document).ready(function () {
             }
         };
 
+        /**
+         * @description Change the modal from the welcome to the Login
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
         $scope.changeModals = function () {
             $("#loginModal").modal("hide");
         }
@@ -287,7 +336,7 @@ $(document).ready(function () {
             controllerAs: 'retrieveTemplate'
         };
     });
-    
+
     mainApp.directive("loginTemplate", function () {
         return {
             restrict: 'E',

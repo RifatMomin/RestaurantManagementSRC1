@@ -39,8 +39,8 @@
                                 <span ng-show="equalPasswords" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
                                 <span ng-show="!equalPasswords" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>
-                            <p class="text-danger" ng-show="registerForm.registerPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
-                            <p class="text-danger" ng-show="!equalPasswords"><strong>Error</strong> Passwords doesn't match!</p>                                    
+                            <p class="text-danger" ng-show="registerForm.repeatPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
+                            <p class="text-danger" ng-show="registerForm.repeatPassword.$valid && !equalPasswords"><strong>Error</strong> Passwords doesn't match!</p>                                    
                         </div>
 
                         <div class="form-group" ng-class="{'has-error': registerForm.registerName.$invalid, 'has-success':registerForm.registerName.$valid}">
@@ -107,13 +107,13 @@
                             <input type="file" accept="image/*" id="registerUserImage" name="registerUserImage" required/>
                         </div>
                     </div>
-
+                </form>
             </div>
             <div class="modal-footer"> 
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" ng-disabled="registerForm.$invalid || !availableUser || !availableEmail || !equalPasswords">Register</button>
+                <button type="button" class="btn btn-primary" ng-click="register()" ng-disabled="registerForm.$invalid || !availableUser || !availableEmail || !equalPasswords">Register</button>
             </div>
-            </form>
+            
         </div>
     </div>
 </div>

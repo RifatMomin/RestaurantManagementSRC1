@@ -10,6 +10,7 @@ session_start();
 require_once "ControllerInterface.php";
 require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
+require_once '../lib/swiftmailer-5.x/swift_required.php';
 
 class UserController implements ControllerInterface {
 
@@ -72,11 +73,11 @@ class UserController implements ControllerInterface {
 
         return $this->data;
     }
-    
-    function checkNick(){
+
+    function checkNick() {
         $json = json_decode(stripslashes($this->getJsonData()));
-        
-        
+
+
         $result = $this->helperAdo->findByNick($json->nick);
         
         
@@ -130,12 +131,12 @@ class UserController implements ControllerInterface {
             
         }
     }
+
     
     function loginUser() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
 
         $user = new UserClass(0, $userObj->username, $userObj->password);
-
 
         $userList = $this->helperAdo->findByNickAndPass($user);
 
@@ -158,25 +159,56 @@ class UserController implements ControllerInterface {
     }
 
     function retrievePasswd() {
+
+        $helperAdo = new UserADO;
         $userObj = json_decode(stripslashes($this->getJsonData()));
         $user = new UserClass("", "", "", "", "", $userObj->email);
-        $userList = $this->userADO->findByEmail($user);
-        
+        $userList = $helperAdo->findByEmail($user);
+
         if ($userList != null) {
+
+            //encriptation
             $encrypt = md5(1290 * 3 + $userList->getEmail());
-            $message = "Your password reset link has been sent to your e-mail address.";
-            $to = $userList->getEmail();
-            $subject = "Forget Password";
-            $from = 'proinsprov@gmail.com';
-            $body = 'Hi, <br/> <br/>Your Membership ID is <br><br>Click here to reset your password http://localhost/RestaurantManagement_1/reset.php?encrypt=' . $encrypt . '&action=reset   <br/> <br/>';
-            $headers = "From: " . strip_tags($from) . "\r\n";
-            $headers .= "Reply-To: " . strip_tags($from) . "\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
-            mail($to, $subject, $body, $headers);
+            //configuration
+            $originEmail = 'proinsprov@gmail.com'; //origin email
+            $passwordOriginEmail = 'a987654321a'; //email passowrd
+            $nameOriginEmail = 'RestaurantManagement.com';
+            $portSMTPServer = 465; //465 or 25
+            $urlSMTPServer = 'smtp.googlemail.com'; //url of SMTP server
+            $requiresSSLServerSMTP = true;
+            //email data
+            $addresseeEmail = $userList->getEmail(); //email addressee
+            $subject = "Restaurant Retrieve Password"; //el asunto del email
+            $body = '<html><body><p>Hi, it seems that you lost your password. Click here to retrieve it: <br><br>http://localhost/RestaurantManagement_1/reset.php?encrypt=' . $encrypt . '&action=reset ;</p></html></body>';
+            //send process
+            if ($requiresSSLServerSMTP) {
+                //si requiere SSL debe ser especificado en el constructor:
+                $transport = Swift_SmtpTransport::newInstance($urlSMTPServer, $portSMTPServer, 'ssl')
+                        ->setUsername($originEmail)
+                        ->setPassword($passwordOriginEmail);
+            } else {
+                $transport = Swift_SmtpTransport::newInstance($urlSMTPServer, $portSMTPServer)
+                        ->setUsername($originEmail)
+                        ->setPassword($passwordOriginEmail);
+            }
 
-            $this->data [] = $userList;
+            $mailerObject = Swift_Mailer::newInstance($transport);
+            $emailObject = Swift_Message::newInstance();
+            $emailObject->setSubject($subject);
+            $emailObject->setTo($addresseeEmail);
+            $emailObject->setFrom(array($originEmail => $nameOriginEmail));
+            $emailObject->setBody($body, 'text/html'); //body html
+
+            if ($mailerObject->send($emailObject) == 1) {
+                //echo "Sent successfully";
+                $this->data [] = true;
+                $this->errors [] = "Sent Successfully.";
+                $this->data [] = $this->errors;
+            } else {
+                echo 'Error sending message';
+            }
+            
         } else {
             $this->data [] = false;
             $this->errors [] = "Invalid Email.";
