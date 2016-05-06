@@ -5,16 +5,6 @@
  */
 
 
-$(document).ready(function () {
-    var sideslider = $('[data-toggle=collapse-side]');
-    var sel = sideslider.attr('data-target');
-    var sel2 = sideslider.attr('data-target-2');
-    sideslider.click(function (event) {
-        $(sel).toggleClass('in');
-        $(sel2).toggleClass('out');
-    });
-});
-
 (function () {
     var mainApp = angular.module("RestaurantAppReset", []);
 
@@ -35,21 +25,25 @@ $(document).ready(function () {
         $scope.resetPassword = function (){
             $scope.user = angular.copy($scope.user);
             $scope.ObjectPasswordArray= [$scope.user, $scope.password2];
+            var url = window.location.href ;
             
-            //Server conenction to verify user's data
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10300, JSONData: JSON.stringify($scope.ObjectPasswordArray)});
             
-            promise.then(function (data) {
-                if(data[0]===true){
-                    window.open("index.php","_self"); 
-                }else{
-                    if(angular.isArray(data[1])){
-                        showErrors(data[1]);
-                    } else {
-                        showNormalError("An error occurred in the server, please come back later!");
-                    }
-                }
-            });
+//            
+//            //Server conenction to verify user's data
+//            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10300, JSONData: JSON.stringify($scope.ObjectPasswordArray)});
+//            
+//            promise.then(function (data) {
+//                console.log(data);
+//                if(data[0]===true){
+//                    window.open("index.php","_self"); 
+//                }else{
+//                    if(angular.isArray(data[1])){
+//                        showErrors(data[1]);
+//                    } else {
+//                        showNormalError("An error occurred in the server, please come back later!");
+//                    }
+//                }
+//            });
         };
         
         /**

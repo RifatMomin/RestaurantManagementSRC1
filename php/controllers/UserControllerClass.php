@@ -168,7 +168,7 @@ class UserController implements ControllerInterface {
 
             //configuration
             $originEmail = 'proinsprov@gmail.com'; //origin email
-            $passwordOriginEmail = 'a987654321a'; //email passowrd
+            $passwordOriginEmail = ''; //email passowrd
             $nameOriginEmail = 'RestaurantManagement.com';
             $portSMTPServer = 465; //465 or 25
             $urlSMTPServer = 'smtp.googlemail.com'; //url of SMTP server
@@ -214,21 +214,24 @@ class UserController implements ControllerInterface {
     public function updatePassword() {
         $helperAdo = new UserADO;
         $userObjPasswordArray= json_decode(stripslashes($this->getJsonData()));
-        $userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role);
-        $password= $userObjPasswordArray[1][1];
-        print_r($userObjPasswordArray);
         
-        $userList = $helperAdo->resetPassword($user);
-
-        if ($userList != null) {
-            $this->data [] = true;
-            $this->errors [] = "Password updated";
-            $this->data [] = $this->errors;
-        } else {
-            $this->data [] = false;
-            $this->errors [] = "Reset password failed";
-            $this->data [] = $this->errors;
-        }
+        var_dump($userObjPasswordArray);
+        
+//        $userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role);
+//        $password= $userObjPasswordArray[1][1];
+//        print_r($userObjPasswordArray);
+//        
+//        $userList = $helperAdo->resetPassword($user);
+//
+//        if ($userList != null) {
+//            $this->data [] = true;
+//            $this->errors [] = "Password updated";
+//            $this->data [] = $this->errors;
+//        } else {
+//            $this->data [] = false;
+//            $this->errors [] = "Reset password failed";
+//            $this->data [] = $this->errors;
+//        }
     }
 
     private function sessionControl() {
