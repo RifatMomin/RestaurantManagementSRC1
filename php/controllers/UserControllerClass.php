@@ -62,6 +62,9 @@ class UserController implements ControllerInterface {
             case 10251:
                 $this->checkEmail();
                 break;
+            case 10300:
+                $this->updatePassword();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -201,6 +204,10 @@ class UserController implements ControllerInterface {
             $this->data [] = $this->errors;
         }
     }
+    
+   public function updatePassword(){
+       
+   }
 
     private function sessionControl() {
         $outPutData = array();

@@ -56,7 +56,9 @@ class UserADO implements EntityInterfaceADO {
         return $userObject;
     }
 
-    public function resetPassword() {
+    public function resetPassword($passwd1, $passwd1) {
+        
+            
         
     }
 

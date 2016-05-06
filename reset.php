@@ -16,9 +16,8 @@ if (isset($_SESSION['connectedUser'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!--Bootstrap CSS-->
-        <link href="../css/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-
-        <link href="../css/index.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
         <!--AngularJS and jQUeryJS-->
         <script src="js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
@@ -47,7 +46,7 @@ if (isset($_SESSION['connectedUser'])) {
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="index.php">
                         <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
 
                     </a>
@@ -65,8 +64,8 @@ if (isset($_SESSION['connectedUser'])) {
                                 <form action="" method="POST" name="resetForm" ng-submit="resetPassword()" novalidate >
                                     <div class="form-group">
                                         <label for="usr">Password:</label>
-                                        <input type="text" name="password1" class="form-control" id="usr1">
-                                        <input type="text" name="password2" class="form-control" id="usr2">
+                                        <input type="text" name="password1" ng-model="user.password" class="form-control" id="usr1">
+                                        <input type="text" name="password2" ng-model="user.password" class="form-control" id="usr2">
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" name="reset" class="btn btn-primary" ng-disabled="resetForm.$invalid">Reset</button>
