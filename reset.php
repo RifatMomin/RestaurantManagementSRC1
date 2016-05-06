@@ -16,9 +16,8 @@ if (isset($_SESSION['connectedUser'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!--Bootstrap CSS-->
-        <link href="../css/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-
-        <link href="../css/index.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
         <!--AngularJS and jQUeryJS-->
         <script src="js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
@@ -47,38 +46,38 @@ if (isset($_SESSION['connectedUser'])) {
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="index.php">
                         <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
 
                     </a>
                     <a class="navbar-brand">"Restaurant Name"</a>
                 </div>
-
-                <div class="modal fade" id="retrieveModal" tabindex="-1" role="dialog" aria-labelledby="modalRetrieve">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title text-center" id="modalLogin">Reset Password</h4>
-                            </div>
-                            <div class="modal-body">                        
-                                <form action="" method="POST" name="resetForm" ng-submit="resetPassword()" novalidate >
-                                    <div class="form-group">
-                                        <label for="usr">Password:</label>
-                                        <input type="text" name="password1" class="form-control" id="usr1">
-                                        <input type="text" name="password2" class="form-control" id="usr2">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" name="reset" class="btn btn-primary" ng-disabled="resetForm.$invalid">Reset</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </nav>
-
+        
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="container-fluid">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center" id="modalLogin">Reset your Password</h4>
+                </div>
+                <div class="modal-body">                        
+                    <form action="" method="POST" name="resetForm" ng-submit="resetPassword()" novalidate >
+                        <div class="form-group">
+                            <label for="passwd1">Password:</label>
+                            <input type="text" name="password1" ng-model="user.password" class="form-control" id="usr1">
+                            <label for="passwd1">Repeat the password:</label>
+                            <input type="text" name="password2" ng-model="passwd2" class="form-control" id="usr2">
+                            <span ng-show="samePasswords">The passwords are equal</span>
+                            <span ng-show="!samePasswords">The passwords are not equal</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="reset" class="btn btn-primary" ng-disabled="resetForm.$invalid">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
         <footer class="navbar navbar-default navbar-fixed-bottom">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -90,40 +89,6 @@ if (isset($_SESSION['connectedUser'])) {
 
         </div>
 
-        <?php
-        if (isset($_POST['reset'])) {
-            if (password1 != null && password1 != null) {
-                $encrypt = mysqli_real_escape_string($connection, $_GET['encrypt']);
-                $query = "SELECT user_id FROM users where md5(90*13+id)='" . $encrypt . "'";
-                $result = mysqli_query($connection, $query);
-                $Results = mysqli_fetch_array($result);
-                if (count($Results) >= 1) {
-                    
-                } else {
-                    $message = 'Invalid key please try again. <a href="http://localhost/templates/retrieve.php">Forget Password?</a>';
-                }
-            }
-        } elseif (isset($_POST['reset'])) {
-
-            $encrypt = mysqli_real_escape_string($connection, $_POST['action']);
-            $password = mysqli_real_escape_string($connection, $_POST['password']);
-            $query = "SELECT id FROM users where md5(90*13+id)='" . $encrypt . "'";
-
-            $result = mysqli_query($connection, $query);
-            $Results = mysqli_fetch_array($result);
-            if (count($Results) >= 1) {
-                $query = "update users set password='" . md5($password) . "' where id='" . $Results['id'] . "'";
-                mysqli_query($connection, $query);
-
-                $message = "Your password changed sucessfully <a href=\"http://localhost/RestaurantManagement_1/index.php/\">click here to login</a>.";
-            } else {
-                $message = 'Invalid key please try again. <a href="http://localhost/templates/retrieve">Forget Password?</a>';
-            }
-        } else {
-            echo "hola";
-            //header("location: /login-signup-in-php");
-        }
-        ?>
     </body>
 </html>
 

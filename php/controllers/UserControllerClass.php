@@ -57,6 +57,9 @@ class UserController implements ControllerInterface {
             case 10251:
                 $this->checkEmail();
                 break;
+            case 10300:
+                $this->updatePassword();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -74,30 +77,29 @@ class UserController implements ControllerInterface {
 
 
         $result = $this->helperAdo->findByNick($json->nick);
-        
-        
-        if($result->rowCount()>0){
-            $this->data[]=true;
-        }else{
-            $this->data[]=false;
-        }
-        
-    }
-    
-    function checkEmail(){
-        $json = json_decode(stripslashes($this->getJsonData()));
-        
-        
-        $result = $this->helperAdo->emailChecking($json->email);       
-        
-        if($result->rowCount()>0){
-            $this->data[]=true;
-        }else{
-            $this->data[]=false;
+
+
+        if ($result->rowCount() > 0) {
+            $this->data[] = true;
+        } else {
+            $this->data[] = false;
         }
     }
 
-    function register(){
+    function checkEmail() {
+        $json = json_decode(stripslashes($this->getJsonData()));
+
+
+        $result = $this->helperAdo->emailChecking($json->email);
+
+        if ($result->rowCount() > 0) {
+            $this->data[] = true;
+        } else {
+            $this->data[] = false;
+        }
+    }
+
+    function register() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
         
         $user = new UserClass("", 
@@ -116,19 +118,17 @@ class UserController implements ControllerInterface {
         
         
         $result = $this->helperAdo->create($user);
-        
-        if($result->rowCount()>0){
-            $this->data[]=true;
-            $this->data[]= $user->getAll();
-        }else{
-            $this->data[]=false;
-            $this->errors[]="An error occurred while register in the app, come back later and try again.";
-            $this->data[]=$this->errors;
-            
+
+        if ($result->rowCount() > 0) {
+            $this->data[] = true;
+            $this->data[] = $user->getAll();
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "An error occurred while register in the app, come back later and try again.";
+            $this->data[] = $this->errors;
         }
     }
 
-    
     function loginUser() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
 
@@ -204,10 +204,29 @@ class UserController implements ControllerInterface {
             } else {
                 echo 'Error sending message';
             }
-            
         } else {
             $this->data [] = false;
             $this->errors [] = "Invalid Email.";
+            $this->data [] = $this->errors;
+        }
+    }
+
+    public function updatePassword() {
+        $helperAdo = new UserADO;
+        $userObjPasswordArray= json_decode(stripslashes($this->getJsonData()));
+        $userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role);
+        $password= $userObjPasswordArray[1][1];
+        print_r($userObjPasswordArray);
+        
+        $userList = $helperAdo->resetPassword($user);
+
+        if ($userList != null) {
+            $this->data [] = true;
+            $this->errors [] = "Password updated";
+            $this->data [] = $this->errors;
+        } else {
+            $this->data [] = false;
+            $this->errors [] = "Reset password failed";
             $this->data [] = $this->errors;
         }
     }
