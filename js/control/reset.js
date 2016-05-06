@@ -22,7 +22,9 @@ $(document).ready(function () {
         
         //scope variables        
         $scope.user = new UserObj();
-        $scope.passwordValid = true;
+        $scope.password2;
+        $scope.samePasswd=false;
+        $scope.ObjectPasswordArray = new Array();
         
         /**
          * @description Shows the user to retrieve his password
@@ -32,8 +34,10 @@ $(document).ready(function () {
          */
         $scope.resetPassword = function (){
             $scope.user = angular.copy($scope.user);
+            $scope.ObjectPasswordArray= [$scope.user, $scope.password2];
+            
             //Server conenction to verify user's data
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10300, JSONData: JSON.stringify($scope.user)});
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10300, JSONData: JSON.stringify($scope.ObjectPasswordArray)});
             
             promise.then(function (data) {
                 if(data[0]===true){
@@ -46,6 +50,23 @@ $(document).ready(function () {
                     }
                 }
             });
+        };
+        
+        /**
+         * @description compares both passwords
+         * if they're not equal, sends error
+         * @version 1
+         * @author RifatMomin
+         * @date 2016/05/06
+         */
+        $scope.comparePasswords = function () {
+            if ($scope.resetForm.resetPassword.$valid) {
+                if ($scope.user.password == $scope.password2) {
+                    $scope.samePasswd = true;
+                } else {
+                    $scope.samePasswd = false;
+                }
+            }
         };
         
         

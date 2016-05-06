@@ -94,10 +94,8 @@ class UserController implements ControllerInterface {
     function checkEmail() {
         $json = json_decode(stripslashes($this->getJsonData()));
 
-        $user = new UserClass();
-        $user->setEmail($json->email);
 
-        $result = $this->helperAdo->findByEmail($user);
+        $result = $this->helperAdo->emailChecking($json->email);
 
         if ($result->rowCount() > 0) {
             $this->data[] = true;
@@ -107,9 +105,12 @@ class UserController implements ControllerInterface {
     }
 
     function register() {
-
         $userObj = json_decode(stripslashes($this->getJsonData()));
+
         $user = new UserClass("", $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, "", "");
+
+
+
         $result = $this->helperAdo->create($user);
 
         if ($result->rowCount() > 0) {
@@ -117,7 +118,7 @@ class UserController implements ControllerInterface {
             $this->data[] = $user->getAll();
         } else {
             $this->data[] = false;
-            $this->errors[] = "An error occurred while register in the app, come bakc later and try again.";
+            $this->errors[] = "An error occurred while register in the app, come back later and try again.";
             $this->data[] = $this->errors;
         }
     }
@@ -197,17 +198,32 @@ class UserController implements ControllerInterface {
             } else {
                 echo 'Error sending message';
             }
-            
         } else {
             $this->data [] = false;
             $this->errors [] = "Invalid Email.";
             $this->data [] = $this->errors;
         }
     }
-    
-   public function updatePassword(){
-       
-   }
+
+    public function updatePassword() {
+        $helperAdo = new UserADO;
+        $userObjPasswordArray= json_decode(stripslashes($this->getJsonData()));
+        $userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role);
+        $password= $userObjPasswordArray[1][1];
+        print_r($userObjPasswordArray);
+        
+        $userList = $helperAdo->resetPassword($user);
+
+        if ($userList != null) {
+            $this->data [] = true;
+            $this->errors [] = "Password updated";
+            $this->data [] = $this->errors;
+        } else {
+            $this->data [] = false;
+            $this->errors [] = "Reset password failed";
+            $this->data [] = $this->errors;
+        }
+    }
 
     private function sessionControl() {
         $outPutData = array();
