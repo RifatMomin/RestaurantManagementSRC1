@@ -41,19 +41,21 @@ class UserADO implements EntityInterfaceADO {
         return $result->fetchAll();
     }
 
-    public function findByEmail($user) {
-        //$cons = "select * from `".UserADO::$tableName."` where ".UserADO::$colNameNick." = \"".$user->getNick()."\" and ".UserADO::$colNamePassword." = \"".$user->getPassword()."\"";
-        $sql = "SELECT id FROM users WHERE email = :email";
+    public function findByEmail($user) {       
 
         $array = [":email" => $user->getEmail()];
 
-        $result = $this->dataSource->execution($sql, $array);
+        $result = $this->dataSource->execution(self::SELECT_BY_EMAIL, $array);
         
         foreach ($result as $user) {
             $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
         }
  
         return $userObject;
+    }
+    
+    public function emailChecking($email){
+        return $this->dataSource->execution(self::SELECT_BY_EMAIL,$array=[$email]);
     }
 
     public function resetPassword() {

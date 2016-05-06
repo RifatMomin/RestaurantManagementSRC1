@@ -91,10 +91,8 @@ class UserController implements ControllerInterface {
     function checkEmail(){
         $json = json_decode(stripslashes($this->getJsonData()));
         
-        $user = new UserClass();
-        $user->setEmail($json->email);
         
-        $result = $this->helperAdo->findByEmail($user);       
+        $result = $this->helperAdo->emailChecking($json->email);       
         
         if($result->rowCount()>0){
             $this->data[]=true;
@@ -127,7 +125,7 @@ class UserController implements ControllerInterface {
             $this->data[]= $user->getAll();
         }else{
             $this->data[]=false;
-            $this->errors[]="An error occurred while register in the app, come bakc later and try again.";
+            $this->errors[]="An error occurred while register in the app, come back later and try again.";
             $this->data[]=$this->errors;
             
         }
