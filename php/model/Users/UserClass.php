@@ -22,8 +22,9 @@ class UserClass implements EntityInterface {
     private $zipCode;
     private $registerDate;
     private $role;
+    private $image;
 
-    function __construct($id = "", $username = "", $password = "", $name = "", $surname = "", $email = "", $phone = "", $address = "", $city = "", $zipCode = "", $registerDate = "", $role = "") {
+    function __construct($id = "", $username = "", $password = "", $name = "", $surname = "", $email = "", $phone = "", $address = "", $city = "", $zipCode = "",$image="", $registerDate = "", $role = "") {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
@@ -36,8 +37,17 @@ class UserClass implements EntityInterface {
         $this->zipCode = $zipCode;
         $this->registerDate = $registerDate;
         $this->role = $role;
+        $this->image = $image;
     }
 
+    function getImage() {
+        return $this->image;
+    }
+
+    function setImage($image) {
+        $this->image = $image;
+    }
+        
     //getters
     public function getId() {
         return $this->id;
@@ -141,6 +151,7 @@ class UserClass implements EntityInterface {
         $data["address"] = $this->address;
         $data["city"] = $this->city;
         $data["zipCode"] = $this->zipCode;
+        $data['image'] = $this->image;
         $data["registerDate"] = $this->registerDate;
         //$data["role"] = $this->role;
 

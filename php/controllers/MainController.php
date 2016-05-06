@@ -1,8 +1,8 @@
 <?php
 
-require_once "UserControllerClass.php";
-//require_once "ReviewControllerClass.php";
-//require_once "RestaurantInfoControllerClass.php";
+require_once "./UserControllerClass.php";
+require_once "./FileControllerClass.php";
+require_once "./RestaurantInfoControllerClass.php";
 //require_once "MealControllerClass.php";
 //require_once "OrderControllerClass.php";
 //require_once "TableControllerClass.php";
@@ -33,26 +33,17 @@ if (isset($_REQUEST['controllerType'])) {
             $outPutData = $userController->doAction();
             break;
         case 1:
-            $orderController = new OrderControllerClass($_REQUEST['action'], $_REQUEST['jsonData']);
+            $orderController = new OrderControllerClass($_REQUEST['action'], $_REQUEST['JSONData']);
             $outPutData = $orderController->doAction();
             break;
-        case 2:
-            $menuController = new MealControllerClass($_REQUEST['action'], $_REQUEST['jsonData']);
-            $outPutData = $menuController->doAction();
+        case 2: 
+            $restController = new RestaurantInfoController($_REQUEST['action'], $_REQUEST['JSONData']);
+            $outPutData = $restController->doAction();
             break;
-        case 3:
-            $tableController = new TableControllerClass($_REQUEST['action'], $_REQUEST['jsonData']);
-            $outPutData = $tableController->doAction();
+        case 9:
+            $fileController = new FileControllerClass($_REQUEST['action'], $_REQUEST['JSONData']);
+            $outPutData = $fileController->doAction();
             break;
-        case 4:
-            $reviewController = new ReviewControllerClass($_REQUEST['action'], $_REQUEST['jsonData']);
-            $outPutData = $reviewController->doAction();
-            break;
-        case 5:
-            $restaurantInfoController = new RestaurantInfoControllerClass($_REQUEST['action'], $_REQUEST['jsonData']);
-            $outPutData = $restaurantInfoController->doAction();
-            break;
-
         default:
             $errors = array();
             $outPutData[0] = false;

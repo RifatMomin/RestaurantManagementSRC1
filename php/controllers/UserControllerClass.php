@@ -2,11 +2,6 @@
 
 session_start();
 
-/**
- * toDoClass class
- * it controls the hole server part of the application
- */
-//session_start();
 require_once "ControllerInterface.php";
 require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
@@ -115,6 +110,7 @@ class UserController implements ControllerInterface {
                                 $userObj->address, 
                                 $userObj->city, 
                                 $userObj->zip_code, 
+                                $userObj->image,
                                 "", "");
         
         

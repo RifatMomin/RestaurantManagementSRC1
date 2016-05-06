@@ -16,7 +16,7 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_EMAIL = "SELECT id FROM users WHERE email = :email";
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
-    const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`, `role`) VALUES (?,?,?,?,?,?,?,?,?,0)";
+    const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
     
     
     private $dataSource;
@@ -74,6 +74,7 @@ class UserADO implements EntityInterfaceADO {
             $userObj->getAddress(),
             $userObj->getCity(),
             $userObj->getZipCode(),
+            $userObj->getImage()
         ];
         
         return $this->dataSource->execution(self::INSERT,$array);

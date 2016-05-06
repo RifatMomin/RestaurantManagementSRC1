@@ -42,13 +42,13 @@ and open the template in the editor.
 
         <!--Model-->
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
-
+        <script src="js/model/RestaurantObj.js" type="text/javascript"></script>
 
         <!-- Index Control-->
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/index.js" type="text/javascript"></script>
     </head>
-    <body ng-controller="sessionController as sessionCtrl" ng-init="loadProvinces()">
+    <body ng-controller="mainAppController as mainCtrl" ng-init="getRestaurantInfo();loadProvinces()">
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -61,7 +61,7 @@ and open the template in the editor.
                         <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
 
                     </a>
-                    <a class="navbar-brand">"Restaurant Name"</a>
+                    <a class="navbar-brand">{{restaurantInfo.name}}</a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
@@ -85,13 +85,7 @@ and open the template in the editor.
             <retrieve-template></retrieve-template>
         </div> 
 
-        <footer class="navbar navbar-default navbar-fixed-bottom">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand footer-brand" href="#">Created by Rifat Momin and Victor Moreno</a>
-                </div>
-            </div>
-        </footer>       
+
 
     <login-template></login-template>
 
@@ -100,6 +94,26 @@ and open the template in the editor.
 
 
 
-
+    <footer class="footer">
+        <div class="container" style="margin-top:10px;">
+            <div class="row">
+                <div class="col-lg-4 col-xs-12 contact-col">
+                    <p class="text-justify">{{restaurantInfo.description}}</p>  
+                </div>  
+                <div class="col-lg-4 col-xs-12 contact-col">
+                    <strong>Contact us: </strong>
+                    <span class="contactInfo"><span class="glyphicon glyphicon-envelope"></span><a href="mailto:{{restaurantInfo.email}}">{{restaurantInfo.email}}</a></span>
+                    <span class="contactInfo"><span class="glyphicon glyphicon-phone"></span>{{restaurantInfo.phone1}}</span>
+                    <span class="contactInfo"><span class="glyphicon glyphicon-phone-alt"></span>{{restaurantInfo.phone2}}</span>
+                </div> 
+                <div class="col-lg-4 col-xs-12 contact-col text-right">
+                    <strong><span class="glyphicon glyphicon-home"></span>Where we are:</strong> 
+                    <span class="contactInfo">{{restaurantInfo.address}}</span>
+                    <span class="contactInfo">{{restaurantInfo.city}}</span>
+                    <span class="contactInfo">{{restaurantInfo.zipCode}}</span>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

@@ -18,9 +18,12 @@ $(document).ready(function () {
 (function () {
     var mainApp = angular.module("mainRestaurantApp", ["GeoAPI"]);
 
-    mainApp.controller("sessionController", function ($http, $scope, accessService, $log, GeoAPI) {
+    mainApp.controller("mainAppController", function ($http, $scope, accessService, $log, GeoAPI) {
+        //Empty the session in the local storage
+        sessionStorage.removeItem("connectedUser");
 
-        //scope variables        
+        //scope variables       
+        $scope.restaurantInfo = new RestaurantObj();
         $scope.user = new UserObj();
         $scope.registerUser = new UserObj();
         $scope.usernameValid = true;
@@ -127,12 +130,7 @@ $(document).ready(function () {
 
                     window.open("main.php", "_self");
                 } else {
-                    //If user is incorrect, show errors
-                    if (angular.isArray(data[1])) {
-                        showErrors(data[1]);
-                    } else {
-                        showNormalError("An error occurred in the server, please come back later!");
-                    }
+                    errorGest(data);
                 }
             });
         };
@@ -163,11 +161,7 @@ $(document).ready(function () {
                 if (data[0] === true) {
                     window.open("reset.php", "_self");
                 } else {
-                    if (angular.isArray(data[1])) {
-                        showErrors(data[1]);
-                    } else {
-                        showNormalError("An error occurred in the server, please come back later!");
-                    }
+                    errorGest(data);
                 }
             });
         };
@@ -179,29 +173,74 @@ $(document).ready(function () {
          * @date 2016/05/05
          */
         $scope.register = function () {
-            $scope.registerUser.cryptPassword();
-            $scope.registerUser.setCity($scope.city.DMUN50);
-            $scope.registerUser.setZip_code($scope.zipCode);
-            
-            console.log($scope.registerUser);
-            $scope.registerUser = angular.copy($scope.registerUser);
+            //Get the image
+            var imageFile = $("#registerUserImage")[0].files[0];
+            var imagesArrayToSend = new FormData();
+            imagesArrayToSend.append('images[]', imageFile);
 
-
-
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
-
-            promise.then(function (data) {
-                if (data[0] === true) {
-                    $("#modalRegisteredUser").modal("show");
-                    $scope.reloadRegister();
-                } else {
-                    if (angular.isArray(data[1])) {
-                        showErrors(data[1]);
-                    } else {
-                        showNormalError("An error occurred in the server, please come back later!");
+            //Check if the user wants to upload an image
+            if ($("#registerUserImage")[0].files.length > 0) {
+                //Upload the image first.
+                //If the upload fails, don't upload the user information
+                $http({
+                    method: 'POST',
+                    url: 'php/controllers/MainController.php?JSONData=""&controllerType=9&action=250&userName=' + $scope.registerUser.username,
+                    headers: {'Content-Type': undefined},
+                    data: imagesArrayToSend,
+                    transformRequest: function (data, headersGetterFunction) {
+                        return data;
                     }
-                }
-            });
+                }).success(function (data) {
+                    if (data[0] === true) {
+                        if (angular.isString(data[1])) {
+                            //Set all the user properties to register it to the app
+                            $scope.registerUser.cryptPassword();
+                            $scope.registerUser.setCity($scope.city.DMUN50);
+                            $scope.registerUser.setZip_code($scope.zipCode);
+                            $scope.registerUser = angular.copy($scope.registerUser);
+                            $scope.registerUser.setImage("images/users/" + data[1]);
+
+                            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
+
+                            promise.then(function (data) {
+                                console.log(data);
+                                if (data[0] === true) {
+                                    $("#modalRegisteredUser").modal("show");
+                                    $scope.reloadRegister();
+                                } else {
+                                    errorGest(data);
+                                }
+                            });
+                        }
+                    } else {
+                        if (angular.isArray(data[1])) {
+                            showErrors(data[1]);
+                        } else {
+                            showNormalError("Unrecognized server error. Report it to the restaurant.");
+                        }
+                    }
+                });
+
+            } else {
+                $scope.registerUser.cryptPassword();
+                $scope.registerUser.setCity($scope.city.DMUN50);
+                $scope.registerUser.setZip_code($scope.zipCode);
+                $scope.registerUser.setImage("images/users/user.jpg");
+
+                $scope.registerUser = angular.copy($scope.registerUser);
+
+
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        $("#modalRegisteredUser").modal("show");
+                        $scope.reloadRegister();
+                    } else {
+                        errorGest(data);
+                    }
+                });
+            }
         };
 
         /**
@@ -211,6 +250,7 @@ $(document).ready(function () {
          * @date 2016/05/06
          */
         $scope.reloadRegister = function () {
+            $("#registerUserImage").val("");
             $scope.registerUser = new UserObj();
             $scope.loginForm.$setPristine();
         };
@@ -300,6 +340,30 @@ $(document).ready(function () {
         $scope.changeModals = function () {
             $("#loginModal").modal("hide");
         }
+
+        /**
+         * @description Gets th restaurant info from the Database
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/06
+         */
+        $scope.getRestaurantInfo = function () {
+            $scope.restaurantInfo = new RestaurantObj();
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 1, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if(angular.isArray(data[1])){
+                        $scope.restaurantInfo.construct(data[1][0].restaurant_id,data[1][0].CIF,data[1][0].name,data[1][0].address,data[1][0].city,data[1][0].zip_code,data[1][0].phone1, data[1][0].phone2,data[1][0].email,data[1][0].description);
+                        console.log($scope.restaurantInfo);
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
     });
 
 
@@ -380,6 +444,7 @@ $(document).ready(function () {
 
                 return deferred.promise;
             }
-        };
+        }
+        ;
     });
 })();

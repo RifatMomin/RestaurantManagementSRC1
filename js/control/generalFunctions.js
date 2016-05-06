@@ -2,7 +2,7 @@
  * @description JS to save functions that are used by the control JS of the app. 
  * @author Victor Moreno
  * @version 1
- * @date 2016/05/21
+ * @date 2016/05/06
  */
 
 /**
@@ -90,11 +90,10 @@ function checkServerSession() {
         }});
 
 
-}
+};
 
 
-function showErrors(errors)
-{
+function showErrors(errors){
     var errorString = "";
 
     $.each(errors, function (index, error) {
@@ -102,12 +101,12 @@ function showErrors(errors)
     });
 
     alert(errorString);
-}
+};
 
 
 function showNormalError(msg) {
     alert(msg);
-}
+};
 
 var getTodayDate = function () {
     var month;
@@ -128,19 +127,13 @@ var getTodayDate = function () {
     var currentDate = dateAux.getFullYear() + "-" + month + "-" + day;
 
     return currentDate;
-}
+};
 
-function mypasswordmatch()
-{
-    var pass1 = $("#password").val();
-    var pass2 = $("#password2").val();
-    if (pass1 != pass2)
-    {
-        alert("Passwords do not match");
-        return false;
+
+function errorGest(data) {
+    if ($.isArray(data[1])) {
+        showErrors(data[1]);
+    } else {
+        showNormalError("An error occurred in the server, please come back later!");
     }
-    else
-    {
-        $("#reset").submit();
-    }
-}
+};
