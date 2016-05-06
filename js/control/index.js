@@ -138,7 +138,7 @@ $(document).ready(function () {
         /**
          * @description Shows the user to retrieve his password
          * @version 1
-         * @author Victor Moreno García
+         * @author Rifat Momin
          * @date 2016/05/04
          */
         $scope.retrievePassword = function (){
@@ -148,7 +148,7 @@ $(document).ready(function () {
             
             promise.then(function (data) {
                 if(data[0]===true){
-                    window.open("templates/reset.php","_self"); 
+                    window.open("reset.php","_self"); 
                 }else{
                     if(angular.isArray(data[1])){
                         showErrors(data[1]);
@@ -159,8 +159,6 @@ $(document).ready(function () {
             });
         };
         
-        
-
         /**
          * @description Sends to the server the user to register in the App
          * @version 1

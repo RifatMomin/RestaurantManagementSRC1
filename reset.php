@@ -2,17 +2,12 @@
 <?php
 session_start();
 
-
 if (isset($_SESSION['connectedUser'])) {
     header("Location: main.php");
 }
 ?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html ng-app="mainRestaurantApp">
+
+<html ng-app="RestaurantAppReset">
     <head>
         <title>Restaurant Management</title>
         <link rel="icon" href="../images/LOGO-PROJECT.png" type="image/png"/>
@@ -40,10 +35,10 @@ and open the template in the editor.
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
         <!-- Index Control-->
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
-        <script src="js/control/index.js" type="text/javascript"></script>
+        <script src="js/control/reset.js" type="text/javascript"></script>
 
     </head>
-    <body>
+    <body ng-controller="resetController as resetCtrl">
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -72,7 +67,9 @@ and open the template in the editor.
                                         <label for="usr">Password:</label>
                                         <input type="text" name="password1" class="form-control" id="usr1">
                                         <input type="text" name="password2" class="form-control" id="usr2">
-                                        <input type="submit" name="reset" ng-disabled="resetForm.$invalid">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" name="reset" class="btn btn-primary" ng-disabled="resetForm.$invalid">Reset</button>
                                     </div>
                                 </form>
                             </div>
@@ -82,11 +79,6 @@ and open the template in the editor.
             </div>
         </nav>
 
-        <div class="container">
-            <menus-template></menus-template>
-            <contact-template></contact-template>
-        </div>    
-
         <footer class="navbar navbar-default navbar-fixed-bottom">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -95,7 +87,6 @@ and open the template in the editor.
             </div>
         </footer>
         <div class="form-group">
-
 
         </div>
 
@@ -129,7 +120,8 @@ and open the template in the editor.
                 $message = 'Invalid key please try again. <a href="http://localhost/templates/retrieve">Forget Password?</a>';
             }
         } else {
-            header("location: /login-signup-in-php");
+            echo "hola";
+            //header("location: /login-signup-in-php");
         }
         ?>
     </body>
