@@ -17,7 +17,7 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
     const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
-    const UPDATE_PASSWD = "  UPDATE users SET password = ? WHERE password= ?";
+    const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
     
     private $dataSource;
 
@@ -50,14 +50,12 @@ class UserADO implements EntityInterfaceADO {
      */
     public function findByEmail($user) {
 
-        //$array = [$user->getEmail()];
-
         $result = $this->dataSource->execution(self::SELECT_EMAIL, $array = [$user->getEmail()]);
 
         foreach ($result as $user) {
             $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
         }
-
+        
         return $userObject;
     }
 
@@ -65,11 +63,18 @@ class UserADO implements EntityInterfaceADO {
         return $this->dataSource->execution(self::SELECT_BY_EMAIL, $array = [$email]);
     }
 
-    public function resetPassword($user, $oldpasswd) {
+    public function resetPassword($user, $newpassword) {
         
-        return $this->dataSource->execution(self::UPDATE_PASSWD, $array = [$user->getEmail(), $oldpasswd]);
-
-        var_dump($userObject);
+        $array = [
+          
+            $newpassword,
+            $user->getPassword(),
+            $user->getEmail(),
+        ];
+       
+        return $this->dataSource->execution(self::UPDATE_PASSWD, $array);
+        
+        
     }
 
     public function create($userObj) {

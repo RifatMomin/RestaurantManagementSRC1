@@ -1,0 +1,5 @@
+#include "components/core-min.js"
+#include "rollups/sha1.js"
+#include "rollups/aes.js"
+#include "components/enc-base64-min.js"
+#include "components/enc-utf16-min.js"

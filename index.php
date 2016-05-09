@@ -43,7 +43,7 @@ and open the template in the editor.
         <!--Model-->
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
         <script src="js/model/RestaurantObj.js" type="text/javascript"></script>
-
+        <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/aes.js"</script>
         <!-- Index Control-->
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/index.js" type="text/javascript"></script>

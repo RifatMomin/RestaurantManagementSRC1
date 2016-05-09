@@ -54,7 +54,7 @@ if (isset($_SESSION['connectedUser'])) {
                 </div>
             </div>
         </nav>
-        
+
         <div class="modal-dialog modal-sm" role="document">
             <div class="container-fluid">
                 <div class="modal-header">
@@ -63,12 +63,14 @@ if (isset($_SESSION['connectedUser'])) {
                 <div class="modal-body">                        
                     <form action="" method="POST" name="resetForm" ng-submit="resetPassword()" novalidate >
                         <div class="form-group">
-                            <label for="passwd1">Password:</label>
-                            <input type="text" name="password1" ng-model="user.password" class="form-control" id="usr1">
+                            <label for="passwd1">Email:</label>
+                            <input type="email" name="email" ng-model="user.email" class="form-control" id="usr1">
+                            <label for="passwd1">New password:</label>
+                            <input type="text" name="password1" ng-model="passwd1" class="form-control" id="usr1">
                             <label for="passwd1">Repeat the password:</label>
-                            <input type="text" name="password2" ng-model="passwd2" class="form-control" id="usr2">
-                            <span ng-show="samePasswords">The passwords are equal</span>
-                            <span ng-show="!samePasswords">The passwords are not equal</span>
+                            <input type="text" name="password3" ng-model="passwd2" class="form-control" id="usr3">
+<!--                            <span ng-show="samePasswords">The passwords are equal</span>
+                            <span ng-show="!samePasswords">The passwords are not equal</span>-->
                         </div>
                         <div class="modal-footer">
                             <button type="submit" name="reset" class="btn btn-primary" ng-disabled="resetForm.$invalid">Reset</button>
@@ -77,18 +79,28 @@ if (isset($_SESSION['connectedUser'])) {
                 </div>
             </div>
         </div>
-        
-        <footer class="navbar navbar-default navbar-fixed-bottom">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand footer-brand" href="#">Created by Rifat Momin and Victor Moreno</a>
-                </div>
-            </div>
-        </footer>
-        <div class="form-group">
 
-        </div>
-
+        <!--        <footer class="footer">
+                    <div class="container" style="margin-top:10px;">
+                        <div class="row">
+                            <div class="col-lg-4 col-xs-12 contact-col">
+                                <p class="text-justify">{{restaurantInfo.description}}</p>  
+                            </div>  
+                            <div class="col-lg-4 col-xs-12 contact-col">
+                                <strong>Contact us: </strong>
+                                <span class="contactInfo"><span class="glyphicon glyphicon-envelope"></span><a href="mailto:{{restaurantInfo.email}}">{{restaurantInfo.email}}</a></span>
+                                <span class="contactInfo"><span class="glyphicon glyphicon-phone"></span>{{restaurantInfo.phone1}}</span>
+                                <span class="contactInfo"><span class="glyphicon glyphicon-phone-alt"></span>{{restaurantInfo.phone2}}</span>
+                            </div> 
+                            <div class="col-lg-4 col-xs-12 contact-col text-right">
+                                <strong><span class="glyphicon glyphicon-home"></span>Where we are:</strong> 
+                                <span class="contactInfo">{{restaurantInfo.address}}</span>
+                                <span class="contactInfo">{{restaurantInfo.city}}</span>
+                                <span class="contactInfo">{{restaurantInfo.zipCode}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </footer>-->
     </body>
 </html>
 
