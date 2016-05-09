@@ -112,6 +112,12 @@ class UserController implements ControllerInterface {
 
 
 
+        $result = $this->helperAdo->create($user);
+
+        $user = new UserClass("", $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, $userObj->image, "", "");
+
+
+
         $id = $this->helperAdo->create($user);
 
         if ($id!= null && $id >0) {  
@@ -180,22 +186,22 @@ class UserController implements ControllerInterface {
         if ($userList != null) {
 
             //encriptation
-            $encrypt = md5(1290 * 3 + $userList->getEmail());
+            //$aleatoryString= md5("Lapasswordsecreta");
+            $action = md5($userList->getEmail());
 
             //configuration
-            $originEmail = 'proinsprov@gmail.com'; //origin email
-            $passwordOriginEmail = ''; //email passowrd
-            $nameOriginEmail = 'RestaurantManagement.com';
+            $originEmail = 'cafeteriaproven@gmail.com'; //origin email
+            $passwordOriginEmail = 'cafeteria1proven'; //email passowrd
+            $nameOriginEmail = 'cafeteria_proven@provensana.com';
             $portSMTPServer = 465; //465 or 25
-            $urlSMTPServer = 'smtp.googlemail.com'; //url of SMTP server
+            $urlSMTPServer = 'smtp.gmail.com'; //url of SMTP server
             $requiresSSLServerSMTP = true;
             //email data
             $addresseeEmail = $userList->getEmail(); //email addressee
-            $subject = "Restaurant Retrieve Password"; //el asunto del email
-            $body = '<html><body><p>Hi, it seems that you lost your password. Click here to retrieve it: <br><br>http://localhost/RestaurantManagement_1/reset.php?encrypt=' . $encrypt . '&action=reset ;</p></html></body>';
+            $subject = "Restaurant Retrieve Password"; //email subject
+            $body = '<html><body><p>Hi, it seems that you lost your password. Click here to retrieve it: <br><br><a href ="http://localhost/RestaurantManagement_1/reset.php?action=' . $action . '">http://localhost/RestaurantManagement_1/reset.php?action=' . $action . '</a></p></html></body>';
             //send process
             if ($requiresSSLServerSMTP) {
-                //si requiere SSL debe ser especificado en el constructor:
                 $transport = Swift_SmtpTransport::newInstance($urlSMTPServer, $portSMTPServer, 'ssl')
                         ->setUsername($originEmail)
                         ->setPassword($passwordOriginEmail);
@@ -213,7 +219,6 @@ class UserController implements ControllerInterface {
             $emailObject->setBody($body, 'text/html'); //body html
 
             if ($mailerObject->send($emailObject) == 1) {
-                //echo "Sent successfully";
                 $this->data [] = true;
                 $this->errors [] = "Sent Successfully.";
                 $this->data [] = $this->errors;
@@ -228,26 +233,47 @@ class UserController implements ControllerInterface {
     }
 
     public function updatePassword() {
+
         $helperAdo = new UserADO;
         $userObjPasswordArray = json_decode(stripslashes($this->getJsonData()));
+        //$userObj = new UserClass($userObjPasswordArray[0], $userObjPasswordArray[1], $userObjPasswordArray[2], $userObjPasswordArray[3], $userObjPasswordArray[4], $userObjPasswordArray[5], $userObjPasswordArray[6], $userObjPasswordArray[7], $userObjPasswordArray[8], $userObjPasswordArray[9], $userObjPasswordArray[10], $userObjPasswordArray[11], $userObjPasswordArray[12]);
+        //$userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role, $userObjPasswordArray[0]->image);
+        $userObj = new UserClass("", "", "", "", "", $userObjPasswordArray[0]->email);
+        $newPasword = $userObjPasswordArray[1];
+        $url = $userObjPasswordArray[2];
+        
+        $email=$userObjPasswordArray[0]->email;
+                
+        $userList = $helperAdo->findByEmail($userObj);
+       
+        if ($userList != null) {
 
-        var_dump($userObjPasswordArray);
-
-//        $userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role);
-//        $password= $userObjPasswordArray[1][1];
-//        print_r($userObjPasswordArray);
-//        
-//        $userList = $helperAdo->resetPassword($user);
-//
-//        if ($userList != null) {
-//            $this->data [] = true;
-//            $this->errors [] = "Password updated";
-//            $this->data [] = $this->errors;
-//        } else {
-//            $this->data [] = false;
-//            $this->errors [] = "Reset password failed";
-//            $this->data [] = $this->errors;
-//        }
+            //encrypt password to compare with url string
+            $encrypt = md5($email);
+            
+            //compares that the url is actually valid
+            if (strcmp($url, $encrypt) == 0) {
+                $userList = $helperAdo->resetPassword($userObj, $newPasword);
+                var_dump($userList);
+                if ($userList != null) {
+                    $this->data [] = true;
+                    $this->errors [] = "Password updated";
+                    $this->data [] = $this->errors;
+                } else {
+                    $this->data [] = false;
+                    $this->errors [] = "Password could not be updated";
+                    $this->data [] = $this->errors;
+                }
+            } else {
+                $this->data [] = false;
+                $this->errors [] = "Access not allowed";
+                $this->data [] = $this->errors;
+            }
+        } else {
+            $this->data [] = false;
+            $this->errors [] = "Email not valid";
+            $this->data [] = $this->errors;
+        }
     }
 
     private function logOut() {
