@@ -1,11 +1,11 @@
 <?php
 
-session_start();
-
 require_once "ControllerInterface.php";
 require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
 require_once '../lib/swiftmailer-5.x/swift_required.php';
+
+session_start();
 
 class UserController implements ControllerInterface {
 
@@ -51,6 +51,9 @@ class UserController implements ControllerInterface {
             case 10200:
                 $this->retrievePasswd();
                 break;
+            case 10230:
+                $this->insertClient();
+                break;
             case 10250:
                 $this->checkNick();
                 break;
@@ -59,6 +62,9 @@ class UserController implements ControllerInterface {
                 break;
             case 10300:
                 $this->updatePassword();
+                break;
+            case 10550:
+                $this->checkUserType();
                 break;
             default:
                 $errors = array();
@@ -101,25 +107,15 @@ class UserController implements ControllerInterface {
 
     function register() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
-        
-        $user = new UserClass("", 
-                                $userObj->username,
-                                $userObj->password , 
-                                $userObj->name, 
-                                $userObj->surname, 
-                                $userObj->email, 
-                                $userObj->phone, 
-                                $userObj->address, 
-                                $userObj->city, 
-                                $userObj->zip_code, 
-                                $userObj->image,
-                                "", "");
-        
-        
-        
-        $result = $this->helperAdo->create($user);
 
-        if ($result->rowCount() > 0) {
+        $user = new UserClass("", $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, $userObj->image, "", "");
+
+
+
+        $id = $this->helperAdo->create($user);
+
+        if ($id!= null && $id >0) {  
+            $user->setId($id);
             $this->data[] = true;
             $this->data[] = $user->getAll();
         } else {
@@ -129,6 +125,24 @@ class UserController implements ControllerInterface {
         }
     }
 
+    function insertClient(){
+        $userId = json_decode(stripslashes($this->getJsonData()));
+        
+        $id = (int) $userId->id;
+        
+        $result = $this->helperAdo->insertClient($id);
+        
+        
+        if($result->rowCount()>0){
+            $this->data[]=true;
+            $this->data[]=$userId;
+        }else{
+            $this->data[] = false;
+            $this->errors[] = "An error occurred while register in the app, come back later and try again.";
+            $this->data[] = $this->errors;
+        }
+    }
+    
     function loginUser() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
 
@@ -141,16 +155,18 @@ class UserController implements ControllerInterface {
             $this->errors [] = "Invalid Username / Password.";
             $this->data [] = $this->errors;
         } else {
+
             $this->data [] = true;
             $usersArray = array();
 
-            foreach ($userList as $user) {
-                $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
-                $usersArray[] = $userObject->getAll();
-                $_SESSION['connectedUser'] = $userObject->getId();
-                $_SESSION['role'] = $userObject->getRole();
+            foreach ($userList as $user) {        
+                    $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
+                    $usersArray[] = $userObject->getAll();
+                    $_SESSION['connectedUser'] = $userObject;
+                    $_SESSION['role'] = $userObject->getRole();
+                    $this->data [] = $usersArray;
             }
-            $this->data [] = $usersArray;
+            
         }
     }
 
@@ -213,10 +229,10 @@ class UserController implements ControllerInterface {
 
     public function updatePassword() {
         $helperAdo = new UserADO;
-        $userObjPasswordArray= json_decode(stripslashes($this->getJsonData()));
-        
+        $userObjPasswordArray = json_decode(stripslashes($this->getJsonData()));
+
         var_dump($userObjPasswordArray);
-        
+
 //        $userObj = new UserClass($userObjPasswordArray[0]->id, $userObjPasswordArray[0]->username, $userObjPasswordArray[0]->password, $userObjPasswordArray[0]->name, $userObjPasswordArray[0]->surname, $userObjPasswordArray[0]->email, $userObjPasswordArray[0]->phone, $userObjPasswordArray[0]->address, $userObjPasswordArray[0]->city, $userObjPasswordArray[0]->zipCode, $userObjPasswordArray[0]->registerDate, $userObjPasswordArray[0]->role);
 //        $password= $userObjPasswordArray[1][1];
 //        print_r($userObjPasswordArray);
@@ -234,25 +250,24 @@ class UserController implements ControllerInterface {
 //        }
     }
 
-    private function sessionControl() {
-        $outPutData = array();
-        $outPutData[] = true;
-
-        if (isset($_SESSION['connectedUser'])) {
-            $outPutData[] = $_SESSION['connectedUser']->getAll();
-        } else {
-            $outPutData[0] = false;
-            $errors[] = "No session opened";
-            $outPutData[1] = $errors;
-        }
-
-        return $outPutData;
-    }
-
     private function logOut() {
         session_destroy();
 
         $this->data [] = true;
+    }
+
+    private function checkUserType() {
+        if (isset($_SESSION['connectedUser'])) {
+            $userInfo = $_SESSION['connectedUser'];
+
+
+            $this->data[] = true;
+            $this->data[] = $userInfo->getRole();
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "There's no session opened.";
+            $this->data[] = $this->errors;
+        }
     }
 
 }

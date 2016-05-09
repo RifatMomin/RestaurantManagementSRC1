@@ -16,7 +16,8 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_EMAIL = "SELECT * FROM users WHERE email = ?";
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
-    const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
+    const INSERT_USERS = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
+    const INSERT_CLIENT = "INSERT INTO `client` (`client_id`, `user_id`) VALUES (NULL, '?')";
     const UPDATE_PASSWD = "  UPDATE users SET password = ? WHERE password= ?";
     
     private $dataSource;
@@ -69,7 +70,6 @@ class UserADO implements EntityInterfaceADO {
         
         return $this->dataSource->execution(self::UPDATE_PASSWD, $array = [$user->getEmail(), $oldpasswd]);
 
-        var_dump($userObject);
     }
 
     public function create($userObj) {
@@ -86,10 +86,17 @@ class UserADO implements EntityInterfaceADO {
             $userObj->getZipCode(),
             $userObj->getImage()
         ];
-
-        return $this->dataSource->execution(self::INSERT, $array);
+               
+        return $this->dataSource->executionInsert(self::INSERT_USERS, $array);
     }
 
+    public function insertClient($clientId){
+        $sql = "INSERT INTO `client` (`client_id`, `user_id`) VALUES (NULL, '$clientId')";
+        
+        
+        return $this->dataSource->execution($sql, $array=[] );
+    }
+    
     public function delete($entity) {
         
     }

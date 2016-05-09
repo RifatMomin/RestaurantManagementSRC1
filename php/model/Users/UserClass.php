@@ -141,7 +141,7 @@ class UserClass implements EntityInterface {
     //methods
     public function getAll() {
         $data = array();
-        //$data["id"] = $this->id;
+        $data["id"] = $this->id;
         $data["username"] = $this->username;
         //$data["password"] = $this->password;
         $data["name"] = $this->name;

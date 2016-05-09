@@ -194,20 +194,18 @@
 
                             promise.then(function (data) {
                                 console.log(data);
-                                if (data[0] === true) {
-                                    $("#modalRegisteredUser").modal("show");
+                                if (data[0] === true) {                                    
+                                    var id = data[1].id;
+                                    $scope.insertClient(id);
                                     $scope.reloadRegister();
                                 } else {
+                                    $scope.reloadRegister();
                                     errorGest(data);
                                 }
                             });
                         }
                     } else {
-                        if (angular.isArray(data[1])) {
-                            showErrors(data[1]);
-                        } else {
-                            showNormalError("Unrecognized server error. Report it to the restaurant.");
-                        }
+                        errorGest(data);
                     }
                 });
 
@@ -223,14 +221,30 @@
                 var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
 
                 promise.then(function (data) {
+                    console.log(data);
                     if (data[0] === true) {
-                        $("#modalRegisteredUser").modal("show");
+                        var id = data[1].id;
+                        $scope.insertClient(id);
                         $scope.reloadRegister();
                     } else {
+                        //$scope.reloadRegister();
                         errorGest(data);
                     }
                 });
             }
+        };
+
+        $scope.insertClient = function (id) {
+            console.log(id);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10230, JSONData: JSON.stringify({id: id})});
+
+            promise.then(function(data){
+                if(data[0]===true){
+                    $("#modalRegisteredUser").modal("show");
+                }else{
+                    errorGest(data);
+                }
+            });
         };
 
         /**
@@ -242,6 +256,7 @@
         $scope.reloadRegister = function () {
             $("#registerUserImage").val("");
             $scope.registerUser = new UserObj();
+            $scope.repeatPassword = "";
             $scope.loginForm.$setPristine();
         };
 
@@ -344,8 +359,8 @@
 
             promise.then(function (data) {
                 if (data[0] === true) {
-                    if(angular.isArray(data[1])){
-                        $scope.restaurantInfo.construct(data[1][0].restaurant_id,data[1][0].CIF,data[1][0].name,data[1][0].address,data[1][0].city,data[1][0].zip_code,data[1][0].phone1, data[1][0].phone2,data[1][0].email,data[1][0].description);
+                    if (angular.isArray(data[1])) {
+                        $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
                         console.log($scope.restaurantInfo);
                     }
                 } else {
@@ -366,6 +381,17 @@
 
             },
             controllerAs: 'menusTemplate'
+        };
+    });
+
+    mainApp.directive("footerTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/footerTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'footerTemplate'
         };
     });
 
