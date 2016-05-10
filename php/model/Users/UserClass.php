@@ -62,7 +62,7 @@ class UserClass implements EntityInterface {
     }
 
     public function getName() {
-        return $this->username;
+        return $this->name;
     }
 
     public function getSurname() {

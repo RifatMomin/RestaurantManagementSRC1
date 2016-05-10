@@ -438,6 +438,8 @@
             controllerAs: 'registerTemplate'
         };
     });
+    
+    
     mainApp.factory('accessService', function ($http, $log, $q) {
         return {
             getData: function (url, async, method, params, data) {

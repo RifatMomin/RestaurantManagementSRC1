@@ -1,26 +1,12 @@
 <?php
+session_start();
 
 require_once "./UserControllerClass.php";
 require_once "./FileControllerClass.php";
 require_once "./RestaurantInfoControllerClass.php";
-//require_once "MealControllerClass.php";
-//require_once "OrderControllerClass.php";
-//require_once "TableControllerClass.php";
+require_once "../model/Users/UserClass.php";
 
-function is_session_started() {
-    if (php_sapi_name() !== 'cli') {
-        if (version_compare(phpversion(), '5.4.0', '>=')) {
-            return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
-        } else {
-            return session_id() === '' ? FALSE : TRUE;
-        }
-    }
-    return FALSE;
-}
 
-if (is_session_started() === FALSE) {
-    session_start();
-}
 
 
 $outPutData = array();

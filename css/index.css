@@ -35,3 +35,8 @@ body {
 .center-block{
     float:none;
 }
+
+.media-preview{
+    width: auto;
+    height: 150px;
+}

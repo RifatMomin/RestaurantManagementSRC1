@@ -5,7 +5,7 @@ require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
 require_once '../lib/swiftmailer-5.x/swift_required.php';
 
-session_start();
+
 
 class UserController implements ControllerInterface {
 
@@ -63,8 +63,14 @@ class UserController implements ControllerInterface {
             case 10300:
                 $this->updatePassword();
                 break;
+            case 10520:
+                $this->updateUser();
+                break;
             case 10550:
                 $this->checkUserType();
+                break;
+            case 10570:
+                $this->getUserLoggedIn();
                 break;
             default:
                 $errors = array();
@@ -78,6 +84,48 @@ class UserController implements ControllerInterface {
         return $this->data;
     }
 
+    function getUserLoggedIn(){
+        if(isset($_SESSION['connectedUser'])){
+            $userId = $_SESSION['connectedUser'];
+            
+            $result = $this->helperAdo->findById($userId);
+            
+            $user = $result->fetch(PDO::FETCH_ASSOC);
+            
+            if(count($user)>0){
+                $userObj = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
+                $this->data[]=true;
+                $this->data[] = $userObj;
+            }
+            
+            
+        }else{
+            
+        }
+    }
+    
+    function updateUser(){
+        $userObj = json_decode(stripslashes($this->getJsonData()));
+
+        
+        $user = new UserClass($userObj->userId, $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, $userObj->image, "", "");
+
+        
+        $result = $this->helperAdo->update($user);
+        
+        if($result->rowCount()==1){
+            $this->data[]=true;
+            $this->data[]=$user->getAll();
+        }else if($result->rowCount()==0){
+            $this->data[]=true;
+            $this->data[]=false;                       
+        }else{
+            $this->data[]=false;
+            $this->errors[]="There has been an error while updating your info.";
+            $this->data[]=$this->errors;
+        }
+    }
+    
     function checkNick() {
         $json = json_decode(stripslashes($this->getJsonData()));
 
@@ -109,14 +157,6 @@ class UserController implements ControllerInterface {
         $userObj = json_decode(stripslashes($this->getJsonData()));
 
         $user = new UserClass("", $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, $userObj->image, "", "");
-
-
-
-        $result = $this->helperAdo->create($user);
-
-        $user = new UserClass("", $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, $userObj->image, "", "");
-
-
 
         $id = $this->helperAdo->create($user);
 
@@ -161,14 +201,13 @@ class UserController implements ControllerInterface {
             $this->errors [] = "Invalid Username / Password.";
             $this->data [] = $this->errors;
         } else {
-
             $this->data [] = true;
             $usersArray = array();
 
             foreach ($userList as $user) {        
                     $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
                     $usersArray[] = $userObject->getAll();
-                    $_SESSION['connectedUser'] = $userObject;
+                    $_SESSION['connectedUser'] = $userObject->getId();
                     $_SESSION['role'] = $userObject->getRole();
                     $this->data [] = $usersArray;
             }
@@ -284,11 +323,10 @@ class UserController implements ControllerInterface {
 
     private function checkUserType() {
         if (isset($_SESSION['connectedUser'])) {
-            $userInfo = $_SESSION['connectedUser'];
-
-
+            $userRole = $_SESSION['role'];
+            
             $this->data[] = true;
-            $this->data[] = $userInfo->getRole();
+            $this->data[] = $userRole;
         } else {
             $this->data[] = false;
             $this->errors[] = "There's no session opened.";
@@ -297,3 +335,5 @@ class UserController implements ControllerInterface {
     }
 
 }
+
+

@@ -16,8 +16,11 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_EMAIL = "SELECT * FROM users WHERE email = ?";
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
+    const SELECT_BY_ID = "SELECT * FROM users WHERE user_id = ?";
     const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
     const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
+    const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=?,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
+ 
     
     private $dataSource;
 
@@ -39,6 +42,10 @@ class UserADO implements EntityInterfaceADO {
         $result = $this->dataSource->execution($sql, $array);
 
         return $result->fetchAll();
+    }
+    
+    public function findById($id){        
+        return $this->dataSource->execution(self::SELECT_BY_ID,$array=[$id]);
     }
 
     /**
@@ -80,7 +87,6 @@ class UserADO implements EntityInterfaceADO {
     public function create($userObj) {
 
         $array = [
-            $userObj->getUsername(),
             $userObj->getPassword(),
             $userObj->getName(),
             $userObj->getSurname(),
@@ -107,7 +113,21 @@ class UserADO implements EntityInterfaceADO {
     }
 
     public function update($entity) {
+        //UPDATE `users` SET `username`=?,`user_name`=?,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?
+        $array = [
+            $entity->getUsername(),
+            $entity->getName(),
+            $entity->getSurname(),
+            $entity->getEmail(),
+            $entity->getPhone(),
+            $entity->getAddress(),
+            $entity->getCity(),
+            $entity->getZipCode(),
+            $entity->getImage(),
+            $entity->getId()
+        ];
         
+        return $this->dataSource->execution(self::UPDATE_USER_INFO,$array);
     }
 
     public function findAll() {
@@ -122,4 +142,4 @@ class UserADO implements EntityInterfaceADO {
 
 }
 
-?>
+

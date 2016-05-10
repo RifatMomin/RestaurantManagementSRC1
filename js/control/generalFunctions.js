@@ -16,6 +16,7 @@ function createLocalSession(user) {
     if (typeof (Storage) === "undefined") {
         alert("Your browser is not compatible with sessions, upgrade your browser");
     } else {
+        sessionStorage.removeItem("connectedUser");
         sessionStorage.setItem("connectedUser", JSON.stringify(user));
     }
 }
