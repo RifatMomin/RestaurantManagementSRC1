@@ -1,61 +1,72 @@
 <?php
 
 /**
- * Description of MealClass
+ * Description of MenuItemObj
  *
- * @author victor
+ * @author Rifat
  */
 require_once "../model/EntityInterface.php";
 
 class MenuItemClass implements EntityInterface{
     private $itemId;
+    private $courseId;
     private $name;
     private $image;
     private $price;
     
-    function __construct($itemId, $name, $image, $price) {
+    function __construct($itemId, $courseId, $name, $image, $price) {
         $this->itemId = $itemId;
+        $this->courseId = $courseId;
         $this->name = $name;
         $this->image = $image;
         $this->price = $price;
     }
-    
-    public function getItemId() {
+
+    function getItemId() {
         return $this->itemId;
     }
 
-    public function getName() {
+    function getCourseId() {
+        return $this->courseId;
+    }
+
+    function getName() {
         return $this->name;
     }
 
-    public function getImage() {
+    function getImage() {
         return $this->image;
     }
 
-    public function getPrice() {
+    function getPrice() {
         return $this->price;
     }
 
-    public function setItemId($itemId) {
+    function setItemId($itemId) {
         $this->itemId = $itemId;
     }
 
-    public function setName($name) {
+    function setCourseId($courseId) {
+        $this->courseId = $courseId;
+    }
+
+    function setName($name) {
         $this->name = $name;
     }
 
-    public function setImage($image) {
+    function setImage($image) {
         $this->image = $image;
     }
 
-    public function setPrice($price) {
+    function setPrice($price) {
         $this->price = $price;
     }
-    
+
     function getAll(){
         $data = [];
         
         $data['itemId'] = $this->getItemId();
+        $data['courseId'] = $this->getCourseId();
         $data['name'] = $this->getName();
         $data['image'] = $this->getImage();
         $data['price'] = $this->getPrice();

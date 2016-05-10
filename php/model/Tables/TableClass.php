@@ -15,61 +15,69 @@ class TableClass {
     
     //attributes
     private $tableId;
-    private $status;
     private $type;
+    private $status;
     private $location;
     private $capacity;
     
-    function __construct($tableId, $status, $type, $location, $capacity) {
+    function __construct($tableId, $type, $status, $location, $capacity) {
         $this->tableId = $tableId;
-        $this->status = $status;
         $this->type = $type;
+        $this->status = $status;
         $this->location = $location;
         $this->capacity = $capacity;
     }
 
-    //getters
-    public function getTableId() {
+    function getTableId() {
         return $this->tableId;
     }
 
-    public function getStatus() {
-        return $this->status;
-    }
-
-    public function getType() {
+    function getType() {
         return $this->type;
     }
 
-    public function getLocation() {
+    function getStatus() {
+        return $this->status;
+    }
+
+    function getLocation() {
         return $this->location;
     }
 
-    public function getCapacity() {
+    function getCapacity() {
         return $this->capacity;
     }
-    
-    //setters
-    public function setTableId($tableId) {
+
+    function setTableId($tableId) {
         $this->tableId = $tableId;
     }
 
-    public function setStatus($status) {
-        $this->status = $status;
-    }
-
-    public function setType($type) {
+    function setType($type) {
         $this->type = $type;
     }
 
-    public function setLocation($location) {
+    function setStatus($status) {
+        $this->status = $status;
+    }
+
+    function setLocation($location) {
         $this->location = $location;
     }
 
-    public function setCapacity($capacity) {
+    function setCapacity($capacity) {
         $this->capacity = $capacity;
     }
-    
-    
+ 
+    function getAll(){
+        $data = [];
+        
+        $data['tableId'] = $this->getTableId();
+        $data['type'] = $this->getType();
+        $data['status'] = $this->getStatus();
+        $data['location'] = $this->getLocation();
+        $data['capacity'] = $this->getCapacity();
+        
+        return $data;
+    }
 
 }

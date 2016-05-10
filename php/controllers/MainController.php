@@ -4,6 +4,9 @@ session_start();
 require_once "./UserControllerClass.php";
 require_once "./FileControllerClass.php";
 require_once "./RestaurantInfoControllerClass.php";
+require_once "./MenuControllerClass.php";
+//require_once "./OrderControllerClass.php";
+//require_once "./TableControllerClass.php";
 require_once "../model/Users/UserClass.php";
 
 
@@ -25,6 +28,10 @@ if (isset($_REQUEST['controllerType'])) {
         case 2: 
             $restController = new RestaurantInfoController($_REQUEST['action'], $_REQUEST['JSONData']);
             $outPutData = $restController->doAction();
+            break;
+        case 3:
+            $menuController = new MenuControllerClass($_REQUEST['action'], $_REQUEST['JSONData']);
+            $outPutData = $menuController->doAction();
             break;
         case 9:
             $fileController = new FileControllerClass($_REQUEST['action'], $_REQUEST['JSONData']);

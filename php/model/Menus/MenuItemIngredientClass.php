@@ -9,7 +9,7 @@
 /**
  * Description of OrderMenuItemClass
  *
- * @author victor
+ * @author Rifat
  */
 require_once '../EntityInterface.php';
 
@@ -24,42 +24,40 @@ class MenuItemIngredientClass implements EntityInterface{
         $this->itemId = $itemId;
         $this->ingredientId = $ingredientId;
         $this->quantity = $quantity;
-
     }
-
-    public function getMenuItemIngredientId() {
+    
+    function getMenuItemIngredientId() {
         return $this->menuItemIngredientId;
     }
 
-    public function getItemId() {
+    function getItemId() {
         return $this->itemId;
     }
 
-    public function getIngredientId() {
+    function getIngredientId() {
         return $this->ingredientId;
     }
 
-    public function getQuantity() {
+    function getQuantity() {
         return $this->quantity;
     }
 
-    public function setMenuItemIngredientId($menuItemIngredientId) {
+    function setMenuItemIngredientId($menuItemIngredientId) {
         $this->menuItemIngredientId = $menuItemIngredientId;
     }
 
-    public function setItemId($itemId) {
+    function setItemId($itemId) {
         $this->itemId = $itemId;
     }
 
-    public function setIngredientId($ingredientId) {
+    function setIngredientId($ingredientId) {
         $this->ingredientId = $ingredientId;
     }
 
-    public function setQuantity($quantity) {
+    function setQuantity($quantity) {
         $this->quantity = $quantity;
     }
 
-        
     function getAll(){
         $data = [];
         

@@ -1,6 +1,5 @@
 <?php
 require_once "ControllerInterface.php";
-require_once "../model/Users/UserClass.php";
 require_once "../model/persist/RestaurantInfoADO.php";
 
 class RestaurantInfoController implements ControllerInterface {

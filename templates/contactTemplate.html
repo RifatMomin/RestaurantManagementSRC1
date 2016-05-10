@@ -1,1 +1,19 @@
-<h2>Contact...</h2>
+<div class="container" style="margin-top:10px;">
+    <div>
+        <div >
+            <p class="text-justify">{{restaurantInfo.description}}</p>  
+        </div>  
+        <div>
+            <strong>Contact us: </strong>
+            <a href="{{restaurantInfo.email}}">{{restaurantInfo.email}}</a>
+            <span>{{restaurantInfo.phone1}}</span>
+            <span>{{restaurantInfo.phone2}}</span>
+        </div> 
+        <div>
+            <span>Where we are:</span>
+            <span>{{restaurantInfo.address}}</span>
+            <span>{{restaurantInfo.city}}</span>
+            <span>{{restaurantInfo.zipCode}}</span>
+        </div>
+    </div>
+</div>

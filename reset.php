@@ -69,7 +69,7 @@ if (isset($_SESSION['connectedUser'])) {
                             <input type="text" name="password1" ng-model="passwd1" class="form-control" id="usr1">
                             <label for="passwd1">Repeat the password:</label>
                             <input type="text" name="password3" ng-model="passwd2" class="form-control" id="usr3">
-<!--                            <span ng-show="samePasswords">The passwords are equal</span>
+<!--                        <span ng-show="samePasswords">The passwords are equal</span>
                             <span ng-show="!samePasswords">The passwords are not equal</span>-->
                         </div>
                         <div class="modal-footer">

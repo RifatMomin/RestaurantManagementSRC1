@@ -5,23 +5,23 @@
  * @version 1
  */
 
-OrderMenuItemObj = function () {
-    this.orderItemId = null;
+OrderMenuObj = function () {
+    this.orderIdMenuId = null;
     this.orderId = null;
     this.mealId = null;
 
-    this.construct = function (orderItemId, orderId, mealId) {
-        this.setOrderItemId(orderItemId);
+    this.construct = function (orderIdMenuId, orderId, mealId) {
+        this.setOrderItemId(orderIdMenuId);
         this.setOrderId(orderId);
         this.setMealId(mealId);
     };
 
 
-    this.setOrderItemId = function (orderItemId) {
-        this.orderItemId = orderItemId;
+    this.setOrderItemId = function (orderIdMenuId) {
+        this.orderIdMenuId = orderIdMenuId;
     }
     this.getOrderItemId = function () {
-        return this.orderItemId;
+        return this.orderIdMenuId;
     }
     this.setOrderId = function (orderId) {
         this.orderId = orderId;

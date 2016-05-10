@@ -7,7 +7,7 @@
  */
 
 /**
- * Description of MealADO
+ * Description of MenuADO
  *
  * @author victor
  */
@@ -19,8 +19,8 @@ class MenuADO implements EntityInterfaceADO {
 
     //Queries
     const SELECT_ALL = 'SELECT * FROM menu';
-    const INSERT = "INSERT INTO `ProjectDAW2_Restaurant`.`meals` (`course_id`, `meal_name`, `meal_price`, `meal_image`) VALUES (:course_id,:meal_name,:meal_price,:meal_image)";
-    const SELECT_ID = "SELECT * FROM meals WHERE meal_id = :meal_id";
+    const INSERT = "INSERT INTO ProjectDAW2_Restaurant. menu (menu_id, first, second, dessert, image, price ) VALUES (?, ?, ?, ?, ?, ?)";
+    const SELECT_ID = "SELECT * FROM menu WHERE menu_id = ?";
 
     private $dbSource;
     private $meal;
@@ -59,6 +59,14 @@ class MenuADO implements EntityInterfaceADO {
                 
             
         return $result->fetchAll();
+    }
+    
+    public function getInfo(){
+        $result = $this->helperAdo->findAll();
+        
+        $this->data[]=true;
+        $this->data[]=$result->fetchAll();
+        
     }
 
 }

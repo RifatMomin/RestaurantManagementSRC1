@@ -5,27 +5,26 @@
  *
  * @author victor
  */
-
 require_once "EntityInterface.php";
 
-class OrderClass implements EntityInterface{
+class OrderClass implements EntityInterface {
 
     private $orderId;
-    private $status;
-    private $table;
-    private $chef;
-    private $waiter;
-    private $client;
+    private $statusId;
+    private $tableId;
+    private $chefId;
+    private $waiterId;
+    private $clientId;
     private $date;
     private $totalPrice;
 
-    function __construct($orderId, $status, $table, $chef, $waiter, $client, $date, $totalPrice) {
+    function __construct($orderId, $statusId, $tableId, $chefId, $waiterId, $clientId, $date, $totalPrice) {
         $this->orderId = $orderId;
-        $this->status = $status;
-        $this->table = $table;
-        $this->chef = $chef;
-        $this->waiter = $waiter;
-        $this->client = $client;
+        $this->statusId = $statusId;
+        $this->tableId = $tableId;
+        $this->chefId = $chefId;
+        $this->waiterId = $waiterId;
+        $this->clientId = $clientId;
         $this->date = $date;
         $this->totalPrice = $totalPrice;
     }
@@ -34,24 +33,24 @@ class OrderClass implements EntityInterface{
         return $this->orderId;
     }
 
-    function getStatus() {
-        return $this->status;
+    function getStatusId() {
+        return $this->statusId;
     }
 
-    function getTable() {
-        return $this->table;
+    function getTableId() {
+        return $this->tableId;
     }
 
-    function getChef() {
-        return $this->chef;
+    function getChefId() {
+        return $this->chefId;
     }
 
-    function getWaiter() {
-        return $this->waiter;
+    function getWaiterId() {
+        return $this->waiterId;
     }
 
-    function getClient() {
-        return $this->client;
+    function getClientId() {
+        return $this->clientId;
     }
 
     function getDate() {
@@ -66,24 +65,24 @@ class OrderClass implements EntityInterface{
         $this->orderId = $orderId;
     }
 
-    function setStatus($status) {
-        $this->status = $status;
+    function setStatusId($statusId) {
+        $this->statusId = $statusId;
     }
 
-    function setTable($table) {
-        $this->table = $table;
+    function setTableId($tableId) {
+        $this->tableId = $tableId;
     }
 
-    function setChef($chef) {
-        $this->chef = $chef;
+    function setChefId($chefId) {
+        $this->chefId = $chefId;
     }
 
-    function setWaiter($waiter) {
-        $this->waiter = $waiter;
+    function setWaiterId($waiterId) {
+        $this->waiterId = $waiterId;
     }
 
-    function setClient($client) {
-        $this->client = $client;
+    function setClientId($clientId) {
+        $this->clientId = $clientId;
     }
 
     function setDate($date) {
@@ -98,11 +97,11 @@ class OrderClass implements EntityInterface{
         $data = [];
 
         $data['orderId'] = $this->getOrderId();
-        $data['status'] = $this->getStatus();
-        $data['table'] = $this->getTable();
-        $data['chef'] = $this->getChef();
-        $data['waiter'] = $this->getWaiter();
-        $data['client'] = $this->getClient();
+        $data['statusId'] = $this->getStatusId();
+        $data['tableId'] = $this->getTableId();
+        $data['chefId'] = $this->getChefId();
+        $data['waiterId'] = $this->getWaiterId();
+        $data['clientId'] = $this->getClientId();
         $data['date'] = $this->getDate();
         $data['totalPrice'] = $this->getTotalPrice();
 

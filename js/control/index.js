@@ -25,6 +25,8 @@
         $scope.availableUser = true;
         $scope.availableEmail = true;
         $scope.equalPasswords = false;
+        $scope.menuItem = new MenuItemObj();
+        $scope.menuItemsArray = [1];
 
         //Initialize registerUser
         //$scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
@@ -369,6 +371,35 @@
             });
 
         };
+        
+        /**
+         * @description Returns all menuItem data from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/10
+         */
+        $scope.getMenuItems = function () {
+            $scope.menuItem = new MenuItemObj();
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11100, JSONData: JSON.stringify({none: ""})});
+            
+            promise.then(function (data) {
+                
+                if (data[0] === true) {
+
+                    if(angular.isArray(data[1])){
+                        $scope.menuItem.construct(data[1][0].itemId,data[1][0].courseId,data[1][0].name,data[1][0].image,data[1][0].price);
+                        console.log($scope.menuItem);
+                        $scope.menuItemsArray.push($scope.menuItem);
+                        
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+        
     });
 
 
