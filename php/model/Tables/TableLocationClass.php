@@ -11,7 +11,7 @@
  *
  * @author Alumne
  */
-class TableStatusClass{
+class TableLocationClass{
     
     //attributes
     private $id;

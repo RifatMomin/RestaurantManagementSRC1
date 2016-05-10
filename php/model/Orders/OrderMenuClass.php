@@ -13,45 +13,45 @@
  */
 require_once '../EntityInterface.php';
 
-class MenuMenuItemClass implements EntityInterface{
-    private $menuMenuItemId;
-    private $itemId;
+class OrderMenuClass implements EntityInterface{
+    private $orderIdMenuId;
+    private $orderId;
     private $menuId;
     
-    function __construct($menuMenuItemId, $itemId, $menuId) {
-        $this->menuMenuItemId = $menuMenuItemId;
-        $this->itemId = $itemId;
+    function __construct($orderIdMenuId, $orderId, $menuId) {
+        $this->orderIdMenuId = $orderIdMenuId;
+        $this->orderId = $orderId;
         $this->menuId = $menuId;
     }
 
-    public function getMenuMenuItemId() {
-        return $this->menuMenuItemId;
+    function getOrderIdMenuId() {
+        return $this->orderIdMenuId;
     }
 
-    public function getItemId() {
-        return $this->itemId;
+    function getOrderId() {
+        return $this->orderId;
     }
 
-    public function getMenuId() {
+    function getMenuId() {
         return $this->menuId;
     }
 
-    public function setMenuMenuItemId($menuMenuItemId) {
-        $this->menuMenuItemId = $menuMenuItemId;
+    function setOrderIdMenuId($orderIdMenuId) {
+        $this->orderIdMenuId = $orderIdMenuId;
     }
 
-    public function setItemId($itemId) {
-        $this->itemId = $itemId;
+    function setOrderId($orderId) {
+        $this->orderId = $orderId;
     }
 
-    public function setMenuId($menuId) {
+    function setMenuId($menuId) {
         $this->menuId = $menuId;
     }
 
     function getAll(){
         $data = [];
         
-        $data['$menuMenuItemId'] = $this->getMenuMenuItemId();
+        $data['orderIdMenuId'] = $this->getOrderIdMenuId();
         $data['orderId'] = $this->getOrderId();
         $data['menuId'] = $this->getMenuId();
         

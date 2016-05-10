@@ -43,12 +43,14 @@ and open the template in the editor.
         <!--Model-->
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
         <script src="js/model/RestaurantObj.js" type="text/javascript"></script>
+        <script src="js/model/Menus/MenuItemObj.js" type="text/javascript"></script>
+        
         <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/aes.js"</script>
         <!-- Index Control-->
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/index.js" type="text/javascript"></script>
     </head>
-    <body ng-controller="mainAppController as mainCtrl" ng-init="getRestaurantInfo();loadProvinces()">
+    <body ng-controller="mainAppController as mainCtrl" ng-init="getRestaurantInfo();getMenuItems();loadProvinces()">
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -78,7 +80,7 @@ and open the template in the editor.
 
         <div class="container">
             <menus-template></menus-template>
-            <contact-template></contact-template>
+<!--            <contact-template></contact-template>-->
         </div>   
 
         <div ng-show="userAction = 1" class="container">
@@ -94,7 +96,7 @@ and open the template in the editor.
 
 
 
-    <footer class="footer">
+<!--    <footer class="footer">
         <div class="container" style="margin-top:10px;">
             <div class="row">
                 <div class="col-lg-4 col-xs-12 contact-col">
@@ -114,6 +116,6 @@ and open the template in the editor.
                 </div>
             </div>
         </div>
-    </footer>
+    </footer>-->
 </body>
 </html>

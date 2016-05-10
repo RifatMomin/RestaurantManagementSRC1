@@ -9,52 +9,52 @@
 /**
  * Description of OrderMenuItemClass
  *
- * @author victor
+ * @author Rifat
  */
 require_once '../EntityInterface.php';
 
-class OrderMenuClass implements EntityInterface{
-    private $orderItemId;
-    private $orderId;
+class MenuMenuItemClass implements EntityInterface{
+    private $menuMenuItemId;
     private $menuId;
+    private $itemId;
     
-    function __construct($orderItemId, $orderId, $menuId) {
-        $this->orderItemId = $orderItemId;
-        $this->orderId = $orderId;
+    function __construct($menuMenuItemId, $menuId, $itemId) {
+        $this->menuMenuItemId = $menuMenuItemId;
         $this->menuId = $menuId;
+        $this->itemId = $itemId;
     }
-
-    function getOrderItemId() {
-        return $this->orderItemId;
-    }
-
-    function getOrderId() {
-        return $this->orderId;
+    
+    function getMenuMenuItemId() {
+        return $this->menuMenuItemId;
     }
 
     function getMenuId() {
         return $this->menuId;
     }
 
-    function setOrderItemId($orderItemId) {
-        $this->orderItemId = $orderItemId;
+    function getItemId() {
+        return $this->itemId;
     }
 
-    function setOrderId($orderId) {
-        $this->orderId = $orderId;
+    function setMenuMenuItemId($menuMenuItemId) {
+        $this->menuMenuItemId = $menuMenuItemId;
     }
 
     function setMenuId($menuId) {
         $this->menuId = $menuId;
     }
 
+    function setItemId($itemId) {
+        $this->itemId = $itemId;
+    }
+        
     function getAll(){
         $data = [];
         
-        $data['orderItemId'] = $this->getOrderItemId();
-        $data['orderId'] = $this->getOrderId();
+        $data['menuMenuItemId'] = $this->getMenuMenuItemId();
         $data['menuId'] = $this->getMenuId();
-        
+        $data['itemId'] = $this->getItemId();
+
         return $data;
     }
 }

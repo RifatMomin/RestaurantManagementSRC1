@@ -1,9 +1,9 @@
 <?php
 require_once "ControllerInterface.php";
 require_once "../model/Users/UserClass.php";
-require_once "../model/persist/RestaurantInfoADO.php";
+require_once "../model/persist/MenuADO.php";
 
-class RestaurantInfoController implements ControllerInterface {
+class MenuController implements ControllerInterface {
 
     private $helperAdo;
     private $action;
@@ -36,7 +36,7 @@ class RestaurantInfoController implements ControllerInterface {
     public function doAction() {
         switch ($this->getAction()) {
             case 1:
-                $this->getInfo();
+                $this->getMenu();
                 break;
             default:
                 $errors = array();
