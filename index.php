@@ -81,7 +81,7 @@ and open the template in the editor.
 
         <div class="container">
             <menus-template></menus-template>
-<!--            <contact-template></contact-template>-->
+            <contact-template></contact-template>
         </div>   
 
         <div ng-show="userAction = 1" class="container">

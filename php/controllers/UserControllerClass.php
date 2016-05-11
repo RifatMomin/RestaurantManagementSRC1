@@ -292,9 +292,9 @@ class UserController implements ControllerInterface {
 
             //compares that the url is actually valid
             if (strcmp($url, $encrypt) == 0) {
-                $userList = $helperAdo->resetPassword($userObj, $newPasword);
-                var_dump($userList);
-                if ($userList != null) {
+                $userObjReset = $helperAdo->resetPassword($userList, $newPasword);
+                
+                if ($userObjReset != null) {
                     $this->data [] = true;
                     $this->errors [] = "Password updated";
                     $this->data [] = $this->errors;

@@ -115,7 +115,6 @@
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10010, JSONData: JSON.stringify({user: $scope.user, pass: password})});
 
             promise.then(function (data) {
-                console.log(data);
                 $scope.user.setPassword("");
                 if (data[0] === true) {
                     window.open("main.php", "_self");
@@ -194,7 +193,7 @@
 
                             promise.then(function (data) {
                                 console.log(data);
-                                if (data[0] === true) {                                    
+                                if (data[0] === true) {
                                     var id = data[1].id;
                                     $scope.insertClient(id);
                                     $scope.reloadRegister();
@@ -238,10 +237,10 @@
             console.log(id);
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10230, JSONData: JSON.stringify({id: id})});
 
-            promise.then(function(data){
-                if(data[0]===true){
+            promise.then(function (data) {
+                if (data[0] === true) {
                     $("#modalRegisteredUser").modal("show");
-                }else{
+                } else {
                     errorGest(data);
                 }
             });
@@ -369,7 +368,7 @@
             });
 
         };
-        
+
         /**
          * @description Returns all menuItem data from db
          * @version 1
@@ -380,24 +379,29 @@
             $scope.menuItem = new MenuItemObj();
 
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11100, JSONData: JSON.stringify({none: ""})});
-            
-            promise.then(function (data) {
-                
-                if (data[0] === true) {
 
-                    if(angular.isArray(data[1])){
-                        $scope.menuItem.construct(data[1][0].itemId,data[1][0].courseId,data[1][0].name,data[1][0].image,data[1][0].price);
-                        console.log($scope.menuItem);
-                        $scope.menuItemsArray.push($scope.menuItem);
+            promise.then(function (data) {
+                console.log(data);
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
                         
+                        var i = 0;
+                        for (i = 0; i <data.length; i++) {
+                            $scope.menuItem= new MenuItemObj();
+                            $scope.menuItem.construct(data[1][i].itemId, data[1][i].courseId, data[1][i].name, data[1][i].image, data[1][i].price);
+                            $scope.menuItemsArray.push($scope.menuItem);
+                            $scope.menuItem= new MenuItemObj();
+                            console.log($scope.menuItem);
+                        }
                     }
-                } else {
+                }
+                else {
                     errorGest(data);
                 }
             });
 
         };
-        
+
     });
 
 
@@ -467,8 +471,8 @@
             controllerAs: 'registerTemplate'
         };
     });
-    
-    
+
+
     mainApp.factory('accessService', function ($http, $log, $q) {
         return {
             getData: function (url, async, method, params, data) {

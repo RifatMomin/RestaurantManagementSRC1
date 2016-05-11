@@ -1,19 +1,10 @@
-<div class="container" style="margin-top:10px;">
-    <div>
-        <div >
-            <p class="text-justify">{{restaurantInfo.description}}</p>  
-        </div>  
-        <div>
-            <strong>Contact us: </strong>
-            <a href="{{restaurantInfo.email}}">{{restaurantInfo.email}}</a>
-            <span>{{restaurantInfo.phone1}}</span>
-            <span>{{restaurantInfo.phone2}}</span>
-        </div> 
-        <div>
-            <span>Where we are:</span>
-            <span>{{restaurantInfo.address}}</span>
-            <span>{{restaurantInfo.city}}</span>
-            <span>{{restaurantInfo.zipCode}}</span>
-        </div>
+<div class="container-fluid" style="margin-top:10px;">
+    <div class="row">
+        <div class="col-md-3"><span class="glyphicon glyphicon-envelope"> {{restaurantInfo.email}}</span></div>
+        <div class="col-xs-1"><span class="glyphicon glyphicon-phone">{{restaurantInfo.phone1}}</span></div>
+        <div class="col-xs-2"><span class="glyphicon glyphicon-phone-alt">{{restaurantInfo.phone2}}</span></div>
+        <div class="col-xs-2"><span>{{restaurantInfo.address}}</span></div>
+        <div class="col-xs-2"><span>{{restaurantInfo.city}}</span></div>
+        <div class="col-xs-2"><span>{{restaurantInfo.zipCode}}</span></div>
     </div>
 </div>

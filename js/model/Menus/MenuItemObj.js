@@ -14,9 +14,10 @@ MenuItemObj = function () {
     this.price = null;
 
     this.construct = function(itemId, courseId, name, image, price){
-        this.setMealId(mealId);
-        this.setCourse(course);
+        this.setItemId(itemId);
+        this.setCourseId(courseId);
         this.setName(name);
+        this.setImage(image)
         this.setPrice(price);
     };
 

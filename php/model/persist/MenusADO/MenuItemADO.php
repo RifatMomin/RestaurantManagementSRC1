@@ -23,7 +23,7 @@ class MenuItemADO implements EntityInterfaceADO {
     const INSERT = "INSERT INTO ProjectDAW2_Restaurant.menu_item (item_id, course_id, name, image) VALUES (?, ?, ?, ?)";
     const SELECT_ID = "SELECT * FROM menu_item WHERE item_id = ?";
     const DELETE = "DELETE FROM menu_item WHERE item_id = ?";
-    const UPDATE ="UPDATE menu_item SET course_id = ?, name = ?, image = ? WHERE name = ?";
+    const UPDATE = "UPDATE menu_item SET course_id = ?, name = ?, image = ? WHERE name = ?";
 
     private $dbSource;
     private $menuItem;
@@ -69,9 +69,7 @@ class MenuItemADO implements EntityInterfaceADO {
     }
 
     public function findAll() {
-        $result = $this->dbSource->execution(self::SELECT_ALL, $vector = []);
-
-        return $result->fetchAll();
+        return $this->dbSource->execution(self::SELECT_ALL, $vector = []);
     }
 
 }

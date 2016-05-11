@@ -43,14 +43,15 @@
 
                 promise.then(function (data) {
                     console.log(data);
-                    
                     if (data[0] === true) {
+                        
                         window.open("index.php", "_self");
                     } else {
+                        
                         if (angular.isArray(data[1])) {
                             showErrors(data[1]);
                         } else {
-                            showNormalError("An error occurred in the server, please come back later!");
+                            showNormalError("An eeerror occurred in the server, please come back later!");
                         }
                     }
                 });
