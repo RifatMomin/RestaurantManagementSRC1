@@ -94,7 +94,7 @@
                         $scope.zipCode = dataCP['data'][0].CPOS;
                     });
                 } catch (e) {
-                    $scope.zipCode = 00000;
+                    $scope.zipCode = "00000";
                 }
             });
         };
@@ -108,18 +108,16 @@
          */
         $scope.connection = function () {
             //copy 
-            $scope.user.cryptPassword();
+            var password = $scope.user.cryptPassword();
             $scope.user = angular.copy($scope.user);
 
             //Server conenction to verify user's data
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10010, JSONData: JSON.stringify($scope.user)});
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10010, JSONData: JSON.stringify({user: $scope.user, pass: password})});
 
             promise.then(function (data) {
+                console.log(data);
                 $scope.user.setPassword("");
                 if (data[0] === true) {
-                    //Create local session
-                    createLocalSession(data[1][0]);
-
                     window.open("main.php", "_self");
                 } else {
                     errorGest(data);
@@ -256,10 +254,10 @@
          * @date 2016/05/06
          */
         $scope.reloadRegister = function () {
-            $("#registerUserImage").val("");
+            /*$("#registerUserImage").val("");
             $scope.registerUser = new UserObj();
             $scope.repeatPassword = "";
-            $scope.loginForm.$setPristine();
+            $scope.loginForm.$setPristine();*/
         };
 
         /**

@@ -16,7 +16,7 @@ if (isset($_SESSION['connectedUser'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!--Bootstrap CSS-->
-        <link href="css/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap-3.3.6-dist-pers/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
         <!--AngularJS and jQUeryJS-->
@@ -25,7 +25,7 @@ if (isset($_SESSION['connectedUser'])) {
         <script src="js/frameworks/angular/angular.min.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/dirPagination.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
-        <script src="css/bootstrap-3.3.6-dist/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
         <!--Library to MD5 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
         <script src="js/frameworks/cryptoJS/components/md5.js" type="text/javascript"></script>

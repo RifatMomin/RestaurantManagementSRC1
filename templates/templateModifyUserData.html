@@ -1,4 +1,4 @@
-<!-- Modal -->
+<!-- Modal Modify Data-->
 <div class="modal fade" id="myDataModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -12,19 +12,21 @@
                 <div class="row">
                     <div class="col-md-3 col-xs-12" style="margin-right:75px;">
                         <div class="form-group" id="containerImage">
-                            
+                            <!--Container to put the preview of the Image-->
                         </div>
-                        
+
                         <img class="img-responsive" id="userImage" width="auto" height="150" src="{{userLoggedIn.image}}" alt="{{userLoggedIn.username}}"/>
-                        
-                        <button class="btn btn-sm btn-info" id="buttonShowImage" ng-click="showEditImage()"><span class="glyphicon glyphicon-edit"></span>Edit Profile Image</button>
+
+
+                        <button style="margin-top:10px;" class="btn btn-sm btn-info" id="buttonShowImage" ng-click="showEditImage()"><span class="glyphicon glyphicon-edit"></span>Edit Profile Image</button>
                         <div id="editImage" hidden>                            
                             <input type="file"  accept="image/*" ng-model="editUserImage" preview-container="containerImage" id="editUserImage" name="editUserImage" media-preview required/>
                         </div>
+                        <button class="btn btn-sm btn-danger" id="buttonCancelImage" ng-click="resetImage()"><span class="glyphicon glyphicon-remove"></span>Cancel</button>
                     </div>
 
-                    <div class="col-md-6 col-xs-12">
-                        <form name="modifyDataForm" novalidate class="row">   
+                    <div class="col-md-6 col-xs-12" style="margin-top:15px;">
+                        <form name="modifyDataForm">   
                             <!--<div class="form-group" ng-class="{'has-error': modifyDataForm.username.$invalid || !availableUser , 'has-success':modifyDataForm.username.$valid}">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-user"></span></span>
@@ -82,35 +84,75 @@
                                 </div>  
                             </div>
 
-                                <div class="form-group" ng-class="{'has-error': modifyDataForm.city.$invalid, 'has-success': modifyDataForm.city.$valid}"> 
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
-                                        <input type="text" class="form-control" placeholder="City" ng-model="userLoggedIn.city" name="city" required/>
-                                        <span ng-show="modifyDataForm.city.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                        <span ng-show="!modifyDataForm.city.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                                    </div>   
-                                </div>
-                            
+                            <div class="form-group" ng-class="{'has-error': modifyDataForm.city.$invalid, 'has-success': modifyDataForm.city.$valid}"> 
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
+                                    <input type="text" class="form-control" placeholder="City" ng-model="userLoggedIn.city" name="city" required/>
+                                    <span ng-show="modifyDataForm.city.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                    <span ng-show="!modifyDataForm.city.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                </div>   
+                            </div>
+
                             <div class="form-group" ng-class="{'has-error': modifyDataForm.zipCode.$invalid, 'has-success': modifyDataForm.zipCode.$valid}"> 
-                                    <div class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
-                                        <input type="text" class="form-control" placeholder="Zip Code" ng-model="userLoggedIn.zip_code" name="zipCode" ng-pattern="/((0[1-9]|5[0-2])|[1-4][0-9])[0-9]{3}/" required/>
-                                        <span ng-show="modifyDataForm.zipCode.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                        <span ng-show="!modifyDataForm.zipCode.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                                    </div>   
-                                </div>
-                            <a href="#" class="btn btn-primary">Change my password</a>
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
+                                    <input type="text" class="form-control" placeholder="Zip Code" ng-model="userLoggedIn.zip_code" name="zipCode" ng-pattern="/((0[1-9]|5[0-2])|[1-4][0-9])[0-9]{3}/" required/>
+                                    <span ng-show="modifyDataForm.zipCode.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                    <span ng-show="!modifyDataForm.zipCode.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                </div>   
+                            </div>
+                            <a href="#" class="btn btn-primary" ng-click="showChangePass()">Change my password</a>
                         </form>
                     </div>
-                    
-                    
+
+
                 </div>
             </div>
+
             <div class="modal-footer"> 
                 <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>Discard</button>
                 <button type="button" class="btn btn-primary" ng-click="updateInfo()" ng-disabled="modifyDataForm.$invalid || !availableUser || !availableEmail"><span class="glyphicon glyphicon-save"></span> Update</button>
             </div>
-            
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center" id="modalSignUp">Retrieve your Password</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <form name="changePassword" class="col-xs-12" novalidate>
+                        <div class="form-group" ng-class="{'has-error': invalidActualPassword}">
+                            <label>Actual Password</label>
+                            <input class="form-control" type="password" name="actualPass" ng-model="userLoggedIn.password" required/>
+                        </div>
+                        
+                        <div class="form-group" ng-class="{'has-error': passwordOne != passwordTwo}">
+                            <label>New Password</label>
+                            <input class="form-control" ng-minlength="6" type="password" name="newPassword" ng-model="passwordOne" required/>
+                            <p class="text-danger" ng-show="registerForm.newPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
+                        </div>
+                        
+                        <div class="form-group" ng-class="{'has-error': !registerForm.newPassword.$error.minlength && (passwordOne != passwordTwo)}">
+                            <label>Repeat Password</label>
+                            <input class="form-control" type="password" name="repeatNewPassword" ng-model="passwordTwo" required/>
+                            <p class="text-danger" ng-show="!registerForm.newPassword.$error.minlength && (passwordOne != passwordTwo)"><strong>Error</strong> The passwords doesn't match!</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button class="btn btn-info" ng-click="changePassword()">Change</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

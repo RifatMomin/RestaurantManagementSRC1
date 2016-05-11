@@ -23,7 +23,7 @@ and open the template in the editor.
         <meta http-equiv="pragma" content="no-cache" >
 
         <!--Bootstrap CSS-->
-        <link href="css/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap-3.3.6-dist-pers/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
@@ -33,7 +33,7 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular.min.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/dirPagination.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
-        <script src="css/bootstrap-3.3.6-dist/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="js/frameworks/geoapi.es-js-master/GeoAPI.js" type="text/javascript"></script>
 
         <!--Library to MD5 CRYOPT-->
@@ -67,8 +67,9 @@ and open the template in the editor.
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li><a href="#">Menus</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="">Menus</a></li>
+                        <li><a href="#">Reviews</a></li>
+                        <li><a href="#">Contact Us</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#" data-toggle="modal" data-target="#signUpModal" ng-click="reloadRegister()"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>

@@ -5,8 +5,6 @@ require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
 require_once '../lib/swiftmailer-5.x/swift_required.php';
 
-
-
 class UserController implements ControllerInterface {
 
     private $helperAdo;
@@ -84,48 +82,50 @@ class UserController implements ControllerInterface {
         return $this->data;
     }
 
-    function getUserLoggedIn(){
-        if(isset($_SESSION['connectedUser'])){
+    function getUserLoggedIn() {
+        if (isset($_SESSION['connectedUser'])) {
             $userId = $_SESSION['connectedUser'];
-            
+
             $result = $this->helperAdo->findById($userId);
-            
-            $user = $result->fetch(PDO::FETCH_ASSOC);
-            
-            if(count($user)>0){
+
+            $user = $result->fetch(PDO::FETCH_BOTH);
+
+            if (count($user) > 0) {
                 $userObj = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
-                $this->data[]=true;
-                $this->data[] = $userObj;
+                $this->data[] = true;
+                $this->data[] = $userObj->getAll();
+            }else{
+                $this->data[] = false;
+                $this->errors[] = "There has been an error while updating your info.";
+                $this->data[] = $this->errors;
             }
-            
-            
-        }else{
-            
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "There has been an error while updating your info.";
+            $this->data[] = $this->errors;
         }
     }
-    
-    function updateUser(){
+
+    function updateUser() {
         $userObj = json_decode(stripslashes($this->getJsonData()));
 
-        
         $user = new UserClass($userObj->userId, $userObj->username, $userObj->password, $userObj->name, $userObj->surname, $userObj->email, $userObj->phone, $userObj->address, $userObj->city, $userObj->zip_code, $userObj->image, "", "");
 
-        
         $result = $this->helperAdo->update($user);
-        
-        if($result->rowCount()==1){
-            $this->data[]=true;
-            $this->data[]=$user->getAll();
-        }else if($result->rowCount()==0){
-            $this->data[]=true;
-            $this->data[]=false;                       
-        }else{
-            $this->data[]=false;
-            $this->errors[]="There has been an error while updating your info.";
-            $this->data[]=$this->errors;
+
+        if ($result->rowCount() == 1) {
+            $this->data[] = true;
+            $this->data[] = $user->getAll();
+        } else if ($result->rowCount() == 0) {
+            $this->data[] = true;
+            $this->data[] = false;
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "There has been an error while updating your info.";
+            $this->data[] = $this->errors;
         }
     }
-    
+
     function checkNick() {
         $json = json_decode(stripslashes($this->getJsonData()));
 
@@ -160,7 +160,7 @@ class UserController implements ControllerInterface {
 
         $id = $this->helperAdo->create($user);
 
-        if ($id!= null && $id >0) {  
+        if ($id != null && $id > 0) {
             $user->setId($id);
             $this->data[] = true;
             $this->data[] = $user->getAll();
@@ -171,29 +171,30 @@ class UserController implements ControllerInterface {
         }
     }
 
-    function insertClient(){
+    function insertClient() {
         $userId = json_decode(stripslashes($this->getJsonData()));
-        
+
         $id = (int) $userId->id;
-        
+
         $result = $this->helperAdo->insertClient($id);
-        
-        
-        if($result->rowCount()>0){
-            $this->data[]=true;
-            $this->data[]=$userId;
-        }else{
+
+
+        if ($result->rowCount() > 0) {
+            $this->data[] = true;
+            $this->data[] = $userId;
+        } else {
             $this->data[] = false;
             $this->errors[] = "An error occurred while register in the app, come back later and try again.";
             $this->data[] = $this->errors;
         }
     }
-    
+
     function loginUser() {
-        $userObj = json_decode(stripslashes($this->getJsonData()));
-
-        $user = new UserClass(0, $userObj->username, $userObj->password);
-
+        $json = json_decode(stripslashes($this->getJsonData()));
+        
+        
+        $user = new UserClass(0, $json->user->username, $json->pass);
+        
         $userList = $this->helperAdo->findByNickAndPass($user);
 
         if (count($userList) == 0) {
@@ -204,14 +205,13 @@ class UserController implements ControllerInterface {
             $this->data [] = true;
             $usersArray = array();
 
-            foreach ($userList as $user) {        
-                    $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
-                    $usersArray[] = $userObject->getAll();
-                    $_SESSION['connectedUser'] = $userObject->getId();
-                    $_SESSION['role'] = $userObject->getRole();
-                    $this->data [] = $usersArray;
+            foreach ($userList as $user) {
+                $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
+                $usersArray[] = $userObject->getAll();
+                $_SESSION['connectedUser'] = $userObject->getId();
+                $_SESSION['role'] = $userObject->getRole();
+                $this->data [] = $usersArray;
             }
-            
         }
     }
 
@@ -280,16 +280,16 @@ class UserController implements ControllerInterface {
         $userObj = new UserClass("", "", "", "", "", $userObjPasswordArray[0]->email);
         $newPasword = $userObjPasswordArray[1];
         $url = $userObjPasswordArray[2];
-        
-        $email=$userObjPasswordArray[0]->email;
-                
+
+        $email = $userObjPasswordArray[0]->email;
+
         $userList = $helperAdo->findByEmail($userObj);
-       
+
         if ($userList != null) {
 
             //encrypt password to compare with url string
             $encrypt = md5($email);
-            
+
             //compares that the url is actually valid
             if (strcmp($url, $encrypt) == 0) {
                 $userList = $helperAdo->resetPassword($userObj, $newPasword);
@@ -324,7 +324,7 @@ class UserController implements ControllerInterface {
     private function checkUserType() {
         if (isset($_SESSION['connectedUser'])) {
             $userRole = $_SESSION['role'];
-            
+
             $this->data[] = true;
             $this->data[] = $userRole;
         } else {
@@ -335,5 +335,3 @@ class UserController implements ControllerInterface {
     }
 
 }
-
-

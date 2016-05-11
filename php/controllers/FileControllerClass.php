@@ -4,7 +4,6 @@ require_once "ControllerInterface.php";
 require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
 
-
 class FileControllerClass implements ControllerInterface {
 
     private $helperAdo;
@@ -16,6 +15,7 @@ class FileControllerClass implements ControllerInterface {
     function __construct($action, $jsonData) {
         $this->setAction($action);
         $this->setJsonData($jsonData);
+        $this->helperAdo = new UserADO();
     }
 
     public function getAction() {
@@ -54,18 +54,15 @@ class FileControllerClass implements ControllerInterface {
     }
 
     function updateFile() {
-        $actualImage = $_REQUEST['actualImage'];
-        
-        $arrayActualImage = explode("/",$actualImage);        
-        
-        $actualImage = $arrayActualImage[2];
-        $username = $_REQUEST['userName'];       
-        
-        
-        if ($actualImage != null && $username != null) {            
+        if (isset($_SESSION['connectedUser'])) {
+            $userId = $_SESSION['connectedUser'];
+
+            //Get the image of the user in the database
+            $username = $this->helperAdo->findById($userId)->fetch(PDO::FETCH_OBJ)->username;
+            
             foreach ($_FILES['images']['error'] as $key => $error) {
                 //Check if there's some errors
-                if ($error == UPLOAD_ERR_OK) {                    
+                if ($error == UPLOAD_ERR_OK) {
                     //Get the name of the image
                     $name = $_FILES['images']['name'][$key];
 
@@ -76,32 +73,20 @@ class FileControllerClass implements ControllerInterface {
                     $extension = end($fileNameParts);
 
                     //Set the new fileName
-                    $newFileName =  $username . "." . $extension;
+                    $newFileName = $username . "." . $extension;
 
-                    echo "Actual Image: " . $actualImage;
-                    echo "\nNew Image: " . $newFileName;
 
-                    if (strcmp($newFileName, $actualImage) != 0) {
-                        
-                    } else {
-                        
-                    }
                     //Move the file to the right place
-                    //move_uploaded_file($_FILES['images']['tmp_name'][$key],'../../images/users/' .  $newFileName);
-//                $i++;
-//
-//                $this->data[] = true;
-//                $this->data[] = $newFileName;
+                    move_uploaded_file($_FILES['images']['tmp_name'][$key],'../../images/users/' .  $newFileName);                    
+                    
+                    $this->data[] = true;
+                    $this->data[] = $newFileName;
                 } else {
                     $this->data[] = false;
                     $this->errors[] = "An error occurred while uploading the image, try again later.";
                     $this->data[] = $this->errors;
                 }
             }
-        } else {
-            $this->data[] = false;
-            $this->errors[] = "An error occurred while uploading the image, try again later.";
-            $this->data[] = $this->errors;
         }
     }
 

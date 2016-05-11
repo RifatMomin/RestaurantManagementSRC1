@@ -17,11 +17,9 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
     const SELECT_BY_ID = "SELECT * FROM users WHERE user_id = ?";
-    const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
     const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
-    const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=?,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
+    const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=? ,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
  
-    
     private $dataSource;
 
     public function __construct() {
@@ -85,8 +83,8 @@ class UserADO implements EntityInterfaceADO {
     }
 
     public function create($userObj) {
-
         $array = [
+            $userObj->getUsername(),
             $userObj->getPassword(),
             $userObj->getName(),
             $userObj->getSurname(),
@@ -98,7 +96,7 @@ class UserADO implements EntityInterfaceADO {
             $userObj->getImage()
         ];
                
-        return $this->dataSource->executionInsert(self::INSERT_USERS, $array);
+        return $this->dataSource->executionInsert(self::INSERT, $array);
     }
 
     public function insertClient($clientId){
@@ -113,9 +111,8 @@ class UserADO implements EntityInterfaceADO {
     }
 
     public function update($entity) {
-        //UPDATE `users` SET `username`=?,`user_name`=?,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?
+        //UPDATE `users` SET `user_name`=?,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?
         $array = [
-            $entity->getUsername(),
             $entity->getName(),
             $entity->getSurname(),
             $entity->getEmail(),

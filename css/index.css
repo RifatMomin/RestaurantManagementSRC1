@@ -37,6 +37,6 @@ body {
 }
 
 .media-preview{
-    width: auto;
-    height: 150px;
+    width: 150px;
+    height: auto;
 }

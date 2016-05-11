@@ -142,7 +142,7 @@ UserObj = function () {
     this.cryptPassword = function () {
         var pass = CryptoJS.SHA1(this.getPassword()).toString();
 
-        this.password = pass;
+        return pass;
     };
 
 
