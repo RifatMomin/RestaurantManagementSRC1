@@ -56,17 +56,9 @@ class MenuADO implements EntityInterfaceADO {
 
     public function findAll() {
         $result = $this->dbSource->execution(self::SELECT_ALL, $vector = []);
-                
-            
+
         return $result->fetchAll();
     }
     
-    public function getInfo(){
-        $result = $this->helperAdo->findAll();
-        
-        $this->data[]=true;
-        $this->data[]=$result->fetchAll();
-        
-    }
 
 }

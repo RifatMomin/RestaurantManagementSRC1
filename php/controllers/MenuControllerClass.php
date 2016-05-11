@@ -177,9 +177,23 @@ class MenuControllerClass implements ControllerInterface {
     }
     
     public function getMenuItem(){
-        $result = $this->menuItemADO->findAll();    
-        $this->data[]=true;
-        $this->data[]=$result->fetchAll();
+        $arrayMenuItems = [];
+        
+        $result = $this->menuItemADO->findAll();
+
+        if (count($result) > 0) {
+            $this->data [] = true;
+            
+            foreach ($result as $menuItem) {
+                $menuItemObj = new MenuItemClass($menuItem[0],$menuItem[1],$menuItem[2],$menuItem[3],$menuItem[4]);
+                $arrayMenuItems [] = $menuItemObj->getAll();                
+            }
+
+            $this->data[] = $arrayMenuItems;
+            //var_dump($arrayMenuItems);
+        } else {
+            $this->data[] = false;
+        }
     }
 
     public function updateMenuItem(){

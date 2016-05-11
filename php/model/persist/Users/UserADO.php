@@ -17,7 +17,7 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
     const SELECT_BY_ID = "SELECT * FROM users WHERE user_id = ?";
-    const INSERT = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,?,?,?,?,?,?,?,?,?,0)";
+    const INSERT_USERS = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,SHA1(?),?,?,?,?,?,?,?,?,0)";
     const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
     const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=?,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
  
@@ -73,20 +73,22 @@ class UserADO implements EntityInterfaceADO {
     public function resetPassword($user, $newpassword) {
         
         $array = [
-          
             $newpassword,
             $user->getPassword(),
             $user->getEmail(),
         ];
-       
-        return $this->dataSource->execution(self::UPDATE_PASSWD, $array);
-        
+               
+      
+        $obj= $this->dataSource->execution(self::UPDATE_PASSWD, $array);
+
+        return $obj;
         
     }
 
     public function create($userObj) {
 
         $array = [
+            $userObj->getUsername(),
             $userObj->getPassword(),
             $userObj->getName(),
             $userObj->getSurname(),

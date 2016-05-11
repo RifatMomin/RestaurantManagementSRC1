@@ -68,6 +68,7 @@ class DBConnect {
                 $this->link = null;
                 echo "Error executing query. $e";
                 error_log("Error executing query: " . $e);
+                var_dump($e);
             }
         } else {
             $this->stmt = null;
