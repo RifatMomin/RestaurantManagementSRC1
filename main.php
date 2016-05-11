@@ -70,7 +70,7 @@ and open the template in the editor.
                     <chef-nav ng-if='rolePage == 1'></chef-nav>
                     <waiter-nav ng-if='rolePage == 2'></waiter-nav>
                     <admin-nav ng-if='rolePage == 3'></admin-nav>
-
+                    
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#" ng-click="action = 5; openModalData()" data-toggle="popover"><span class="glyphicon glyphicon-user"></span>{{userLoggedIn.username}}</a></li>
                         <li><a href="#" ng-click="logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
@@ -88,6 +88,8 @@ and open the template in the editor.
 
     <error-message></error-message>
     <success-message></success-message>
+        <contact-template ng-if='rolePage==3 && adminRestaurantAction==0'></contact-template>
+    
     <footer-template></footer-template>
 </body>
 </html>

@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function () {
-    
+
 });
 
 
@@ -37,7 +37,7 @@ $(document).ready(function () {
             $("#buttonCancelImage").show();
         };
 
-        $scope.openModalData = function () {           
+        $scope.openModalData = function () {
             //Show, hide and empty all elements of the form
             $("#editImage").hide();
             $("#userImage").show();
@@ -46,7 +46,7 @@ $(document).ready(function () {
             $("#buttonShowImage").show();
             $("img.media-preview").hide();
             $("#buttonCancelImage").hide();
-            
+
             //Once is clean, open the modal
             $("#myDataModal").modal("show");
         };
@@ -64,7 +64,7 @@ $(document).ready(function () {
             promise.then(function (data) {
                 if (data[0] === true) {
                     $scope.rolePage = parseInt(data[1]);
-                    switch($scope.rolePage){
+                    switch ($scope.rolePage) {
                         case 1:
                             $scope.roleName = "(Chef)";
                             break;
@@ -112,16 +112,16 @@ $(document).ready(function () {
 
 
             promise.then(function (data) {
-                if (data[0] === true) {                    
+                if (data[0] === true) {
                     $scope.userLoggedIn.construct(data[1].id, data[1].username, '', data[1].name, data[1].surname, data[1].email, data[1].phone, data[1].address, data[1].city, data[1].zipCode, data[1].image, data[1].registerDate, '');
                     $scope.beforeUser = angular.copy($scope.userLoggedIn);
-                   
+
                     $('[data-toggle="popover"]').popover({
                         animation: true,
                         html: true,
                         trigger: 'hover',
                         placement: 'bottom',
-                        content: "<img width='auto' height='75' src='"+$scope.userLoggedIn.getImage()+"' alt='"+$scope.userLoggedIn.getUsername()+"'/>"
+                        content: "<img width='auto' height='75' src='" + $scope.userLoggedIn.getImage() + "' alt='" + $scope.userLoggedIn.getUsername() + "'/>"
                     });
                 } else {
                     errorGest(data);
@@ -249,7 +249,7 @@ $(document).ready(function () {
             }
         };
 
-        $scope.showChangePass = function(){
+        $scope.showChangePass = function () {
             $("#myDataModal").modal("hide");
             $("#changePassModal").modal("show");
         };
@@ -285,8 +285,44 @@ $(document).ready(function () {
             });
             
         };
+
+        $scope.insertRestaurantInfo = function () {
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 2, JSONData: JSON.stringify($scope.restaurantInfo)});
+
+            promise.then(function (data) {
+                console.log(data);
+                if (data[0] === true) {
+                    alert("Restaurant information inserted");
+                } else {
+
+                    if (angular.isArray(data[1])) {
+                        showErrors(data[1]);
+                    } else {
+                        showNormalError("An error occurred in the server, please come back later!");
+                    }
+                }
+            });
+        }
+
+        $scope.updateRestaurantInfo = function () {
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 3, JSONData: JSON.stringify($scope.restaurantInfo)});
+
+            promise.then(function (data) {
+                console.log(data);
+                if (data[0] === true) {
+                    alert("Restaurant information updated");
+                } else {
+
+                    if (angular.isArray(data[1])) {
+                        showErrors(data[1]);
+                    } else {
+                        showNormalError("An error occurred in the server, please come back later!");
+                    }
+                }
+            });
+        }
     });
-    
+
     //Navbar options templates
     restaurantApp.directive("customerNav", function () {
         return {
@@ -298,7 +334,7 @@ $(document).ready(function () {
             controllerAs: 'customerNav'
         };
     });
-    
+
     restaurantApp.directive("adminNav", function () {
         return {
             restrict: 'E',
@@ -309,7 +345,7 @@ $(document).ready(function () {
             controllerAs: 'adminNav'
         };
     });
-    
+
     restaurantApp.directive("chefNav", function () {
         return {
             restrict: 'E',
@@ -320,7 +356,7 @@ $(document).ready(function () {
             controllerAs: 'chefNav'
         };
     });
-    
+
     restaurantApp.directive("waiterNav", function () {
         return {
             restrict: 'E',
@@ -331,10 +367,10 @@ $(document).ready(function () {
             controllerAs: 'waiterNav'
         };
     });
-    
-    
-    
-    
+
+
+
+
 
     restaurantApp.directive("footerTemplate", function () {
         return {
