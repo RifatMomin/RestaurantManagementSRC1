@@ -37,6 +37,12 @@ class RestaurantInfoController implements ControllerInterface {
             case 1:
                 $this->getInfo();
                 break;
+            case 2:
+                $this->insertInfo();
+                break;
+            case 3:
+                $this->updateInfo();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -51,10 +57,21 @@ class RestaurantInfoController implements ControllerInterface {
 
     public function getInfo(){
         $result = $this->helperAdo->findAll();
-        
         $this->data[]=true;
         $this->data[]=$result->fetchAll();
         
+    }
+    
+    public function insertInfo(){
+        $result = $this->helperAdo->create($restaurant);
+        $this->data[]=true;
+        $this->data[]=$result->fetchAll();
+    }
+    
+    public function updateInfo(){
+        $result = $this->helperAdo->update($restaurant);
+        $this->data[]=true;
+        $this->data[]=$result->fetchAll();
     }
 
 }

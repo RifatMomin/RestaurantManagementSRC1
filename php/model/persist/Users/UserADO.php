@@ -98,7 +98,7 @@ class UserADO implements EntityInterfaceADO {
             $userObj->getImage()
         ];
                
-        return $this->dataSource->executionInsert(self::INSERT, $array);
+        return $this->dataSource->executionInsert(self::INSERT_USERS, $array);
     }
 
     public function insertClient($clientId){
