@@ -16,7 +16,7 @@ $(document).ready(function () {
 (function () {
     var restaurantApp = angular.module("restaurantApp", ['angular-media-preview']);
 
-    restaurantApp.controller("restaurantController", function ($scope, $http, accessService) {
+    restaurantApp.controller("restaurantController", function ($scope, $http, accessService, $log) {
         //Scope variables
         $scope.action = 5;
         $scope.userLoggedIn = new UserObj();
@@ -26,7 +26,7 @@ $(document).ready(function () {
         $scope.roleName = "";
         $scope.availableUser = true;
         $scope.availableEmail = true;
-
+        $scope.incorrectUserPassword = false;
 
 
         $scope.showEditImage = function (showImage) {
@@ -136,8 +136,8 @@ $(document).ready(function () {
             promise.then(function (data) {
                 if (data[0] === true) {
                     window.open("index.php", "_self");
-                } else {
-                    showNormalError("Can't log out at this moment, try again later. ");
+                } else {                    
+                    errorGest("Can't log out at this moment, try again later. ");
                 }
             });
         };
@@ -215,7 +215,11 @@ $(document).ready(function () {
 
                         promise.then(function (data) {
                             if (data[0] === true) {
-                                location.reload();
+                                successMessage("Info updated!");
+                                //Wait one second to reload the page
+                                setTimeout(function(){
+                                    location.reload();
+                                }, 1000);                                
                             } else {
                                 errorGest(data);
                             }
@@ -235,6 +239,7 @@ $(document).ready(function () {
                         if (data[1] === false) {
                             $("#myDataModal").modal("hide");
                         } else {
+                            successMessage("Info updated! ");
                             $("#myDataModal").modal("hide");
                         }
                     } else {
@@ -251,6 +256,33 @@ $(document).ready(function () {
 
 
         $scope.changePassword = function(){
+           //Get the passwords entered by the user
+            var actualPass = angular.copy($scope.userLoggedIn.cryptPassword());
+            var pass1 = CryptoJS.SHA1($scope.passwordOne).toString();
+            var pass2 = CryptoJS.SHA1($scope.passwordTwo).toString();
+            
+            //Validate the first Password
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10700, JSONData: JSON.stringify({actualPassword: actualPass})});            
+            
+            promise.then(function(data){
+                if(data[0]===true){
+                    $scope.incorrectUserPassword = false;
+                    //Change the password in the server
+                    var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10710, JSONData: JSON.stringify({pass1: pass1, pass2: pass2})});            
+                    
+                    promise.then(function(data){
+                        if(data[0]===true){
+                            successMessage(data[1]);
+                            $("#changePassModal").modal("hide");
+                        }else{
+                            errorGest("Can't change the password at this moment, try again later");
+                        }
+                    });
+                }else{
+                    //Show the error that the password is incorrect
+                    $scope.incorrectUserPassword = true;
+                }
+            });
             
         };
     });
@@ -326,6 +358,27 @@ $(document).ready(function () {
         };
     });
 
+    restaurantApp.directive("errorMessage", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/errorMessage.html",
+            controller: function () {
+
+            },
+            controllerAs: 'errorMessage'
+        };
+    });
+    
+    restaurantApp.directive("successMessage", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/successMessage.html",
+            controller: function () {
+
+            },
+            controllerAs: 'successMessage'
+        };
+    });
 
 
     restaurantApp.factory('accessService', function ($http, $log, $q) {

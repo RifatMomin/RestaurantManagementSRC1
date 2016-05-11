@@ -19,6 +19,8 @@ and open the template in the editor.
 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="cache-control" content="no-cache" >
+        <meta http-equiv="pragma" content="no-cache" >
 
         <!--Bootstrap CSS-->
         <link href="css/bootstrap-3.3.6-dist-pers/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
@@ -34,9 +36,10 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
         <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
 
-        <!--Libraries-->
+        <!--Library to SHA1 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
-        <script src="js/frameworks/cryptoJS/components/md5.js" type="text/javascript"></script>
+        <script src="js/frameworks/cryptoJS/components/sha1-min.js" type="text/javascript"></script>
+
         <script src="js/frameworks/geoapi.es-js-master/GeoAPI.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
@@ -80,10 +83,11 @@ and open the template in the editor.
         <div class="container">    
             <template-modify-user-data></template-modify-user-data>
         </div>
-        
-        {{userLoggedIn.surname}}
 
 
+
+    <error-message></error-message>
+    <success-message></success-message>
     <footer-template></footer-template>
 </body>
 </html>

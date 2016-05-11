@@ -91,23 +91,8 @@ function checkServerSession() {
         }});
 
 
-};
-
-
-function showErrors(errors){
-    var errorString = "";
-
-    $.each(errors, function (index, error) {
-        errorString += error + "\n";
-    });
-
-    alert(errorString);
-};
-
-
-function showNormalError(msg) {
-    alert(msg);
-};
+}
+;
 
 var getTodayDate = function () {
     var month;
@@ -130,11 +115,54 @@ var getTodayDate = function () {
     return currentDate;
 };
 
+function arrayToStringErrors(errors) {
+    var errorString = "";
+
+    if ($.isArray(errors)) {
+        $.each(errors, function (index, error) {
+            errorString += "<p><strong><span class='glyphicon glyphicon-minus'></span> " + error + "</strong></p>";
+        });
+
+        showErrors(errorString);
+    } else {
+        showErrors("<p><strong><span class='glyphicon glyphicon-minus'></span> General Error... </strong></p>");
+    }
+
+
+}
+;
 
 function errorGest(data) {
     if ($.isArray(data[1])) {
-        showErrors(data[1]);
+        arrayToStringErrors(data[1]);
     } else {
-        showNormalError("An error occurred in the server, please come back later!");
+        arrayToStringErrors(data);
     }
-};
+}
+;
+
+function showErrors(errorString) {
+    $("#errorContainer").html(errorString);
+    $("#errorModal").modal("show");
+}
+
+
+
+function successMessage(success) {
+    var successString = "";
+    if ($.isArray(success)) {        
+
+        $.each(success, function (index, error) {
+            successString += "<p><strong><span class='glyphicon glyphicon-ok'></span> " + error + "</strong></p>";
+        });
+
+        
+    }else {
+        successString = "<p><strong><span class='glyphicon glyphicon-ok'></span> "+ success + "</strong></p>";
+    }
+    
+    $("#successContainer").html(successString);
+    $("#successModal").modal("show");
+}
+;
+

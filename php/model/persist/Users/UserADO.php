@@ -17,10 +17,12 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_BY_NICK = "SELECT username FROM users WHERE username = ?";
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
     const SELECT_BY_ID = "SELECT * FROM users WHERE user_id = ?";
+    const SELECT_BY_PASS = "SELECT * FROM users WHERE user_password = ? AND user_id = ?";
     const INSERT_USERS = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,SHA1(?),?,?,?,?,?,?,?,?,0)";
     const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
+    const UPDATE_PASSWD_ID = "UPDATE users SET user_password = ? WHERE user_id = ? ";
     const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=? ,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
- 
+
     private $dataSource;
 
     public function __construct() {
@@ -42,9 +44,9 @@ class UserADO implements EntityInterfaceADO {
 
         return $result->fetchAll();
     }
-    
-    public function findById($id){        
-        return $this->dataSource->execution(self::SELECT_BY_ID,$array=[$id]);
+
+    public function findById($id) {
+        return $this->dataSource->execution(self::SELECT_BY_ID, $array = [$id]);
     }
 
     /**
@@ -61,7 +63,7 @@ class UserADO implements EntityInterfaceADO {
         foreach ($result as $user) {
             $userObject = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
         }
-        
+
         return $userObject;
     }
 
@@ -70,18 +72,17 @@ class UserADO implements EntityInterfaceADO {
     }
 
     public function resetPassword($user, $newpassword) {
-        
+
         $array = [
             $newpassword,
             $user->getPassword(),
             $user->getEmail(),
         ];
-               
-      
-        $obj= $this->dataSource->execution(self::UPDATE_PASSWD, $array);
+
+
+        $obj = $this->dataSource->execution(self::UPDATE_PASSWD, $array);
 
         return $obj;
-        
     }
 
     public function create($userObj) {
@@ -97,17 +98,17 @@ class UserADO implements EntityInterfaceADO {
             $userObj->getZipCode(),
             $userObj->getImage()
         ];
-               
-        return $this->dataSource->executionInsert(self::INSERT, $array);
+
+        return $this->dataSource->executionInsert(self::INSERT_USERS, $array);
     }
 
-    public function insertClient($clientId){
+    public function insertClient($clientId) {
         $sql = "INSERT INTO `client` (`client_id`, `user_id`) VALUES (NULL, '$clientId')";
-        
-        
-        return $this->dataSource->execution($sql, $array=[] );
+
+
+        return $this->dataSource->execution($sql, $array = []);
     }
-    
+
     public function delete($entity) {
         
     }
@@ -125,8 +126,8 @@ class UserADO implements EntityInterfaceADO {
             $entity->getImage(),
             $entity->getId()
         ];
-        
-        return $this->dataSource->execution(self::UPDATE_USER_INFO,$array);
+
+        return $this->dataSource->execution(self::UPDATE_USER_INFO, $array);
     }
 
     public function findAll() {
@@ -139,6 +140,18 @@ class UserADO implements EntityInterfaceADO {
         return $this->dataSource->execution(self::SELECT_BY_NICK, $array);
     }
 
+    public function findByPass($pass) {
+        $userId = $_SESSION['connectedUser'];
+        $array = [$pass, $userId];
+
+        return $this->dataSource->execution(self::SELECT_BY_PASS, $array);
+    }
+
+    public function updatePassword($pass) {
+        $userId = $_SESSION['connectedUser'];
+        $array = [$pass, $userId];
+
+        return $this->dataSource->execution(self::UPDATE_PASSWD_ID,$array);
+    }
+
 }
-
-

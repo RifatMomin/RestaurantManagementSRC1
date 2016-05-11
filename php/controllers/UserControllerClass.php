@@ -70,6 +70,12 @@ class UserController implements ControllerInterface {
             case 10570:
                 $this->getUserLoggedIn();
                 break;
+            case 10700:
+                $this->validatePass();
+                break;
+            case 10710:
+                $this->changePassword();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -80,6 +86,42 @@ class UserController implements ControllerInterface {
         }
 
         return $this->data;
+    }
+
+    function changePassword() {
+        $json = json_decode(stripslashes($this->getJsonData()));
+
+        $pass1 = $json->pass1;
+        $pass2 = $json->pass2;
+
+        if (strcmp($pass1, $pass2) == 0) {
+            $result = $this->helperAdo->updatePassword($pass1)->rowCount();
+
+            if ($result > 0) {
+                $this->data[]=true;
+                $this->data[]="Password Changed";
+            } else {
+                $this->data[] = false;
+                $this->errors[] = "There has been an error in the server.";
+                $this->data[] = $this->errors;
+            }
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "There has been an error in the server.";
+            $this->data[] = $this->errors;
+        }
+    }
+
+    function validatePass() {
+        $json = json_decode(stripslashes($this->getJsonData()));
+
+        $result = $this->helperAdo->findByPass($json->actualPassword)->fetch(PDO::FETCH_OBJ);
+
+        if (!$result) {
+            $this->data[] = false;
+        } else {
+            $this->data[] = true;
+        }
     }
 
     function getUserLoggedIn() {
@@ -94,7 +136,7 @@ class UserController implements ControllerInterface {
                 $userObj = new UserClass($user[0], $user[1], $user[2], $user[3], $user[4], $user[5], $user[6], $user[7], $user[8], $user[9], $user[10], $user[11], $user[12]);
                 $this->data[] = true;
                 $this->data[] = $userObj->getAll();
-            }else{
+            } else {
                 $this->data[] = false;
                 $this->errors[] = "There has been an error while updating your info.";
                 $this->data[] = $this->errors;
@@ -191,10 +233,10 @@ class UserController implements ControllerInterface {
 
     function loginUser() {
         $json = json_decode(stripslashes($this->getJsonData()));
-        
-        
+
+
         $user = new UserClass(0, $json->user->username, $json->pass);
-        
+
         $userList = $this->helperAdo->findByNickAndPass($user);
 
         if (count($userList) == 0) {
@@ -293,7 +335,7 @@ class UserController implements ControllerInterface {
             //compares that the url is actually valid
             if (strcmp($url, $encrypt) == 0) {
                 $userObjReset = $helperAdo->resetPassword($userList, $newPasword);
-                
+
                 if ($userObjReset != null) {
                     $this->data [] = true;
                     $this->errors [] = "Password updated";

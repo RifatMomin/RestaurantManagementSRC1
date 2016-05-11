@@ -36,7 +36,7 @@ and open the template in the editor.
         <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="js/frameworks/geoapi.es-js-master/GeoAPI.js" type="text/javascript"></script>
 
-        <!--Library to MD5 CRYOPT-->
+        <!--Library to SHA1 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
         <script src="js/frameworks/cryptoJS/components/sha1-min.js" type="text/javascript"></script>
 
@@ -95,7 +95,8 @@ and open the template in the editor.
 
     <register-template></register-template>
 
-
+    <error-message></error-message>
+    <success-message></success-message>
 
    <footer-template></footer-template>
 </body>

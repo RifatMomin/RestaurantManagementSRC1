@@ -1,4 +1,4 @@
-<!-- Modal -->
+<!-- Modal Register -->
 <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="modalSignUp">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -52,7 +52,7 @@
                         <div class="form-group" ng-class="{'has-error': registerForm.registerSurname.$invalid, 'has-success':registerForm.registerSurname.$valid}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-hand-right"></span></span>
-                                <input type="text" class="form-control" placeholder="Your Surname" ng-model="registerUser.surname" ng-pattern="/^[a-zA-Z\s]*$/" name="registerSurname" required/>
+                                <input type="text" class="form-control" placeholder="Your Surname" ng-model="registerUser.surname" ng-pattern="/^[a-zA-Zñá-ú\s]+$/" name="registerSurname" required/>
                             </div>                                        
                         </div>
 

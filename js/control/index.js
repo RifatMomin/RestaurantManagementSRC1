@@ -220,7 +220,6 @@
                 var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10150, JSONData: JSON.stringify($scope.registerUser)});
 
                 promise.then(function (data) {
-                    console.log(data);
                     if (data[0] === true) {
                         var id = data[1].id;
                         $scope.insertClient(id);
@@ -234,7 +233,6 @@
         };
 
         $scope.insertClient = function (id) {
-            console.log(id);
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10230, JSONData: JSON.stringify({id: id})});
 
             promise.then(function (data) {
@@ -253,10 +251,10 @@
          * @date 2016/05/06
          */
         $scope.reloadRegister = function () {
-            /*$("#registerUserImage").val("");
+            $("#registerUserImage").val("");
             $scope.registerUser = new UserObj();
             $scope.repeatPassword = "";
-            $scope.loginForm.$setPristine();*/
+            $scope.loginForm.$setPristine();
         };
 
         /**
@@ -360,7 +358,6 @@
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
                         $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
-                        console.log($scope.restaurantInfo);
                     }
                 } else {
                     errorGest(data);
@@ -391,7 +388,6 @@
                             $scope.menuItem.construct(data[1][i].itemId, data[1][i].courseId, data[1][i].name, data[1][i].image, data[1][i].price);
                             $scope.menuItemsArray.push($scope.menuItem);
                             $scope.menuItem= new MenuItemObj();
-                            console.log($scope.menuItem);
                         }
                     }
                 }
@@ -469,6 +465,28 @@
 
             },
             controllerAs: 'registerTemplate'
+        };
+    });
+    
+    mainApp.directive("errorMessage", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/errorMessage.html",
+            controller: function () {
+
+            },
+            controllerAs: 'errorMessage'
+        };
+    });
+    
+    mainApp.directive("successMessage", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/successMessage.html",
+            controller: function () {
+
+            },
+            controllerAs: 'successMessage'
         };
     });
 

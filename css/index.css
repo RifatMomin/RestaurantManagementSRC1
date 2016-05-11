@@ -40,3 +40,19 @@ body {
     width: 150px;
     height: auto;
 }
+
+.modal-header-error{
+    background-color: #ff9999;
+}
+
+.modal-body-error{
+    background-color: #ffcccc;
+}
+
+.modal-header-success{
+    background-color: #99ff99;
+}
+
+.modal-body-success{
+    background-color: #ccffcc;
+}

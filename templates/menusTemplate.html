@@ -1,13 +1,20 @@
-<!--<div ng-show="menuItemsArray.length > 0">-->
 <div>
     <h1>The Menu</h1>
     <table class="table table-striped">
-        <tr><th>Name</th><th>Price</th><th>Course</th><th>Image<th></tr>
-        <tr ng-repeat="menuItem in menuItemsArray track by $index">			
-            <td>{{menuItem.getName()}}</td>
-            <td>{{menuItem.getPrice() | currency}}</td>
-            <td>{{menuItem.getCourseId()}}</td>
-            <td>{{menuItem.getImage()}}</td>
-        </tr>
+        <thead>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Course</th>
+            <th>Image<th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="menuItem in menuItemsArray track by $index">			
+                <td>{{menuItem.getName()}}</td>
+                <td>{{menuItem.getPrice() | currency}}</td>
+                <td>{{menuItem.getCourseId()}}</td>
+                <td>{{menuItem.getImage()}}</td>
+            </tr>
+        </tbody>
+
     </table>
 </div>

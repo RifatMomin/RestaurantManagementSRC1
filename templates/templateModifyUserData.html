@@ -50,7 +50,7 @@
                             <div class="form-group" ng-class="{'has-error': modifyDataForm.surname.$invalid, 'has-success':modifyDataForm.surname.$valid}">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-hand-right"></span></span>
-                                    <input type="text" class="form-control" placeholder="Your Surname" ng-model="userLoggedIn.surname" ng-pattern="/^[a-zA-Z\s]*$/" name="surname" required/>
+                                    <input type="text" class="form-control" placeholder="Your Surname" ng-model="userLoggedIn.surname" ng-pattern="/^[a-zA-Zñá-ú\s]+$/" name="surname" required/>
                                     <span ng-show="!modifyDataForm.surname.$invalid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
                                     <span ng-show="modifyDataForm.surname.$invalid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                                 </div>                                        
@@ -129,26 +129,28 @@
 
             <div class="modal-body">
                 <div class="row">
-                    <form name="changePassword" class="col-xs-12" novalidate>
-                        <div class="form-group" ng-class="{'has-error': invalidActualPassword}">
+                    <form name="changePasswordForm" class="col-xs-12" novalidate>
+                        <div class="form-group" ng-class="{'has-error': incorrectUserPassword}">
                             <label>Actual Password</label>
                             <input class="form-control" type="password" name="actualPass" ng-model="userLoggedIn.password" required/>
+                            <p class="text-danger" ng-show="incorrectUserPassword"><strong>Error</strong> The password introduced isn't correct!</p>
                         </div>
                         
-                        <div class="form-group" ng-class="{'has-error': passwordOne != passwordTwo}">
+                        <div class="form-group" ng-class="{'has-error': changePasswordForm.newPassword.$error.minlength || (passwordOne != passwordTwo)}">
                             <label>New Password</label>
                             <input class="form-control" ng-minlength="6" type="password" name="newPassword" ng-model="passwordOne" required/>
-                            <p class="text-danger" ng-show="registerForm.newPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
+                            <p class="text-danger" ng-show="changePasswordForm.newPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
+                            
                         </div>
                         
-                        <div class="form-group" ng-class="{'has-error': !registerForm.newPassword.$error.minlength && (passwordOne != passwordTwo)}">
+                        <div class="form-group" ng-class="{'has-error': !changePasswordForm.newPassword.$error.minlength && (passwordOne != passwordTwo)}">
                             <label>Repeat Password</label>
                             <input class="form-control" type="password" name="repeatNewPassword" ng-model="passwordTwo" required/>
-                            <p class="text-danger" ng-show="!registerForm.newPassword.$error.minlength && (passwordOne != passwordTwo)"><strong>Error</strong> The passwords doesn't match!</p>
+                            <p class="text-danger" ng-show="!changePasswordForm.newPassword.$error.minlength && (passwordOne != passwordTwo)"><strong>Error</strong> The passwords doesn't match!</p>
                         </div>
                         
                         <div class="form-group">
-                            <button class="btn btn-info" ng-click="changePassword()">Change</button>
+                            <button class="btn btn-info" ng-click="changePassword()" ng-disabled='changePasswordForm.$invalid || changePasswordForm.newPassword.$error.minlength || passwordOne != passwordTwo '>Change</button>
                         </div>
                     </form>
                 </div>

@@ -139,9 +139,9 @@ UserObj = function () {
      * @description: convert object to string
      * @date: 04/03/2015
      */
-    this.cryptPassword = function () {
+    this.cryptPassword = function (passExt){
         var pass = CryptoJS.SHA1(this.getPassword()).toString();
-
+        
         return pass;
     };
 
