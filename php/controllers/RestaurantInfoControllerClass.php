@@ -63,6 +63,7 @@ class RestaurantInfoController implements ControllerInterface {
     }
     
     public function insertInfo(){
+        
         $result = $this->helperAdo->create($restaurant);
         $this->data[]=true;
         $this->data[]=$result->fetchAll();
@@ -70,6 +71,7 @@ class RestaurantInfoController implements ControllerInterface {
     
     public function updateInfo(){
         $result = $this->helperAdo->update($restaurant);
+        var_dump($result);
         $this->data[]=true;
         $this->data[]=$result->fetchAll();
     }

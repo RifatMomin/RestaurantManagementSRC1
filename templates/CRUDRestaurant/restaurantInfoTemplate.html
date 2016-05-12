@@ -1,0 +1,62 @@
+<div class="container-fluid" name="restaurantForm" novalidate ng-submit="validateRestaurantInfo()" class="row">
+    <form name="restaurantInfoForm" action="" method="post" class="form-horizontal" novalidate ng-submit="validateRestaurantInfo() && restaurantInfoForm.valid">
+
+        <div class="control-group">
+            <label  class="control-label" for="cif">CIF</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.CIF" placeholder="CIF">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="name">Name</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.name" placeholder="Name">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="email">Email</label>
+            <div class="controls">
+                <input type="email" class="form-control" ng-model="restaurantInfo.email" placeholder="Email">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="phone">Phone1</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.phone1" placeholder="Phone1">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="phone2">Phone2</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.phone2" placeholder="Phone2">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="address">Address</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.address" placeholder="Address">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="city">City</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.city" placeholder="City">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="zipcode">Zipcode</label>
+            <div class="controls">
+                <input type="text" class="form-control" ng-model="restaurantInfo.zipCode" placeholder="Zipcode">
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="description">Description</label>
+            <div class="controls">
+                <textarea class="form-control" rows="2" ng-model="restaurantInfo.description" placeholder="Describe your restaurant"> </textarea>
+            </div>
+        </div>
+        </br>
+        <button type="submit" ng-click="saveRestaurantInfo()" class="btn btn-danger">Save</button>
+
+    </form>
+</div>

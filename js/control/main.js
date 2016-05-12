@@ -286,25 +286,7 @@ $(document).ready(function () {
             
         };
 
-        $scope.insertRestaurantInfo = function () {
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 2, JSONData: JSON.stringify($scope.restaurantInfo)});
-
-            promise.then(function (data) {
-                console.log(data);
-                if (data[0] === true) {
-                    alert("Restaurant information inserted");
-                } else {
-
-                    if (angular.isArray(data[1])) {
-                        showErrors(data[1]);
-                    } else {
-                        showNormalError("An error occurred in the server, please come back later!");
-                    }
-                }
-            });
-        }
-
-        $scope.updateRestaurantInfo = function () {
+        $scope.saveRestaurantInfo = function () {
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 3, JSONData: JSON.stringify($scope.restaurantInfo)});
 
             promise.then(function (data) {
@@ -365,6 +347,17 @@ $(document).ready(function () {
 
             },
             controllerAs: 'waiterNav'
+        };
+    });
+    
+    restaurantApp.directive("restaurantInfoTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/CRUDRestaurant/restaurantInfoTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'restaurantInfoTemplate'
         };
     });
 
