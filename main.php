@@ -78,13 +78,13 @@ and open the template in the editor.
                 </div>
             </div>
         </nav>
-
+        <div class="wrap">
         <!--Charge here the different tempates, depending on the userType-->
         <div class="container">    
             <template-modify-user-data></template-modify-user-data>
         </div>
 
-
+        </div>
 
     <error-message></error-message>
     <success-message></success-message>

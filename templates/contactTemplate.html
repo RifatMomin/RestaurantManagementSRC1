@@ -1,3 +1,35 @@
+
+    <div class='page-header'>
+        <h2> {{restaurantInfo.name}} <small> Contact Info</small></h2>
+    </div>
+
+    <div class='col-xs-12'>
+        <div class='row'>
+            <div class='col-md-5 col-lg-3 col-xs-12'>
+                <div class="row">
+                    <h3>Contact with us:</h3>
+                    <p><span class='glyphicon glyphicon-envelope'></span>{{restaurantInfo.email}}</p>
+                    <p><span class='glyphicon glyphicon-phone'></span>{{restaurantInfo.phone1}}</p>
+                    <p><span class='glyphicon glyphicon-phone-alt'></span>{{restaurantInfo.phone2}}</p>
+                </div>
+                <div class="row">
+                    <h3><span class='glyphicon glyphicon-home'></span> Where we are </h3>
+                    <p>{{restaurantInfo.city}}</p>
+                    <p>{{restaurantInfo.address}}</p>
+                    <p>{{restaurantInfo.zipCode}}</p>
+                </div>
+            </div>
+
+            <div class='col-md-7 col-lg-9 col-xs-12'>
+                <div id='googleMap' class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" frameborder="0" style="border:0"
+                            src="https://www.google.com/maps/embed/v1/place?q=c%2F%20Sant%20Pius%20X%208%2C%20Hospitalet%20Llobregat&key=AIzaSyA_jMp-adWyAJDj-qOgihI7LaMDWnFM1bk" allowfullscreen></iframe> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--
 <div class="container-fluid" style="margin-top:10px;">
     <form name="contactForm" novalidate ng-submit="validateRestaurantInfo()" class="row">
         <div class="row">
@@ -15,4 +47,4 @@
         <input type="button" ng-show="adminRestaurantAction=1" ng-click="updateRestaurantInfo()" class="btn btn-danger" value="Modify Data"/>
              
     </form>
-</div>
+</div>-->

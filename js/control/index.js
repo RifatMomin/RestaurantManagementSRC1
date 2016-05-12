@@ -27,7 +27,8 @@
         $scope.equalPasswords = false;
         $scope.menuItem = new MenuItemObj();
         $scope.menuItemsArray = [1];
-
+        $scope.restaurantStreetMap = "";
+        
         //Initialize registerUser
         //$scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
 
@@ -359,6 +360,12 @@
                     if (angular.isArray(data[1])) {
                         $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
                     }
+                    //$scope.restaurantStreetMap = $scope.restaurantInfo.getAddress().toString().replace(/ /g, "%20").replace(/\//g,"%2F");
+                    //$scope.restaurantStreetMap = ;
+                    //alert($scope.restaurantStreetMap);
+//                    $scope.restaurantStreetMap = "https://www.google.com/maps/embed/v1/place?q="+encodeURI($scope.restaurantInfo.getAddress()+", "+$scope.restaurantInfo.getCity())+"&key=AIzaSyA_jMp-adWyAJDj-qOgihI7LaMDWnFM1bk";
+//                
+//                    alert($scope.restaurantStreetMap);
                 } else {
                     errorGest(data);
                 }
