@@ -17,7 +17,7 @@ class RestaurantInfoADO implements EntityInterfaceADO {
         $this->dataSource = DBConnect::getInstance();
     }
 
-    public function create($entity) {
+    public function create($restObj) {
 
         $restObj = $this->findAll();
         if ($restObj == null) {
@@ -42,9 +42,10 @@ class RestaurantInfoADO implements EntityInterfaceADO {
         return $this->dataSource->execution(self::SELECT_INFO, $array = []);
     }
 
-    public function update($entity) {
+    public function update($restObj) {
 
         $restaurantInfo = $this->findAll();
+        //var_dump($restaurantInfo);
         if ($restaurantInfo != null) {
             $array = [
                 $restObj->getCIF(),
@@ -60,11 +61,14 @@ class RestaurantInfoADO implements EntityInterfaceADO {
 
             return $this->dataSource->execution(self::UPDATE_INFO, $array);
         }
+        else{
+            create($entity);
+        }
         //return $this->dataSource->execution(self::UPDATE_INFO, $array);
     }
 
     //not implemented 
-    public function delete($entity) {
+    public function delete($restObj) {
         
     }
 

@@ -49,7 +49,7 @@ and open the template in the editor.
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/main.js" type="text/javascript"></script>
     </head>
-    <body ng-controller="restaurantController as restCtrl" ng-init="checkUserType();getUserInfo();getRestaurantInfo()">
+    <body ng-controller="restaurantController as restCtrl" ng-init="checkUserType(); getUserInfo(); getRestaurantInfo()">
 
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
@@ -70,7 +70,7 @@ and open the template in the editor.
                     <chef-nav ng-if='rolePage == 1'></chef-nav>
                     <waiter-nav ng-if='rolePage == 2'></waiter-nav>
                     <admin-nav ng-if='rolePage == 3'></admin-nav>
-                    
+
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#" ng-click="action = 5; openModalData()" data-toggle="popover"><span class="glyphicon glyphicon-user"></span>{{userLoggedIn.username}}</a></li>
                         <li><a href="#" ng-click="logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
@@ -84,12 +84,13 @@ and open the template in the editor.
             <template-modify-user-data></template-modify-user-data>
         </div>
 
+    <restaurant-info-template ng-if='rolePage == 3'></restaurant-info-template>
         </div>
 
     <error-message></error-message>
     <success-message></success-message>
-        <contact-template ng-if='rolePage==3 && adminRestaurantAction==0'></contact-template>
-    
+
+
     <footer-template></footer-template>
 </body>
 </html>
