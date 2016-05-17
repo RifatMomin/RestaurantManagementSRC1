@@ -350,7 +350,7 @@
          * @author Victor Moreno García
          * @date 2016/05/06
          */
-        $scope.getRestaurantInfo = function () {
+        $scope.saveRestaurantInfo = function () {
             $scope.restaurantInfo = new RestaurantObj();
 
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 1, JSONData: JSON.stringify({none: ""})});

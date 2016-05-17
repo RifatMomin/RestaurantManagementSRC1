@@ -84,7 +84,7 @@ and open the template in the editor.
             <template-modify-user-data></template-modify-user-data>
         </div>
 
-    <restaurant-info-template ng-if='rolePage == 3'></restaurant-info-template>
+    <restaurant-info-template ng-if='rolePage == 3 && AdminRestaurantAction==0'></restaurant-info-template>
         </div>
 
     <error-message></error-message>

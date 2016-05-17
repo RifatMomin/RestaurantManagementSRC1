@@ -63,17 +63,39 @@ class RestaurantInfoController implements ControllerInterface {
     }
     
     public function insertInfo(){
-        
+        $restaurant= json_decode(stripslashes($this->getJsonData()));
         $result = $this->helperAdo->create($restaurant);
-        $this->data[]=true;
-        $this->data[]=$result->fetchAll();
+        
+        if($result!=null){
+            $this->data [] = false;
+            $this->errors [] = "Restaurant Info insert";
+            $this->data [] = $this->errors;
+        }
+        else{
+            $this->data [] = false;
+            $this->errors [] = "Restaurant Info could not be inserted";
+            $this->data [] = $this->errors;
+        }
     }
     
     public function updateInfo(){
-        $result = $this->helperAdo->update($restaurant);
-        var_dump($result);
-        $this->data[]=true;
-        $this->data[]=$result->fetchAll();
+
+        $restaurant= json_decode(stripslashes($this->getJsonData()));
+        $OldRestObj= new RestaurantClass("", $restaurant[0]->CIF);
+        $NewRestObj= new RestaurantClass("", $restaurant[1]->CIF, $restaurant[1]->name, $restaurant[1]->address, $restaurant[1]->city, $restaurant[1]->zipCode, $restaurant[1]->phone1, $restaurant[1]->phone2, $restaurant[1]->email, $restaurant[1]->description);
+
+        $result = $this->helperAdo->updated($NewRestObj, $OldRestObj);
+        if($result!=null){
+            $this->data [] = false;
+            $this->errors [] = "Restaurant Info updated";
+            $this->data [] = $this->errors;
+        }
+        else{
+            $this->data [] = false;
+            $this->errors [] = "Restaurant Info could not be updated";
+            $this->data [] = $this->errors;
+        }
+       
     }
 
 }

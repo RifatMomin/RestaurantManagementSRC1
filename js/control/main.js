@@ -22,11 +22,14 @@ $(document).ready(function () {
         $scope.userLoggedIn = new UserObj();
         $scope.beforeUser = new UserObj();
         $scope.restaurantInfo = new RestaurantObj();
+        $scope.OldRestaurantInfo = new RestaurantObj();
+        $scope.RestaurantObjsArray = new Array();
         $scope.rolePage = 0;
         $scope.roleName = "";
         $scope.availableUser = true;
         $scope.availableEmail = true;
         $scope.incorrectUserPassword = false;
+        $scope.AdminRestaurantAction = 0;
 
 
         $scope.showEditImage = function (showImage) {
@@ -99,7 +102,7 @@ $(document).ready(function () {
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
                         $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
-                        document.title = $scope.restaurantInfo.getName();
+                        $scope.OldRestaurantInfo = angular.copy($scope.restaurantInfo);
                     }
                 } else {
                     errorGest(data);
@@ -136,7 +139,7 @@ $(document).ready(function () {
             promise.then(function (data) {
                 if (data[0] === true) {
                     window.open("index.php", "_self");
-                } else {                    
+                } else {
                     errorGest("Can't log out at this moment, try again later. ");
                 }
             });
@@ -217,9 +220,9 @@ $(document).ready(function () {
                             if (data[0] === true) {
                                 successMessage("Info updated!");
                                 //Wait one second to reload the page
-                                setTimeout(function(){
+                                setTimeout(function () {
                                     location.reload();
-                                }, 1000);                                
+                                }, 1000);
                             } else {
                                 errorGest(data);
                             }
@@ -255,54 +258,96 @@ $(document).ready(function () {
         };
 
 
-        $scope.changePassword = function(){
-           //Get the passwords entered by the user
+        $scope.changePassword = function () {
+            //Get the passwords entered by the user
             var actualPass = angular.copy($scope.userLoggedIn.cryptPassword());
             var pass1 = CryptoJS.SHA1($scope.passwordOne).toString();
             var pass2 = CryptoJS.SHA1($scope.passwordTwo).toString();
-            
+
             //Validate the first Password
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10700, JSONData: JSON.stringify({actualPassword: actualPass})});            
-            
-            promise.then(function(data){
-                if(data[0]===true){
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10700, JSONData: JSON.stringify({actualPassword: actualPass})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
                     $scope.incorrectUserPassword = false;
                     //Change the password in the server
-                    var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10710, JSONData: JSON.stringify({pass1: pass1, pass2: pass2})});            
-                    
-                    promise.then(function(data){
-                        if(data[0]===true){
+                    var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10710, JSONData: JSON.stringify({pass1: pass1, pass2: pass2})});
+
+                    promise.then(function (data) {
+                        if (data[0] === true) {
                             successMessage(data[1]);
                             $("#changePassModal").modal("hide");
-                        }else{
+                        } else {
                             errorGest("Can't change the password at this moment, try again later");
                         }
                     });
-                }else{
+                } else {
                     //Show the error that the password is incorrect
                     $scope.incorrectUserPassword = true;
                 }
             });
-            
+
         };
 
+        /**
+         * @description Updates restaurant info if existent, 
+         * otherwise inserts the info
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/11
+         */
         $scope.saveRestaurantInfo = function () {
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 3, JSONData: JSON.stringify($scope.restaurantInfo)});
-
-            promise.then(function (data) {
+            //if there restaurant info exists
+            if ($scope.restaurantInfo != null) {
+                //UPDATE the restaurant info
+                $scope.restaurantInfo = new RestaurantObj();
+                $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
+                $scope.RestaurantObjsArray = [$scope.restaurantInfo, $scope.OldRestaurantInfo];
                 console.log(data);
-                if (data[0] === true) {
-                    alert("Restaurant information updated");
-                } else {
+                //alert("hola");
+                //UPDATE
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 3, JSONData: JSON.stringify($scope.RestaurantObjsArray)});
 
-                    if (angular.isArray(data[1])) {
-                        showErrors(data[1]);
+                promise.then(function (data) {
+                    
+                    if (data[0] === true) {
+                        //if restaurant info is existing
+                        if (angular.isArray(data[1])) {
+                            alert("updated");
+                        }
+                        else{
+                            alert("could not be updated");
+                        }
                     } else {
-                        showNormalError("An error occurred in the server, please come back later!");
+                        errorGest(data);
                     }
-                }
-            });
-        }
+                });
+            }
+
+            /*//get the restaurant info
+             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 2, action: 1, JSONData: JSON.stringify({none: ""})});
+             
+             promise.then(function (data) {
+             
+             if (data[0] === true) {
+             //if restaurant info is existing
+             if (angular.isArray(data[1])) {
+             $scope.restaurantInfo = new RestaurantObj();
+             $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
+             
+             $scope.newRestaurantInfo = new RestaurantObj();
+             $scope.newRestaurantInfo.construct();
+             alert("found");
+             console.log(data);
+             
+             }
+             
+             } else {
+             errorGest(data);
+             }
+             });*/
+
+        };
     });
 
     //Navbar options templates
@@ -349,7 +394,7 @@ $(document).ready(function () {
             controllerAs: 'waiterNav'
         };
     });
-    
+
     restaurantApp.directive("restaurantInfoTemplate", function () {
         return {
             restrict: 'E',
@@ -397,7 +442,7 @@ $(document).ready(function () {
             controllerAs: 'errorMessage'
         };
     });
-    
+
     restaurantApp.directive("successMessage", function () {
         return {
             restrict: 'E',

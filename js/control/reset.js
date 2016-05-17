@@ -3,7 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+$(document).ready(function () {
+    //get the encriptation in url to decode
+    var url = window.location.search;
+    var res = url.split("php");
+    var url = res[1];
+    alert(url);
+});
 
 (function () {
     var mainApp = angular.module("RestaurantAppReset", []);
@@ -37,17 +43,17 @@
             $scope.user = angular.copy($scope.user);
             $scope.ObjectPasswordArray = [$scope.user, $scope.passwd2, url];
 
-            if ($scope.passwd1 == $scope.passwd2 && $scope.passwd1!=null && $scope.passwd2!=null) {
+            if ($scope.passwd1 == $scope.passwd2 && $scope.passwd1 != null && $scope.passwd2 != null) {
                 //Server conenction to verify user's data
                 var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10300, JSONData: JSON.stringify($scope.ObjectPasswordArray)});
 
                 promise.then(function (data) {
                     console.log(data);
                     if (data[0] === true) {
-                        
+
                         window.open("index.php", "_self");
                     } else {
-                        
+
                         if (angular.isArray(data[1])) {
                             showErrors(data[1]);
                         } else {
