@@ -35,7 +35,8 @@ and open the template in the editor.
         <script src="js/frameworks/angular/dirPagination.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
         <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
-
+        <script src="js/frameworks/angular/ng-currency.js" type="text/javascript"></script>
+        
         <!--Library to SHA1 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
         <script src="js/frameworks/cryptoJS/components/sha1-min.js" type="text/javascript"></script>
@@ -44,13 +45,31 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
         <!--Model and Control-->
+        <script src="js/model/Menus/IngredientObj.js" type="text/javascript"></script>
         <script src="js/model/RestaurantObj.js" type="text/javascript"></script>
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/main.js" type="text/javascript"></script>
     </head>
     <body ng-controller="restaurantController as restCtrl" ng-init="checkUserType(); getUserInfo(); getRestaurantInfo()">
-
+        <!--Admin Template-->
+        <admin-template ng-controller="adminController as adminCtrl" ng-if="rolePage == 3"></admin-template>  
+        
+        
+        <!--Chef Template-->
+        
+        
+        
+        <!--Waiter Template-->
+        
+        
+        <!--Customer Template-->
+        
+        
+        
+        
+        
+        <!--
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -79,14 +98,17 @@ and open the template in the editor.
             </div>
         </nav>
         <div class="wrap">
-        <!--Charge here the different tempates, depending on the userType-->
         <div class="container">    
-            <template-modify-user-data></template-modify-user-data>
+                    
+            
+            
+                      
         </div>
 
-    <restaurant-info-template ng-if='rolePage == 3'></restaurant-info-template>
-        </div>
-
+            
+        </div>-->
+        
+    <template-modify-user-data></template-modify-user-data>  
     <error-message></error-message>
     <success-message></success-message>
 

@@ -8,10 +8,6 @@
 MenuObj = function () {
     
     this.menuId = null;
-    this.first = null;
-    this.second = null;
-    this.dessert = null;
-    this.drink = null;
     this.image = null;
     this.price = null;
 

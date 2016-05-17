@@ -1,12 +1,51 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @name Index.js
+ * @description The Index JS file attempts to control the functions of the 
+ * principal page like the first content loader, the basic connections to the server 
+ * (insert users, get information, manage basic displaying effects...). It has
+ * two parts differenced: the jQuery code and the Angular JS code.
+ *
+ * @since     1.0.0
+ * @requires AngularJS, jQuery Framework, CryptoJS Library
+ * @author Victor Moreno García / Rifat Momin Momin
+ * @date 2016/05/01
  */
 
+/////////////////////////
 
+/**
+ * JQUERY CODE
+ * @author Victor Moreno García
+ */
+$(document).ready(function(){
+  // Add smooth scrolling to all links
+  $("a").on('click', function(event) {
+
+    // Prevent default anchor click behavior
+    event.preventDefault();
+
+    // Store hash
+    var hash = this.hash;
+
+    // Using jQuery's animate() method to add smooth page scroll
+    // The optional number (1000) specifies the number of milliseconds it 
+    // takes to scroll to the specified area
+    $('html, body').animate({
+      scrollTop: $(hash).offset().top
+    }, 1000, function(){
+   
+      // Add hash (#) to URL when done scrolling (default click behavior)
+      window.location.hash = hash;
+    });
+  });
+});
+
+/**
+ * ANGULARJS CODE
+ * @author Victor Moreno García and Rifat Momin Momin
+ */
 (function () {
-    var mainApp = angular.module("mainRestaurantApp", ["GeoAPI"]);
+    var mainApp = angular.module("mainRestaurantApp", ["GeoAPI",'angularUtils.directives.dirPagination']);
 
     mainApp.controller("mainAppController", function ($http, $scope, accessService, $log, GeoAPI) {
         //Empty the session in the local storage
@@ -28,6 +67,11 @@
         $scope.menuItem = new MenuItemObj();
         $scope.menuItemsArray = [1];
         $scope.restaurantStreetMap = "";
+        $scope.allMenus = [];
+        
+        //Reviews Paginate
+        $scope.pageSize = 1;
+        $scope.currentPage = 1;
         
         //Initialize registerUser
         //$scope.registerUser.construct(0, "username", "password", "name", "surname", "email@gmail.com", "938855487", "address", "", "", "", "", "");
@@ -232,7 +276,15 @@
                 });
             }
         };
-
+        
+        /**
+         * @name insertClient
+         * @description Inserts a client into the database
+         * @version 1
+         * @author Rifat Momin / Victor Moreno
+         * @date 2016/05/10
+         * @param id the id of the user to insert into the clients
+         */
         $scope.insertClient = function (id) {
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10230, JSONData: JSON.stringify({id: id})});
 
@@ -360,12 +412,6 @@
                     if (angular.isArray(data[1])) {
                         $scope.restaurantInfo.construct(data[1][0].restaurant_id, data[1][0].CIF, data[1][0].name, data[1][0].address, data[1][0].city, data[1][0].zip_code, data[1][0].phone1, data[1][0].phone2, data[1][0].email, data[1][0].description);
                     }
-                    //$scope.restaurantStreetMap = $scope.restaurantInfo.getAddress().toString().replace(/ /g, "%20").replace(/\//g,"%2F");
-                    //$scope.restaurantStreetMap = ;
-                    //alert($scope.restaurantStreetMap);
-//                    $scope.restaurantStreetMap = "https://www.google.com/maps/embed/v1/place?q="+encodeURI($scope.restaurantInfo.getAddress()+", "+$scope.restaurantInfo.getCity())+"&key=AIzaSyA_jMp-adWyAJDj-qOgihI7LaMDWnFM1bk";
-//                
-//                    alert($scope.restaurantStreetMap);
                 } else {
                     errorGest(data);
                 }
@@ -374,29 +420,31 @@
         };
 
         /**
-         * @description Returns all menuItem data from db
+         * @description Returns all menus from the database
          * @version 1
-         * @author Rifat Momin
+         * @author Rifat Momin / Victor Moreno
          * @date 2016/05/10
          */
-        $scope.getMenuItems = function () {
-            $scope.menuItem = new MenuItemObj();
+        $scope.getMenus = function () {
+            $scope.allMenus = [];
 
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11100, JSONData: JSON.stringify({none: ""})});
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10025, JSONData: JSON.stringify({none: ""})});
 
             promise.then(function (data) {
-                console.log(data);
+                //console.log(data);
                 if (data[0] === true) {
-                    if (angular.isArray(data[1])) {
-                        
-                        var i = 0;
-                        for (i = 0; i <data.length; i++) {
-                            $scope.menuItem= new MenuItemObj();
-                            $scope.menuItem.construct(data[1][i].itemId, data[1][i].courseId, data[1][i].name, data[1][i].image, data[1][i].price);
-                            $scope.menuItemsArray.push($scope.menuItem);
-                            $scope.menuItem= new MenuItemObj();
-                        }
+                    if(angular.isArray(data[1])){
+                        //Iterate all the menus
+                        $.each(data[1],function(index){           
+                            $scope.allMenus.push(data[1][index]);                            
+                        });
+                        //$("#imageMenu0").addClass("active");//imageMenu{{$index}}
+                        //$log.info($scope.allMenus);
+                    }else{
+                        errorGest("An error occured in the server, please try again later");
                     }
+                    
+                    $("#imageMenu0").addClass("active");
                 }
                 else {
                     errorGest(data);
@@ -404,11 +452,41 @@
             });
 
         };
+        
+        /**
+         * @name getReviews
+         * @description Returns all the reviews from the database. The JSON is passed
+         * directly as an object, so we don't need to parse it into an object of
+         * JS
+         * @version 1
+         * @author Rifat Momin / Victor Moreno
+         * @date 2016/05/15
+         */
+        $scope.getReviews = function(){
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 4, action: 1, JSONData: JSON.stringify({none: ""})});
+            promise.then(function(data){
+                if(data[0]===true){
+                    if(angular.isArray(data[1])){
+                        $scope.reviews = data[1];
+                        $log.info($scope.reviews);
+                    }
+                }else{
+                    errorGest(data);
+                }
+            });
+        
+        };  
 
     });
 
 
-    //Templates
+    /*
+     * ***** TEMPLATES *****
+     * 
+     * The templates are used to display different contents on the page
+     * without change the location of the URL
+     */
+    
     mainApp.directive("menusTemplate", function () {
         return {
             restrict: 'E',
@@ -439,6 +517,17 @@
 
             },
             controllerAs: 'contactTemplate'
+        };
+    });
+    
+    mainApp.directive("reviewsTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/reviewsTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'reviewsTemplate'
         };
     });
 
@@ -497,7 +586,10 @@
         };
     });
 
-
+    
+    //Access service. 
+    //This service allows to AngularJS to receive and send information using
+    //AJAX and JSON
     mainApp.factory('accessService', function ($http, $log, $q) {
         return {
             getData: function (url, async, method, params, data) {

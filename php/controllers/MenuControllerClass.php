@@ -50,7 +50,7 @@ class MenuControllerClass implements ControllerInterface {
                 $this->insertMenu();
                 break;
             case 10025:
-                $this->getMenu();
+                $this->getMenus();
                 break;
             case 10035:
                 $this->updateMenu();
@@ -88,7 +88,7 @@ class MenuControllerClass implements ControllerInterface {
 
         //Create the object review to pass it to the ADO
         $meal = new MenuClass();
-        
+
         $meal->setAll($menuDecoded->menuId, $menuDecoded->first, $menuDecoded->second, $menuDecoded->dessert, $menuDecoded->drink, $menuDecoded->image, $menuDecoded->price);
         $result = MealADO::update($meal);
 
@@ -123,22 +123,56 @@ class MenuControllerClass implements ControllerInterface {
         }
     }
 
-    public function getMenu() {
-        $arrayMenus = [];
-        
-        $result = MenuADO::delete($menu);
+    public function getMenus() {
+        try {
+            //ALTERNATIVE SELECT TO DO THIS
+            /*
+              SELECT m.menu_id, m.description, m.image, GROUP_CONCAT(mi.name SEPARATOR ';'), GROUP_CONCAT(c.course_name SEPARATOR ';')
+              FROM menu m, menu_has_item mhi, menu_item mi, course c
+              WHERE m.menu_id = mhi.menu_id
+              AND mhi.item_id = mi.item_id
+              AND mi.course_id = c.course_id
+              GROUP BY m.menu_id
+              ORDER BY m.menu_id
+             */
+            //Select all the menus
+            $menus = $this->menuADO->findAll()->fetchAll(PDO::FETCH_OBJ);
+            $this->data[] = true;
+            $arrayAllMenus = [];
+            foreach ($menus as $menu) {
+                $menuArray = [];
+                //Put the menu properties
+                $menuArray['menu_id'] = $menu->menu_id;
+                $menuArray['description'] = $menu->description;
+                $menuArray['image'] = $menu->image;
+                $menuArray['price'] = $menu->price;
 
-        if (count($result) > 0) {
-            $this->data [] = true;
-            
-            foreach ($result as $menu) {
-                $menuObj = new MenuClass($menu['menu_id'],$menu['first'],$menu['second'],$menu['dessert'],$menu['drink'], $menu['image'], $menu['price']);
-                $arrayMenus [] = $menuObj->getAll();                
+                //Select all the items from the menus (table menu has item)
+                $itemsMenu = $this->menuItemADO->findMenuHasItem($menu->menu_id)->fetchAll(PDO::FETCH_OBJ);
+                $itemInfo = [];
+                foreach ($itemsMenu as $item) {
+                    //Select the properties of the item               
+                    $itemsProperties = $this->menuItemADO->findItemsProps($item->item_id)->fetchAll(PDO::FETCH_OBJ);
+                    foreach ($itemsProperties as $props) {
+                        //var_dump($props);
+                        $newItem = [];
+                        $newItem['item_id'] = $props->item_id;
+                        $newItem['item_name'] = $props->name;
+                        $newItem['course_name'] = $props->course_name;
+                        $newItem['priority']=$props->priority;
+                        $itemInfo [] = $newItem;
+                    }
+                    $menuArray['items'] = $itemInfo;
+                }
+
+                $arrayAllMenus [] = $menuArray;
             }
 
-            $this->data[] = $arrayMenus;
-        } else {
-            $this->data[] = false;
+            $this->data[] = $arrayAllMenus;
+        } catch (Exception $e) {
+            error_log("ERROR: " + $e);
+            $this->data[0] = false;
+            $this->data[1] = "An error occurred in the database, try again later.";
         }
     }
 
@@ -158,8 +192,8 @@ class MenuControllerClass implements ControllerInterface {
             $this->data[] = false;
         }
     }
-    
-    public function insertMenuItem(){
+
+    public function insertMenuItem() {
         $menuItemDecoded = json_decode($this->jsonData);
 
         //Create the object review to pass it to the ADO
@@ -175,18 +209,18 @@ class MenuControllerClass implements ControllerInterface {
             $this->data [] = false;
         }
     }
-    
-    public function getMenuItem(){
+
+    public function getMenuItem() {
         $arrayMenuItems = [];
-        
+
         $result = $this->menuItemADO->findAll();
 
         if (count($result) > 0) {
             $this->data [] = true;
-            
+
             foreach ($result as $menuItem) {
-                $menuItemObj = new MenuItemClass($menuItem[0],$menuItem[1],$menuItem[2],$menuItem[3],$menuItem[4]);
-                $arrayMenuItems [] = $menuItemObj->getAll();                
+                $menuItemObj = new MenuItemClass($menuItem[0], $menuItem[1], $menuItem[2], $menuItem[3], $menuItem[4]);
+                $arrayMenuItems [] = $menuItemObj->getAll();
             }
 
             $this->data[] = $arrayMenuItems;
@@ -196,12 +230,12 @@ class MenuControllerClass implements ControllerInterface {
         }
     }
 
-    public function updateMenuItem(){
+    public function updateMenuItem() {
         $menuItemDecoded = json_decode($this->jsonData);
 
         //Create the object review to pass it to the ADO
         $menuItem = new MenuItemClass();
-        
+
         $menuItem->setAll("", $menuItemDecoded->courseId, $menuItemDecoded->name, $menuItemDecoded->image, $menuItemDecoded->price);
         $result = MealADO::update($menuItem);
 
@@ -218,7 +252,8 @@ class MenuControllerClass implements ControllerInterface {
             $this->data[] = $errors;
         }
     }
-    public function deleteMenuItem(){
+
+    public function deleteMenuItem() {
         $jsonDecoded = json_decode($this->jsonData);
 
         $idMenuItem = $jsonDecoded;
@@ -235,4 +270,18 @@ class MenuControllerClass implements ControllerInterface {
         }
     }
 
+    
+    public function bubbleSort($A,$n){
+        for($i=1;$i<$n;$i++)
+        {
+                for($j=0;$j<$n-$i;$j++)
+                {
+                        if($A[$j]>$A[$j+1])
+                        {$k=$A[$j+1]; $A[$j+1]=$A[$j]; $A[$j]=$k;}
+                }
+        }
+ 
+      return $A;
+    
+    }
 }

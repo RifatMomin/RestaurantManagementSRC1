@@ -6,7 +6,7 @@
  * @author victor
  */
 
-require_once "../EntityInterface.php";
+require_once "../model/EntityInterface.php";
 
 class IngredientClass implements EntityInterface{
     private $id;

@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of MenuItemADO
  *
@@ -20,6 +14,8 @@ class MenuItemADO implements EntityInterfaceADO {
 
     //Queries
     const SELECT_ALL = "SELECT * FROM menu_item";
+    const SELECT_MENU_HAS_ITEM = "SELECT item_id FROM menu_has_item WHERE menu_id = ?";
+    const SELECT_ITEM_PROPS = "SELECT c.course_name, c.priority, i.item_id, i.name FROM course c, menu_item i WHERE i.item_id = ? AND i.course_id = c.course_id";
     const INSERT = "INSERT INTO ProjectDAW2_Restaurant.menu_item (item_id, course_id, name, image) VALUES (?, ?, ?, ?)";
     const SELECT_ID = "SELECT * FROM menu_item WHERE item_id = ?";
     const DELETE = "DELETE FROM menu_item WHERE item_id = ?";
@@ -70,6 +66,16 @@ class MenuItemADO implements EntityInterfaceADO {
 
     public function findAll() {
         return $this->dbSource->execution(self::SELECT_ALL, $vector = []);
+    }
+    
+    public function findMenuHasItem($menuId){
+        $array = [$menuId];
+        return $this->dbSource->execution(self::SELECT_MENU_HAS_ITEM,$array);
+    }
+    
+    public function findItemsProps($itemId){
+        $array = [$itemId];
+        return $this->dbSource->execution(self::SELECT_ITEM_PROPS,$array);
     }
 
 }

@@ -1,0 +1,96 @@
+<div class="page-header">
+    <h3>Ingredients <small>Create &bull; Modify &bull; Delete</small></h3>
+</div>
+
+<div class="col-xs-12">
+    <button class="btn btn-info pull-left" style="margin-bottom: 5px;" id="buttonAdd" ng-click="showFromAddNewIngredient()">Add New</button>
+    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+        <form id="newIngredientForm" name="newIngredientForm" novalidate hidden>
+            <div class="form-group" ng-class="{'has-error': newIngredientForm.ingredientName.$invalid, 'has-success': newIngredientForm.ingredientName.$valid}">
+                <label>Name: </label>
+                <input type="text" class="form-control" name="ingredientName" ng-model="newIngredient.name" ng-maxlength="25" required/>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error': newIngredientForm.ingredientPrice.$invalid, 'has-success': newIngredientForm.ingredientPrice.$valid}">
+                <label>Price: </label>
+                <input type="text" class="form-control" name="ingredientPrice" ng-model="newIngredient.price" ng-currency required/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-success" ng-disabled="newIngredientForm.$invalid" ng-click="addIngredient()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                <button class="btn btn-danger" ng-click="cancelNewIngredient();"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="col-xs-12 text-center" ng-if="loadingIngredients">
+    <img class="img-responsive center-block" src="images/loading.gif" alt="Loading..." /> 
+    <p>Loading ingredients...</p>
+</div>
+
+<div class="col-xs-12" ng-if="!loadingIngredients">
+    <table class="table table-stripped">
+        <thead>
+        <th>Ingredient</th>
+        <th>Price</th>
+        <th class="text-center" style="width: 30px;">Modify</th>
+        <th class="text-center" style="width: 30px;">Delete</th>
+        </thead>
+        <tbody>
+            <tr dir-paginate="ingredient in ingredients | itemsPerPage: pageSize" current-page="currentPage">
+                <td><p ng-show="!editInputIngredients[$index]">{{ingredient.ingredient_name}}</p>
+                    <input ng-show="editInputIngredients[$index]" type="text" class="form-control" ng-model="ingredient.ingredient_name" required/>
+                </td>
+                <td>{{ingredient.price| currency}}</td>                    
+                <td class="text-center">
+                    <button id="editIngredient{{$index}}" class="btn btn-sm btn-warning" ng-click="editIngredientForm(ingredient)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-danger" ng-disabled="editingIngredients" ng-click="removeIngredient(ingredient.ingredient_id)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <div class="text-center" boundary-links="true" >	
+            <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
+        </div>
+    </div>
+</div>
+
+<!-- Modal modify ingredient-->
+<div class="modal fade" id="modifyIngredientModal" tabindex="-1" role="dialog" aria-labelledby="modalModifyIngredient">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center"><strong>Modifying Ingredient {{ingredientAux.ingredient_name}}</strong></h4>
+            </div>
+
+            <div class="modal-body">
+                <form novalidate name="modifyIngredientForm">
+                    <div class="form-group" ng-class="{'has-error': modifyIngredientForm.ingredientNameModify.$invalid, 'has-success': modifyIngredientForm.ingredientNameModify.$valid}">
+                        <label>Name: </label>
+                        <input type="text" class="form-control" name="ingredientNameModify" ng-model="ingredientAux.ingredient_name" ng-maxlength="25" required/>
+                    </div>
+
+                    <div class="form-group" ng-class="{'has-error': modifyIngredientForm.ingredientPriceModify.$invalid, 'has-success': newIngredientForm.ingredientPriceModify.$valid}">
+                        <label>Price: </label>
+                        <input type="text" class="form-control" name="ingredientPriceModify" ng-model="ingredientAux.price" ng-currency required/>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success" ng-disabled="modifyIngredientForm.$invalid" ng-click="modifyIngredient()">Modify</button>
+            </div>
+        </div>
+    </div>
+</div>

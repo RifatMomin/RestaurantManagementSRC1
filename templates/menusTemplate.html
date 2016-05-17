@@ -1,20 +1,24 @@
-<div>
-    <h1>The Menu</h1>
-    <table class="table table-striped">
-        <thead>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Course</th>
-            <th>Image<th>
-        </thead>
-        <tbody>
-            <tr ng-repeat="menuItem in menuItemsArray track by $index">			
-                <td>{{menuItem.getName()}}</td>
-                <td>{{menuItem.getPrice() | currency}}</td>
-                <td>{{menuItem.getCourseId()}}</td>
-                <td>{{menuItem.getImage()}}</td>
-            </tr>
-        </tbody>
-
-    </table>
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">
+    <div class="page-header" id="menus">
+        <h2>Welcome to {{restaurantInfo.name}}</h2>
+    </div> 
+    <div id="myCarousel" class="carousel slide" data-ride="carousel"> 
+        <div class="carousel-inner">
+            <div class="item" id="imageMenu{{$index}}" ng-class="{'active': $index == 0}" ng-repeat="menu in allMenus track by $index"> 
+                <img src="http://lorempixel.com/640/480/food/" style="width:100%; height:auto;" alt="First slide">
+                <div class="container">
+                    <div class="carousel-caption hidden-xs">
+                        <h4>{{menu.description}}</h4>
+                        <p>
+                        <ul class="list-unstyled" ng-repeat="item in menu.items| orderBy: 'priority'">
+                            <li><strong>{{item.course_name}}: </strong>{{item.item_name}}</li>
+                        </ul>  
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a> 
+        <a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a> 
+    </div>
 </div>

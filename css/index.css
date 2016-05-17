@@ -4,7 +4,7 @@
 */
 
 html, body {
-  padding-top: 70px; 
+  padding-top: 30px; 
   height: 100%;
 }
 
@@ -15,14 +15,24 @@ html, body {
     padding: 0 0 60px;
 }
 
+.container-index{
+    width:100%;
+    margin-bottom: 10px;
+}
 
 .footer {
     height: 60px;
     background-color: #f5f5f5;
     border-top: 1px solid #ddd;
     padding-top: 20px;
+    margin-top: 0px;
 }
 
+.carousel-inner > .item > img,
+  .carousel-inner > .item > a > img {
+      width: 70%;
+      margin: auto;
+  }
 
 .contactInfo{
     margin-bottom:5px;
@@ -65,4 +75,17 @@ html, body {
 
 .modal-body-success{
     background-color: #ccffcc;
+}
+
+.row-review{
+    margin-top: 3px;
+    border-bottom: 1px #ddd solid;
+}
+
+.badge{
+    font-size: 1.3em;
+}
+
+.navtabs-crud:hover{
+    cursor: pointer;
 }
