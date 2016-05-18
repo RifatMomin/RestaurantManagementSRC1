@@ -51,7 +51,7 @@ and open the template in the editor.
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>
         <script src="js/control/index.js" type="text/javascript"></script>
     </head>
-    <body ng-controller="mainAppController as mainCtrl" ng-init="getRestaurantInfo();getMenuItems();loadProvinces()">
+    <body data-spy="scroll" data-target=".navbar"  ng-controller="mainAppController as mainCtrl" ng-init="getRestaurantInfo();getMenus();getReviews();loadProvinces()">
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -62,15 +62,14 @@ and open the template in the editor.
                     </button>
                     <a class="navbar-brand" href="#">
                         <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
-
                     </a>
                     <a class="navbar-brand">{{restaurantInfo.name}}</a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li><a href="">Menus</a></li>
-                        <li><a href="#">Reviews</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#menus">Menus</a></li>
+                        <li><a href="#reviews">Reviews</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#" data-toggle="modal" data-target="#signUpModal" ng-click="reloadRegister()"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -80,14 +79,15 @@ and open the template in the editor.
             </div>
         </nav>
         <div class="wrap">
-        
-
-        <div class="container">
-            <!--                <menus-template></menus-template>-->
-            <contact-template></contact-template>
-            <retrieve-template ng-show="userAction = 1"></retrieve-template>
-        </div>   
-
+            <div class="container container-index">
+                    <menus-template></menus-template>
+                
+                    <reviews-template></reviews-template>
+                    
+                    <contact-template></contact-template>
+                    
+                    <retrieve-template ng-show="userAction = 1"></retrieve-template>                               
+            </div>  
         </div>
 
 

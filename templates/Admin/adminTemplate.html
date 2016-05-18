@@ -1,0 +1,43 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
+
+            </a>
+            <a class="navbar-brand">Admin Page</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav" >                        
+                <li><a href="#" ng-click="actionAdmin=1">Menus</a></li>
+                <li><a href="#" ng-click="actionAdmin=2">Courses</a></li>
+                <li><a hreF='#' ng-click="actionAdmin=3">Tables</a></li>
+                <li><a href='#' ng-click="actionAdmin=4">My Restaurant Info</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" ng-click="action = 5; openModalData()" data-toggle="popover"><span class="glyphicon glyphicon-user"></span>{{userLoggedIn.username}}</a></li>
+                <li><a href="#" ng-click="logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrap">
+    <div class="container">    
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">
+            <!--CRUD MENUS, MENU ITEM, INGREDIENTS-->
+            <menus-template ng-if="actionAdmin == 1"></menus-template>
+            <courses-template ng-if="actionAdmin == 2"></courses-template>
+            <!--CRUD Restaurant Info-->
+            <restaurant-info-template ng-if="actionAdmin == 4"></restaurant-info-template>
+            
+            
+        </div>
+    </div>
+</div>
+

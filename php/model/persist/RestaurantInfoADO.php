@@ -9,7 +9,7 @@ class RestaurantInfoADO implements EntityInterfaceADO {
     //Constants of the QUERIES
     const SELECT_INFO = "SELECT * FROM restaurant";
     const INSERT_INFO = "INSERT INTO restaurant (CIF, name, email, phone1, phone2, address, city, zip_code, description) VALUES ('', '', '', '', NULL, '', '', '', '')";
-    const UPDATE_INFO = "UPDATE restaurant CIF=?, name=? ,email=?, phone1=?, phone2=?, address=?, city=?, zip_code=?, description=? WHERE CIF=?, name=? ,email=?, phone1=?, phone2=?, address=?, city=?, zip_code=?, description=?";
+    const UPDATE_INFO = "UPDATE restaurant SET CIF=?, name=? ,email=?, phone1=?, phone2=?, address=?, city=?, zip_code=?, description=? WHERE restaurant_id=?";
 
     private $dataSource;
 
@@ -21,7 +21,6 @@ class RestaurantInfoADO implements EntityInterfaceADO {
 
         $restObj = $this->findAll();
         if ($restObj == null) {
-
             $array = [
                 $restObj->getCIF(),
                 $restObj->getName(),
@@ -42,38 +41,27 @@ class RestaurantInfoADO implements EntityInterfaceADO {
         return $this->dataSource->execution(self::SELECT_INFO, $array = []);
     }
     
-    public function update ($entity){}
-    
-    public function updated($restOldObj, $restNewObj) {
-        
-        $restOldObj = $this->findAll();
-        //var_dump($restaurantInfo);
-        if ($restOldObj != null) {
-            $arrayOld = [
-                $restOldObj->getCIF()
-            ];
-            
-        $restNewObj = $this->findAll()->fetchAll();
+    public function update($restNewObj) {
+
         if($restNewObj !=null){
             $arrayNew = [
                 $restNewObj->getCIF(),
                 $restNewObj->getName(),
+                $restNewObj->getEmail(),
+                $restNewObj->getPhone1(),
+                $restNewObj->getPhone2(),
                 $restNewObj->getAddress(),
                 $restNewObj->getCity(),
                 $restNewObj->getZipCode(),
-                $restNewObj->getPhone1(),
-                $restNewObj->getPhone2(),
-                $restNewObj->getEmail(),
-                $restNewObj->getDescription()
+                $restNewObj->getDescription(),
+                $restNewObj->getId()
             ];
-        }
-            
-            return $this->dataSource->execution(self::UPDATE_INFO, $arrayNew, $arrayOld);
+            return $this->dataSource->execution(self::UPDATE_INFO, $arrayNew);
         }
         else{
             create($entity);
         }
-        //return $this->dataSource->execution(self::UPDATE_INFO, $array);
+        
     }
 
     //not implemented 

@@ -1,0 +1,83 @@
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <div class='page-header' id="reviews">
+        <h2> Reviews <small> Here you can view the reviews of our customers</small></h2>
+    </div>  
+
+    <div class="col-xs-12">
+        <!--Review Iteration-->
+        <div class="row" dir-paginate="review in reviews | itemsPerPage: pageSize" current-page="currentPage">
+            <h3>Review by: {{review.user_name}} {{review.surname}}</h3>
+            <div class="col-xs-12">
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Food Quality</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.food_quality}}/10</span></h4>
+                    </div>
+                </div>
+
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Menu Variety</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.menu_variety}}/10</span></h4>
+                    </div>
+                </div>
+
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Customer Treatment</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.customer_treatment}}/10</span></h4>
+                    </div>
+                </div>
+
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Cleaniless</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.cleaniless}}/10</span></h4>
+                    </div>
+                </div>
+
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Pricing</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.pricing}}/10</span></h4>
+                    </div>
+                </div>
+
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Local Location</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.local_location}}/10</span></h4>
+                    </div>
+                </div>
+
+                <div class="row row-review">
+                    <div class="col-md-9 col-xs-9">
+                        <h4>Waiting Time</h4>
+                    </div>
+                    <div class="col-md-3 col-xs-3 text-right">
+                        <h4><span class="badge">{{review.waiting_time}}/10</span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="text-center" boundary-links="true" >	
+            <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
+        </div>
+    </div>
+
+</div>

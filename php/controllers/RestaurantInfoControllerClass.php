@@ -81,20 +81,27 @@ class RestaurantInfoController implements ControllerInterface {
     public function updateInfo(){
 
         $restaurant= json_decode(stripslashes($this->getJsonData()));
-        $OldRestObj= new RestaurantClass("", $restaurant[0]->CIF);
-        $NewRestObj= new RestaurantClass("", $restaurant[1]->CIF, $restaurant[1]->name, $restaurant[1]->address, $restaurant[1]->city, $restaurant[1]->zipCode, $restaurant[1]->phone1, $restaurant[1]->phone2, $restaurant[1]->email, $restaurant[1]->description);
-
-        $result = $this->helperAdo->updated($NewRestObj, $OldRestObj);
-        if($result!=null){
-            $this->data [] = false;
+        //var_dump($restaurant);
+        $rest= new RestaurantClass($restaurant->id_restaurant, $restaurant->CIF, $restaurant->name, $restaurant->address, $restaurant->city, $restaurant->zipCode, $restaurant->phone1, $restaurant->phone2, $restaurant->email, $restaurant->description);
+        $result = $this->helperAdo->update($rest)->rowCount();
+        //var_dump($result);
+        if($result>0){
+            $this->data [] = true;
             $this->errors [] = "Restaurant Info updated";
             $this->data [] = $this->errors;
         }
         else{
+            if($result==0){
+                $this->data [] = false;
+                $this->errors [] = "Restaurant Info hasn't been modified";
+                $this->data [] = $this->errors;
+            }else{
             $this->data [] = false;
             $this->errors [] = "Restaurant Info could not be updated";
             $this->data [] = $this->errors;
+            }
         }
+        
        
     }
 

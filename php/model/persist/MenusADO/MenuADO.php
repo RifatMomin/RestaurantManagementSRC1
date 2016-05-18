@@ -18,9 +18,9 @@ require_once "../model/persist/EntityInterfaceADO.php";
 class MenuADO implements EntityInterfaceADO {
 
     //Queries
-    const SELECT_ALL = 'SELECT * FROM menu';
-    const INSERT = "INSERT INTO ProjectDAW2_Restaurant. menu (menu_id, first, second, dessert, image, price ) VALUES (?, ?, ?, ?, ?, ?)";
-    const SELECT_ID = "SELECT * FROM menu WHERE menu_id = ?";
+    const SELECT_ALL = 'SELECT * FROM menu WHERE personalized = 1';
+//    const INSERT = "INSERT INTO ProjectDAW2_Restaurant. menu (menu_id, first, second, dessert, image, price ) VALUES (?, ?, ?, ?, ?, ?)";
+//    const SELECT_ID = "SELECT * FROM menu WHERE menu_id = ?";
 
     private $dbSource;
     private $meal;
@@ -55,9 +55,7 @@ class MenuADO implements EntityInterfaceADO {
     }
 
     public function findAll() {
-        $result = $this->dbSource->execution(self::SELECT_ALL, $vector = []);
-
-        return $result->fetchAll();
+        return $result = $this->dbSource->execution(self::SELECT_ALL, $vector = []);
     }
     
 
