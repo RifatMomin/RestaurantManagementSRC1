@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav" >                        
                 <li><a href="#" ng-click="actionAdmin=1">Menus</a></li>
-                <li><a href="#" ng-click="actionAdmin=2">Ingredients</a></li>
+                <li><a href="#" ng-click="actionAdmin=2">Courses</a></li>
                 <li><a hreF='#' ng-click="actionAdmin=3">Tables</a></li>
                 <li><a href='#' ng-click="actionAdmin=4">My Restaurant Info</a></li>
             </ul>
@@ -32,7 +32,7 @@
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">
             <!--CRUD MENUS, MENU ITEM, INGREDIENTS-->
             <menus-template ng-if="actionAdmin == 1"></menus-template>
-
+            <courses-template ng-if="actionAdmin == 2"></courses-template>
             <!--CRUD Restaurant Info-->
             <restaurant-info-template ng-if="actionAdmin == 4"></restaurant-info-template>
             

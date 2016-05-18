@@ -5,6 +5,7 @@ session_start();
 if (isset($_SESSION['connectedUser'])) {
     header("Location: main.php");
 }
+
 ?>
 
 <html ng-app="RestaurantAppReset">

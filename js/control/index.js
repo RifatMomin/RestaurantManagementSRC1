@@ -395,7 +395,7 @@ $(document).ready(function(){
          */
         $scope.changeModals = function () {
             $("#loginModal").modal("hide");
-        }
+        };
 
         /**
          * @description Gets th restaurant info from the Database

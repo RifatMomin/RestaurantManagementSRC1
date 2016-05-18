@@ -352,6 +352,10 @@ $(document).ready(function () {
                 }
             });
         };
+        
+        
+        
+        
 
     });
 
@@ -371,6 +375,9 @@ $(document).ready(function () {
         $scope.loadingIngredients = true;
         $scope.ingredientAux = new IngredientObj();
 
+        //Restaurant
+        $scope.equalPhoneNumbers = false;
+        
         //Menu Items
         $scope.menuItems = [];
         $scope.newMenuItem = new MenuItemObj();
@@ -381,6 +388,17 @@ $(document).ready(function () {
         //Pagination
         $scope.pageSize = 5;
         $scope.currentPage = 1;
+
+
+        $scope.checkPhoneNumbers = function () {
+            if ($scope.restaurantInfoForm.registerPhones.$valid) {
+                if ($scope.restaurantInfo.phone1 == $scope.restaurantInfo.phone2) {
+                    $scope.equalPhoneNumbers = false;
+                } else {
+                    $scope.equalPhoneNumbers = true;
+                }
+            }
+        };
 
         /**
          * @name getCourseTypes
@@ -650,6 +668,16 @@ $(document).ready(function () {
      * The templates are used to display different contents on the page
      * without change the location of the URL
      */
+    restaurantApp.directive("coursesTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDMenus/coursesTemplate.html",
+            controller: function () {
+            },
+            controllerAs: 'coursesTemplate'
+        };
+    });
+    
     restaurantApp.directive("tableMenuItems", function () {
         return {
             restrict: 'E',
@@ -827,4 +855,3 @@ $(document).ready(function () {
         };
     });
 })();
-

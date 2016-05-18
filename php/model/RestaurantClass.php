@@ -25,7 +25,7 @@ class RestaurantClass {
     private $email;
     private $description;
     
-    function __construct($id, $CIF, $name, $address, $city, $zipCode, $phone1, $phone2, $email, $description) {
+    function __construct($id="", $CIF="", $name="", $address="", $city="", $zipCode="", $phone1="", $phone2="", $email="", $description="") {
         $this->id = $id;
         $this->CIF = $CIF;
         $this->name = $name;
@@ -121,7 +121,8 @@ class RestaurantClass {
     public function getAll() {
         $data = array();
         $data["id"] = $this->id;
-        $data["CIF"] = $this->name;
+        $data["cif"] = $this->CIF;
+        $data["name"] = $this->name;
         $data["address"] = $this->address;
         $data["city"] = $this->city;
         $data["zipCode"] = $this->zipCode;
