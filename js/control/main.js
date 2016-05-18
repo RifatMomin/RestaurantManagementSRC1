@@ -18,7 +18,7 @@
  * JQUERY CODE
  */
 $(document).ready(function () {
-    
+    $('.btn').button('reset');
 });
 
 
@@ -361,20 +361,51 @@ $(document).ready(function () {
     restaurantApp.controller("adminController", function ($scope, accessService, $log) {
         //Scope variables
         $scope.actionAdmin = 1;//Controls the action of the admin
-        $scope.actionMenu = 3; //Cobtrols the action of the CRUD MENU
+        $scope.actionMenu = 2; //Cobtrols the action of the CRUD MENU
+        $scope.arrayCourseType = [];
 
         //Ingredients
         $scope.ingredients = []; //Array of ingredients
         $scope.newIngredient = new IngredientObj();
         $scope.hideButtonAdd = false;
-        $scope.editInputIngredients = [];
         $scope.loadingIngredients = true;
         $scope.ingredientAux = new IngredientObj();
-        $scope.editingIngredients = false;
+
+        //Menu Items
+        $scope.menuItems = [];
+        $scope.newMenuItem = new MenuItemObj();
+        $scope.loadingMenuItems = false;
+        $scope.menuItemAux = new MenuItemObj();
+        $scope.ingredientsNewMenuItem = [];
         
         //Pagination
         $scope.pageSize = 5;
         $scope.currentPage = 1;
+
+        /**
+         * @name getCourseTypes
+         * @description Gets the course Types from the server
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.getCourseTypes = function () {
+            $scope.arrayCourseType = [];
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 1, JSONData: JSON.stringify("")});
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $scope.arrayCourseType = angular.copy(data[1]);
+                        $scope.newMenuItem.courseId = data[1][0];
+                    } else {
+                        errorGest("Can't get the course types at this moment, try again later.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
 
         /**
          * @name getIngredients
@@ -386,20 +417,15 @@ $(document).ready(function () {
         $scope.getIngredients = function () {
             $scope.currentPage = 1;
             $scope.ingredients = [];
-            $scope.editInputIngredients = [];
             $scope.loadingIngredients = true;
-            
+
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 1, JSONData: JSON.stringify("")});
 
             promise.then(function (data) {
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
                         $scope.ingredients = angular.copy(data[1]);
-                        
-                        $.each($scope.ingredients,function(index){
-                            $scope.editInputIngredients.push(false);
-                        });
-                        
+
                         $scope.loadingIngredients = false;
                     }
                 } else {
@@ -420,7 +446,7 @@ $(document).ready(function () {
             $("#buttonAdd").hide();
             $("#newIngredientForm").toggle(800);
         }
-        
+
         /**
          * @name cancelNewIngredient
          * @description Cancels the new Ingredient creation. Putting the object to empty
@@ -429,12 +455,12 @@ $(document).ready(function () {
          * @author Victor Moreno García
          * @date 2016/05/16
          */
-        $scope.cancelNewIngredient = function(){
+        $scope.cancelNewIngredient = function () {
             $("#newIngredientForm").toggle(500);
             $("#buttonAdd").fadeIn(500);
             $scope.newIngredient = new IngredientObj();
         };
-        
+
         /**
          * @name addIngredient
          * @description Adds the new ingredient to the database
@@ -442,23 +468,23 @@ $(document).ready(function () {
          * @author Victor Moreno García
          * @date 2016/05/16
          */
-        $scope.addIngredient = function(){
+        $scope.addIngredient = function () {
             $scope.newIngredient = angular.copy($scope.newIngredient);
-            
+
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 2, JSONData: JSON.stringify($scope.newIngredient)});
-            
-            promise.then(function(data){
-                if(data[0]===true){
+
+            promise.then(function (data) {
+                if (data[0] === true) {
                     $scope.cancelNewIngredient();
                     $scope.getIngredients();
                     successMessage("Product Inserted correctly");
-                }else{
+                } else {
                     errorGest(data);
                 }
             });
-            
+
         };
-        
+
         /**
          * @name removeIngredient
          * @description removes the ingredient from the database
@@ -466,46 +492,156 @@ $(document).ready(function () {
          * @author Victor Moreno García
          * @date 2016/05/16
          */
-        $scope.removeIngredient = function(idIngredient){
+        $scope.removeIngredient = function (idIngredient) {
             //$log.info(idIngredient);
-            if(confirm("Are you sure you want to delete this ingredient?")){
+            if (confirm("Are you sure you want to delete this ingredient?")) {
                 var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 3, JSONData: JSON.stringify({id: idIngredient})});
-                
-                promise.then(function(data){
-                    if(data[0]===true){
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
                         $scope.getIngredients();
                         successMessage("Ingredient Deleted Correctly");
-                    }else{
+                    } else {
                         errorGest(data);
                     }
                 });
             }
         };
-        
-        $scope.editIngredientForm = function(ingredient){            
+
+        /**
+         * @name editIngredientForm
+         * @description Shows the modal to edit the ingredient
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.editIngredientForm = function (ingredient) {
             $scope.ingredientAux = angular.copy(ingredient);
-                     
-              $("#modifyIngredientModal").modal("show");         
-            
+
+            $("#modifyIngredientModal").modal("show");
+
         };
-        
-        $scope.modifyIngredient = function(){
+
+        /**
+         * @name modifyIngredient
+         * @description updates the ingredient modified by the user.
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.modifyIngredient = function () {
             $scope.ingredientAux = angular.copy($scope.ingredientAux);
-            
+
             $log.info($scope.ingredientAux);
-            
+
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 4, JSONData: JSON.stringify($scope.ingredientAux)});
-            
-            promise.then(function(data){
-                if(data[0]===true){
-                    
-                }else{
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isString(data[1])) {
+                        $("#modifyIngredientModal").modal("hide");
+                    } else {
+                        successMessage(data[2]);
+                        $("#modifyIngredientModal").modal("hide");
+                        $scope.getIngredients();
+                    }
+                } else {
                     errorGest(data);
                 }
             });
-            
-        };  
+        };
+
+        /**
+         * @name getMenuItems
+         * @description Gets the menu items from the database
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.getMenuItems = function () {
+            $scope.currentPage = 1;
+            $scope.menuItems = [];
+            $scope.loadingMenuItems = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11100, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $.each(data[1], function (index) {
+                            //The ingredients are in a String separated by a semicolon
+                            //We need to separate it with HTML format
+                            data[1][index].ingredients = data[1][index].ingredients.split(";");
+
+                            $scope.menuItems.push(data[1][index]);
+                        });
+
+                        //$log.info($scope.menuItems);
+                        $scope.loadingMenuItems = false;
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        /**
+         * @name showFromAddNewMenu Item
+         * @description Shows the form to add a new Menu Item
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.showFormAddNewMenuItem = function () {
+            $("#buttonAddMenuItem").hide();
+            $("#newMenuItemForm").toggle(800);
+        };
+
+        /**
+         * @name cancelNewMenuItem
+         * @description Cancels the new MenuItem creation putting the object to empty
+         * and setting the default style
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.cancelNewMenuItem = function () {
+            $("#newMenuItemForm").toggle(800);
+            $("#buttonAddMenuItem").fadeIn(500);
+            $scope.newMenuItem = new MenuItemObj();
+            $scope.newMenuItem.setCourseId($scope.arrayCourseType[0]);
+        };
+
         
+        $scope.addMenuItem = function () {
+            $scope.newMenuItem.setImage("images/menu_items/image.jpg");
+            $scope.newMenuItem.setCourseId($scope.newMenuItem.getCourseId().course_id);
+            $scope.newMenuItem = angular.copy($scope.newMenuItem);
+            
+            $log.info($scope.newMenuItem);
+            
+            $scope.newMenuItem = new MenuItemObj();
+            $scope.newMenuItem.setCourseId($scope.arrayCourseType[0]);
+            $scope.ingredientsNewMenuItem = [];
+        };
+        
+        $scope.managementMenuItemIngredients = function(index,ingredient){     
+            if($("#ingredientMenuItem"+index).is(":checked")){
+                $scope.ingredientsNewMenuItem.push(ingredient);
+            }else{
+                $.each($scope.ingredientsNewMenuItem,function(i){                    
+                    if(angular.equals($scope.ingredientsNewMenuItem[i], ingredient)){
+                        $scope.ingredientsNewMenuItem.splice(i,1);
+                    }
+                });
+            }
+            
+            $log.info($scope.ingredientsNewMenuItem);
+        };
+
     });
 
     /*
@@ -514,6 +650,16 @@ $(document).ready(function () {
      * The templates are used to display different contents on the page
      * without change the location of the URL
      */
+    restaurantApp.directive("tableMenuItems", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDMenus/tableMenuItems.html",
+            controller: function () {
+            },
+            controllerAs: 'tableMenuItems'
+        };
+    });
+
     restaurantApp.directive("tableIngredients", function () {
         return {
             restrict: 'E',

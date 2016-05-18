@@ -63,7 +63,7 @@ class MenuControllerClass implements ControllerInterface {
                 $this->insertMenuItem();
                 break;
             case 11100:
-                $this->getMenuItem();
+                $this->getMenusItem();
                 break;
             case 11200:
                 $this->updateMenuItem();
@@ -159,7 +159,7 @@ class MenuControllerClass implements ControllerInterface {
                         $newItem['item_id'] = $props->item_id;
                         $newItem['item_name'] = $props->name;
                         $newItem['course_name'] = $props->course_name;
-                        $newItem['priority']=$props->priority;
+                        $newItem['priority'] = $props->priority;
                         $itemInfo [] = $newItem;
                     }
                     $menuArray['items'] = $itemInfo;
@@ -210,23 +210,17 @@ class MenuControllerClass implements ControllerInterface {
         }
     }
 
-    public function getMenuItem() {
-        $arrayMenuItems = [];
-
-        $result = $this->menuItemADO->findAll();
+    public function getMenusItem() {
+        $result = $this->menuItemADO->findAllWithIngredients()->fetchAll(PDO::FETCH_OBJ);
 
         if (count($result) > 0) {
             $this->data [] = true;
 
-            foreach ($result as $menuItem) {
-                $menuItemObj = new MenuItemClass($menuItem[0], $menuItem[1], $menuItem[2], $menuItem[3], $menuItem[4]);
-                $arrayMenuItems [] = $menuItemObj->getAll();
-            }
-
-            $this->data[] = $arrayMenuItems;
-            //var_dump($arrayMenuItems);
+            $this->data[] = $result;
         } else {
             $this->data[] = false;
+            $this->errors [] = "Can't get the menu items from the database";
+            $this->data[] = $this->errors;
         }
     }
 
@@ -270,18 +264,18 @@ class MenuControllerClass implements ControllerInterface {
         }
     }
 
-    
-    public function bubbleSort($A,$n){
-        for($i=1;$i<$n;$i++)
-        {
-                for($j=0;$j<$n-$i;$j++)
-                {
-                        if($A[$j]>$A[$j+1])
-                        {$k=$A[$j+1]; $A[$j+1]=$A[$j]; $A[$j]=$k;}
+    public function bubbleSort($A, $n) {
+        for ($i = 1; $i < $n; $i++) {
+            for ($j = 0; $j < $n - $i; $j++) {
+                if ($A[$j] > $A[$j + 1]) {
+                    $k = $A[$j + 1];
+                    $A[$j + 1] = $A[$j];
+                    $A[$j] = $k;
                 }
+            }
         }
- 
-      return $A;
-    
+
+        return $A;
     }
+
 }

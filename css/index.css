@@ -89,3 +89,7 @@ html, body {
 .navtabs-crud:hover{
     cursor: pointer;
 }
+
+.table.vertical-align > tbody > tr > td {
+    vertical-align: middle;
+}

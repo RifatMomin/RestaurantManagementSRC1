@@ -45,6 +45,7 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
         <!--Model and Control-->
+        <script src="js/model/Menus/MenuItemObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/IngredientObj.js" type="text/javascript"></script>
         <script src="js/model/RestaurantObj.js" type="text/javascript"></script>
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>

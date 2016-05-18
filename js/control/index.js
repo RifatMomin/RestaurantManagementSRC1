@@ -26,7 +26,7 @@ $(document).ready(function(){
 
     // Store hash
     var hash = this.hash;
-
+    
     // Using jQuery's animate() method to add smooth page scroll
     // The optional number (1000) specifies the number of milliseconds it 
     // takes to scroll to the specified area
@@ -63,7 +63,7 @@ $(document).ready(function(){
         $scope.zipCode;
         $scope.availableUser = true;
         $scope.availableEmail = true;
-        $scope.equalPasswords = false;
+        $scope.equalPasswords = true;
         $scope.menuItem = new MenuItemObj();
         $scope.menuItemsArray = [1];
         $scope.restaurantStreetMap = "";
@@ -304,10 +304,11 @@ $(document).ready(function(){
          * @date 2016/05/06
          */
         $scope.reloadRegister = function () {
+            $log.info($scope.registerForm);
             $("#registerUserImage").val("");
             $scope.registerUser = new UserObj();
             $scope.repeatPassword = "";
-            $scope.loginForm.$setPristine();
+            $scope.registerForm.$setPristine();
         };
 
         /**

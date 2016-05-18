@@ -10,78 +10,82 @@
             <div class="modal-body">
                 <form name="registerForm" novalidate ng-submit="register()" class="row">
                     <div class="col-md-6">
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerUsername.$invalid || !availableUser , 'has-success':registerForm.registerUsername.$valid}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.registerUsername.$valid && !registerForm.registerUsername.$pristine) || !availableUser, 'has-success':(registerForm.registerUsername.$valid && !registerForm.registerUsername.$pristine) && availableUser }">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-user"></span></span>
-                                <input type="text" class="form-control" placeholder="Username" ng-model="registerUser.username" ng-keypress="checkNick()" ng-blur="checkNick()" ng-maxlength="12" name="registerUsername"  required/>
-                                <span ng-show="!registerForm.registerUsername.$invalid && availableUser" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                <span ng-show="registerForm.registerUsername.$invalid || !availableUser" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <input type="text" class="form-control" placeholder="Username" ng-model="registerUser.username" ng-pattern="/^[a-z0-9]+$/" ng-focus="availableUser = true" ng-blur="checkNick()" ng-maxlength="12" name="registerUsername"  required/>
+                                <span ng-show="(registerForm.registerUsername.$valid && !registerForm.registerUsername.$pristine) && availableUser" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerUsername.$valid && !registerForm.registerUsername.$pristine) || !availableUser" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>
                             <p class="text-danger" ng-show="registerForm.registerUsername.$error.maxlength"><strong>Error</strong> Only 12 characters allowed!</p>
                             <p class="text-danger" ng-show="!registerForm.registerUsername.$invalid && !availableUser"><strong>Error</strong> The username "{{registerUser.username}}" exists!</p>
                         </div>
 
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerPassword.$invalid, 'has-success':registerForm.registerPassword.$valid}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.registerPassword.$valid && !registerForm.registerPassword.$pristine), 'has-success':(registerForm.registerPassword.$valid && !registerForm.registerPassword.$pristine)}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-lock"></span></span>
-                                <input type="password" class="form-control" placeholder="Password" ng-model="registerUser.password" ng-keypress="checkPasswords()" ng-blur="checkPasswords()" ng-minlength="6" name="registerPassword" required/>                                    
-                                <span ng-show="registerForm.registerPassword.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                <span ng-show="!registerForm.registerPassword.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <input type="password" class="form-control" placeholder="Password" ng-model="registerUser.password" ng-blur="checkPasswords()" ng-minlength="6" name="registerPassword" required/>                                    
+                                <span ng-show="(registerForm.registerPassword.$valid && !registerForm.registerPassword.$pristine)" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerPassword.$valid && !registerForm.registerPassword.$pristine)" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>
                             <p class="text-danger" ng-show="registerForm.registerPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
                         </div>
 
-                        <div class="form-group" ng-class="{'has-error': registerForm.repeatPassword.$invalid || !equalPasswords, 'has-success':registerForm.repeatPassword.$valid || equalPasswords}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.repeatPassword.$valid && !registerForm.repeatPassword.$pristine) || !equalPasswords, 'has-success':(registerForm.repeatPassword.$valid && !registerForm.repeatPassword.$pristine) && equalPasswords}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-repeat"></span></span>
-                                <input type="password" class="form-control" placeholder="Repeat Password" ng-minlength="6" ng-model="repeatPassword" ng-keypress="checkPasswords()" ng-blur="checkPasswords()" name="repeatPassword" required/>
-                                <span ng-show="equalPasswords" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                <span ng-show="!equalPasswords" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <input type="password" class="form-control" placeholder="Repeat Password" ng-focus="equalPasswords = true" ng-minlength="6" ng-model="repeatPassword" ng-blur="checkPasswords()" name="repeatPassword" required/>
+                                <span ng-show="(registerForm.repeatPassword.$valid && !registerForm.repeatPassword.$pristine) && equalPasswords" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.repeatPassword.$valid && !registerForm.repeatPassword.$pristine) || !equalPasswords" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>
                             <p class="text-danger" ng-show="registerForm.repeatPassword.$error.minlength"><strong>Error</strong> Password must be at least 6 characters!</p>
                             <p class="text-danger" ng-show="registerForm.repeatPassword.$valid && !equalPasswords"><strong>Error</strong> Passwords doesn't match!</p>                                    
                         </div>
 
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerName.$invalid, 'has-success':registerForm.registerName.$valid}">
+                        <div class="form-group"  ng-class="{'has-error': (!registerForm.registerName.$valid && !registerForm.registerName.$pristine), 'has-success': (registerForm.registerName.$valid && !registerForm.registerName.$pristine)}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-hand-right"></span></span>
                                 <input type="text" class="form-control" placeholder="Your Name" ng-model="registerUser.name" ng-pattern="/^[a-zA-Zñá-ú\s]+$/" name="registerName" required/>
+                                <span ng-show="(registerForm.registerName.$valid && !registerForm.registerName.$pristine)" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerName.$valid && !registerForm.registerName.$pristine)" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>                                    
                         </div>
 
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerSurname.$invalid, 'has-success':registerForm.registerSurname.$valid}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.registerSurname.$valid && !registerForm.registerSurname.$pristine), 'has-success': (registerForm.registerSurname.$valid && !registerForm.registerSurname.$pristine)}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-hand-right"></span></span>
                                 <input type="text" class="form-control" placeholder="Your Surname" ng-model="registerUser.surname" ng-pattern="/^[a-zA-Zñá-ú\s]+$/" name="registerSurname" required/>
+                                <span ng-show="(registerForm.registerSurname.$valid && !registerForm.registerSurname.$pristine)" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerSurname.$valid && !registerForm.registerSurname.$pristine)" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>                                        
                         </div>
 
 
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerEmail.$invalid || !availableEmail, 'has-success':registerForm.registerEmail.$valid}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.registerEmail.$valid && !registerForm.registerEmail.$pristine) || !availableEmail, 'has-success':(registerForm.registerEmail.$valid && !registerForm.registerEmail.$pristine) && availableEmail }">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-envelope"></span></span>
-                                <input type="email" class="form-control" placeholder="Valid Email" ng-model="registerUser.email" ng-keypress="checkEmail()" ng-blur="checkEmail()" ng-pattern="/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/" name="registerEmail" required/>
-                                <span ng-show="registerForm.registerEmail.$valid && availableEmail" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                <span ng-show="registerForm.registerEmail.$invalid || !availableEmail" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <input type="email" class="form-control" placeholder="Valid Email" ng-model="registerUser.email" ng-blur="checkEmail()" ng-pattern="/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/" name="registerEmail" required/>
+                                <span ng-show="(registerForm.registerEmail.$valid && !registerForm.registerEmail.$pristine) && availableEmail" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerEmail.$valid && !registerForm.registerEmail.$pristine) || !availableEmail" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div> 
                             <p class="text-danger" ng-show="registerForm.registerEmail.$valid && !availableEmail"><strong>Error</strong> The email "{{registerUser.email}}" exists!</p>
                         </div>
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerPhone.$invalid, 'has-success':registerForm.registerPhone.$valid}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.registerPhone.$valid && !registerForm.registerPhone.$pristine), 'has-success':(registerForm.registerPhone.$valid && !registerForm.registerPhone.$pristine)}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-phone-alt"></span></span>
                                 <input type="text" class="form-control" placeholder="Phone Number" ng-model="registerUser.phone" ng-pattern="/^[6-9][0-9]{8}$/" name="registerPhone" required/>
-                                <span ng-show="registerForm.registerPhone.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                <span ng-show="!registerForm.registerPhone.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(registerForm.registerPhone.$valid && !registerForm.registerPhone.$pristine)" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerPhone.$valid && !registerForm.registerPhone.$pristine)" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>                                     
                         </div>
-                        <div class="form-group" ng-class="{'has-error': registerForm.registerAddress.$invalid, 'has-success':registerForm.registerAddress.$valid}">
+                        <div class="form-group" ng-class="{'has-error': (!registerForm.registerAddress.$valid && !registerForm.registerAddress.$pristine), 'has-success':(registerForm.registerAddress.$valid && !registerForm.registerAddress.$pristine)}">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
                                 <input type="text" class="form-control" placeholder="Address" ng-model="registerUser.address" name="registerAddress" required/>
-                                <span ng-show="registerForm.registerAddress.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                                <span ng-show="!registerForm.registerAddress.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(registerForm.registerAddress.$valid && !registerForm.registerAddress.$pristine)" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                                <span ng-show="(!registerForm.registerAddress.$valid && !registerForm.registerAddress.$pristine)" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                             </div>    
                         </div>
                         <div class="form-group"> 

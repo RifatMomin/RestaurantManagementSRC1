@@ -68,9 +68,9 @@ class IngredientsController implements ControllerInterface {
         $result = $this->helperAdo->update($ingredient);
         
         if($result->rowCount()>0){
-            $this->data[]=true;
-            $this->data[]="Ingredient Modifyied";
+            $this->data[]=true;            
             $this->data[]=$ingredient->getAll();
+            $this->data[]="Ingredient Modifyied";
         }else if($result->rowCount()==0){
             $this->data[]=true;
             $this->data[]="Nothing Modifyied.";

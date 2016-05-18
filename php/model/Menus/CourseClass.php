@@ -6,7 +6,7 @@
  * @author Alumne
  */
 
-require_once "EntityInterface.php";
+require_once "../model/EntityInterface.php";
 
 class CourseClass implements EntityInterface{
     private $id;
