@@ -351,7 +351,7 @@ $(document).ready(function () {
                     }
                 }
             });
-        }
+        };
 
     });
 
