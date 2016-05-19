@@ -6,9 +6,9 @@ require_once "../model/Menus/CourseClass.php";
 class CourseADO implements EntityInterfaceADO {
     //Queries
     const SELECT_ALL_COURSES= "SELECT * FROM course ORDER BY priority";
-    const INSERT_COURSE = "INSERT INTO `course`(`course_id`, `course_name`, `priority`) VALUES (?, ?, ?)";
-    const DELETE_COURSE = "DELETE FROM `course` WHERE `course_id` = ?";
-    const UPDATE_COURSE = "UPDATE `course` SET `course_name` = ?, `priority` = ? WHERE `course_id` = ?";
+    const INSERT_COURSE = "INSERT INTO course(course_name, priority) VALUES (?, ?)";
+    const DELETE_COURSE = "DELETE FROM course WHERE course_id = ?";
+    const UPDATE_COURSE = "UPDATE course SET course_name = ?, priority = ? WHERE course_id = ?";
     
     private $dataSource;
 
@@ -17,13 +17,14 @@ class CourseADO implements EntityInterfaceADO {
     }
 
     public function create($course) {
-        $array=[$course->getName(),$course->getPriority()];
+
+        $array=[$course->getName(), $course->getPriority()];
         
         return $this->dataSource->executionInsert(self::INSERT_COURSE, $array);
     }
 
     public function delete($courseId) {
-        return $this->dataSource->execution(self::DELETE_COURSE, $array=[$courseId]);
+        return $this->dataSource->execution(self::DELETE_COURSE, $array=[$courseId->id]);
     }
 
     public function findAll() {
@@ -31,11 +32,12 @@ class CourseADO implements EntityInterfaceADO {
     }
 
     public function update($course) {
+        //var_dump($course);
         $array = [
-                $course->getName(),
-                $course->getPriority(),
-                $course->getId()
-                ];
+            $course->course_name,
+            $course->priority,
+            $course->course_id
+        ];
         
         return $this->dataSource->execution(self::UPDATE_COURSE,$array);
     }
