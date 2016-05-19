@@ -8,10 +8,12 @@
 CourseObj = function () {
     this.id = null;
     this.name = null;
+    this.priority = null;
 
-    this.construct = function(id,name){
+    this.construct = function(id,name, priority){
         this.setId(id);
         this.setName(name);
+        this.setPriority(priority);
     };
 
     this.setId = function (id) {
@@ -26,6 +28,11 @@ CourseObj = function () {
     this.getName = function () {
         return this.name;
     }
-
+    this.setPriority= function (priority) {
+        this.priority = priority;
+    }
+    this.getPriority = function () {
+        return this.priority;
+    }
 
 };

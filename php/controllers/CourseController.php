@@ -38,6 +38,15 @@ class CourseController implements ControllerInterface {
             case 1:
                 $this->getAllCourseTypes();
                 break;
+            case 2: 
+                $this->addNewCourse();
+                break;
+            case 3:
+                $this->deleteCourse();
+                break;
+            case 4:
+                $this->updateCourse();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -63,5 +72,55 @@ class CourseController implements ControllerInterface {
             $this->data[] = $this->errors;
         }
     }
+    
+    public function addNewCourse(){
+        $courseDecoded = json_decode(stripslashes($this->getJsonData()));
+        $course= new CourseClass("", $courseDecoded->name, $courseDecoded->priority);
+        
+        $result = $this->helperAdo->create($course);
+
+        if ($result != null) {
+            $this->data[] = true;
+            //$this->data[] = $courseDecoded->findAll();
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "Sorry there has been an error in the server, try again later or in a few minutes.";
+            $this->data[] = $this->errors;
+        }
+    }
+    
+    public function deleteCourse(){
+        $courseDecoded = json_decode(stripslashes($this->jsonData));
+        //var_dump($courseDecoded);
+        $result = $this->helperAdo->delete($courseDecoded);
+        //var_dump($result);
+        if ($result->rowCount()>0) {
+            $this->data[] = true;
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "Can't delete course at this moment. Try later.";
+            $this->data [] = $this->errors;
+        }
+        
+    }
+    
+    public function updateCourse(){
+        $courseDecoded = json_decode(stripslashes($this->jsonData));
+        //var_dump($courseDecoded);
+        $result = $this->helperAdo->update($courseDecoded);
+        
+        if($result->rowCount()>0){
+            $this->data[] = true;
+            $this->errors= [];
+            $this->data [] = $this->errors;
+        }
+        else{
+            $this->data [] = false;
+            $this->errors[] = "Can't update course right now. Try later.";
+            $this->data [] = $this->errors;
+        }
+        
+    }
+    
 
 }

@@ -385,6 +385,13 @@ $(document).ready(function () {
         $scope.menuItemAux = new MenuItemObj();
         $scope.ingredientsNewMenuItem = [];
         
+        //Courses 
+        $scope.newCourse = new CourseObj();
+        $scope.arrayCourseType = []; //an array of courses
+        $scope.loadingCourses = true;
+        $scope.hideButtonAddCourse = false;
+        $scope.courseModify = new CourseObj();
+        
         //Pagination
         $scope.pageSize = 5;
         $scope.currentPage = 1;
@@ -409,13 +416,16 @@ $(document).ready(function () {
          */
         $scope.getCourseTypes = function () {
             $scope.arrayCourseType = [];
-
+            $scope.currentPage= 1;
+            $scope.loadingCourses = true;
+            
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 1, JSONData: JSON.stringify("")});
             promise.then(function (data) {
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
                         $scope.arrayCourseType = angular.copy(data[1]);
                         $scope.newMenuItem.courseId = data[1][0];
+                        $scope.loadingCourses = false;
                     } else {
                         errorGest("Can't get the course types at this moment, try again later.");
                     }
@@ -424,7 +434,113 @@ $(document).ready(function () {
                 }
             });
         };
+        
+        /*
+         * @description Inserts a new course to the db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18 
+         */
+         $scope.addCourse = function () {
+            $scope.newCourse = angular.copy($scope.newCourse);
+            console.log($scope.newCourse);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 2, JSONData: JSON.stringify($scope.newCourse)});
+            
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    //$scope.cancelCourse();
+                    $scope.getCourseTypes();
+                    successMessage("Course added");
+                } else {
+                    errorGest(data);
+                }
+            });
+        }
+        
+        /*
+         * @description Removes course from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18 
+         */
+        $scope.removeCourse = function (idCourse) {
+            //$log.info(idCourse);
+            if (confirm("Are you sure you want to delete this course?")) {
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 3, JSONData: JSON.stringify({id: idCourse})});
 
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        $scope.getIngredients();
+                        successMessage("Course Deleted");
+                    } else {
+                        errorGest(data);
+                    }
+                });
+            }
+        };
+        
+        /**
+         * @name showAddNewCourseForm
+         * @description Shows the form to add a new course
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18
+         */
+        $scope.showAddNewCourseForm = function () {
+            $("#buttonAddCourse").hide();   
+            $("#coursesForm").toggle(800);
+        }
+        
+        /*
+         * @name cancelNewCourse
+         * @description Cleans and hides the add form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18
+         */
+        $scope.cancelNewCourse = function () {
+            $("#coursesForm").toggle(500);
+            $("#buttonAddCourse").fadeIn(500);
+            $scope.newIngredient = new IngredientObj();
+        };
+        
+        /*
+         * @name editCourseForm
+         * @description Shows course modification form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18
+         */
+        $scope.editCourseForm = function (course) {
+            $scope.courseModify = angular.copy(course);
+
+            $("#modifyCourseModal").modal("show");
+
+        };
+        
+        /*
+         * @name modifyCourse
+         * @description Allows user to modify course info
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18
+         */
+        $scope.modifyCourse = function (courseModify){
+            //console.log($scope.courseModify);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 4, JSONData: JSON.stringify($scope.courseModify)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        successMessage("Course Successfully Modified");
+                        $("#modifyCourseModal").modal("hide");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        }
+        
         /**
          * @name getIngredients
          * @description Gets the ingredients from the database
@@ -465,6 +581,7 @@ $(document).ready(function () {
             $("#newIngredientForm").toggle(800);
         }
 
+       
         /**
          * @name cancelNewIngredient
          * @description Cancels the new Ingredient creation. Putting the object to empty
@@ -502,6 +619,7 @@ $(document).ready(function () {
             });
 
         };
+        
 
         /**
          * @name removeIngredient
