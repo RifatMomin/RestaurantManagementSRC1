@@ -15,14 +15,14 @@ class MenuItemADO implements EntityInterfaceADO {
     //Queries
     const SELECT_ALL_WITH_INGREDIENTS = "SELECT mi.*, c.*, item_ingredient.*, GROUP_CONCAT(ing.ingredient_name SEPARATOR ';') ingredients FROM menu_item mi, course c, menu_item_has_ingredient item_ingredient, ingredient ing WHERE mi.course_id = c.course_id AND mi.item_id = item_ingredient.menu_item_id AND item_ingredient.ingredient_id = ing.ingredient_id GROUP BY mi.item_id ORDER BY c.priority ";
     const SELECT_MENU_HAS_ITEM = "SELECT item_id FROM menu_has_item WHERE menu_id = ?";
+    const SELECT_ITEM_IN_MENU = "SELECT `menu_id`, `item_id` FROM `menu_has_item` WHERE `item_id` = ?";
     const SELECT_ITEM_PROPS = "SELECT c.course_name, c.priority, i.item_id, i.name FROM course c, menu_item i WHERE i.item_id = ? AND i.course_id = c.course_id";
-    const INSERT = "INSERT INTO ProjectDAW2_Restaurant.menu_item (item_id, course_id, name, image) VALUES (?, ?, ?, ?)";
+    const INSERT = "INSERT INTO menu_item (course_id, name, image, price) VALUES (?, ?, ?, ?)";
     const SELECT_ID = "SELECT * FROM menu_item WHERE item_id = ?";
     const DELETE = "DELETE FROM menu_item WHERE item_id = ?";
     const UPDATE = "UPDATE menu_item SET course_id = ?, name = ?, image = ? WHERE name = ?";
 
     private $dbSource;
-    private $menuItem;
 
     function __construct() {
         try {
@@ -32,27 +32,28 @@ class MenuItemADO implements EntityInterfaceADO {
             die();
         }
     }
-
+    
+    public function findItemInMenu($menuItemId){
+        return $this->dbSource->execution(self::SELECT_ITEM_IN_MENU, $array=[$menuItemId]);
+    }
+    
     public function create($entity) {
-        $this->menuItem = new MenuItemClass($entity->getItemId(), $entity->getCourseId(), $entity->getName(), $entity->getImage(), $entity->getPrice());
-        //:course_id,:meal_name,:meal_price,:meal_image
-        $vector = [ "itemId" => $entity->getItemId(),
-            "courseId" => $entity->getCourseId(),
-            "name" => $entity->getName(),
-            "image" => $entity->getImage(),
-            "price" => $entity->getPrice()
+        
+        $vector = [
+            $entity->getCourseId(),
+            $entity->getName(),
+            $entity->getImage(),
+            $entity->getPrice()
         ];
 
-        return $this->dbSource->executionInsert(self::INSERT, $vector);
+        return $this->dbSource->executeTransaction(self::INSERT, $vector);
     }
 
     public function delete($entity) {
-        $this->menuItem = new MenuItemClass($entity->getItemId(), $entity->getCourseId(), $entity->getName(), $entity->getImage(), $entity->getPrice());
         //:course_id,:meal_name,:meal_price,:meal_image
-        $vector = [ "itemId" => $entity->getItemId(),
-        ];
+        $vector = [$entity->getItemId()];
 
-        return $this->dbSource->executionInsert(self::DELETE, $vector);
+        return $this->dbSource->execution(self::DELETE, $vector);
     }
 
     public function update($entity) {

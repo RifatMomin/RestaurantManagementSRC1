@@ -7,6 +7,7 @@ class IngredientADO implements EntityInterfaceADO {
     //Queries
     const SELECT_ALL_INGREDIENTS = "SELECT * FROM ingredient ORDER BY ingredient_name";
     const INSERT_INGREDIENT = "INSERT INTO `ingredient` (`ingredient_name`, `price`) VALUES (?, ?)";
+    const INSERT_MENU_ITEM_INGREDIENT = "INSERT INTO `menu_item_has_ingredient` (`menu_item_id`, `ingredient_id`, `quantity`) VALUES (?, ?, 0)";
     const DELETE_INGREDIENT = "DELETE FROM `ingredient` WHERE `ingredient_id` = ?";
     const UPDATE_INGREDIENT = "UPDATE `ingredient` SET `ingredient_name` = ?, `price` = ? WHERE `ingredient_id` = ?";
     
@@ -20,6 +21,16 @@ class IngredientADO implements EntityInterfaceADO {
         $array=[$ingredient->getName(),$ingredient->getPrice()];
         
         return $this->dataSource->executionInsert(self::INSERT_INGREDIENT, $array);
+    }
+    
+    public function createMenuItemIngredient($ingredientMenuItem,$idMenuItem){
+        $sql = "INSERT INTO `menu_item_has_ingredient` (`menu_item_id`, `ingredient_id`, `quantity`) VALUES ('$idMenuItem', '".$ingredientMenuItem->getId()."', '0')";
+        
+        
+        $array = [$idMenuItem,$ingredientMenuItem->getId()];
+        
+        //return $this->dataSource->execution($sql, $array);
+        return $this->dataSource->execution(self::INSERT_MENU_ITEM_INGREDIENT, $array);
     }
 
     public function delete($ingredientId) {

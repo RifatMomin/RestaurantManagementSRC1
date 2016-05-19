@@ -48,6 +48,9 @@ class IngredientsController implements ControllerInterface {
             case 4:
                 $this->modifyIngredient();
                 break;
+            case 5:
+                $this->insertIngredientsMenuItem();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -60,33 +63,64 @@ class IngredientsController implements ControllerInterface {
         return $this->data;
     }
 
-    public function modifyIngredient(){
-        $json = json_decode($this->jsonData);
-        
-        $ingredient = new IngredientClass($json->ingredient_id,$json->ingredient_name,$json->price);
-        
-        $result = $this->helperAdo->update($ingredient);
-        
-        if($result->rowCount()>0){
-            $this->data[]=true;            
-            $this->data[]=$ingredient->getAll();
-            $this->data[]="Ingredient Modifyied";
-        }else if($result->rowCount()==0){
-            $this->data[]=true;
-            $this->data[]="Nothing Modifyied.";
-        }else{
-            $this->data[]=false;
-            $this->errors[]="Can't update the ingredient at this moment. Try again later.";
-            $this->data[]=$this->errors;
+    public function insertIngredientsMenuItem() {
+        $ingredientsJson = json_decode($this->jsonData);
+
+        $idMenuItem = $ingredientsJson->menuItemId;
+        $ingredientsArray = $ingredientsJson->ingredients;
+
+        if (is_array($ingredientsArray)) {
+            if (count($ingredientsArray) > 0) {
+                $numberIngredientsInserted = 0;
+                $this->data[] = true;
+                foreach ($ingredientsArray as $ing) {
+                    $newIng = new IngredientClass($ing->ingredient_id, $ing->ingredient_name, $ing->price);
+                    $resultInsert = $this->helperAdo->createMenuItemIngredient($newIng, $idMenuItem)->rowCount();
+                    if ($resultInsert > 0) {
+                        $numberIngredientsInserted++;
+                        $this->data[1] = $numberIngredientsInserted;
+                    } else {
+                        $this->data[0] = false;
+                        $this->errors[] = "There has been an error inserting the menu item ingredients, try later. Sorry";
+                        $this->data[1] = $this->errors;
+                        break;
+                    }
+                }
+            }
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "There has been an error inserting the menu item ingredients, try later. Sorry";
+            $this->data[] = $this->errors;
         }
     }
-    
+
+    public function modifyIngredient() {
+        $json = json_decode($this->jsonData);
+
+        $ingredient = new IngredientClass($json->ingredient_id, $json->ingredient_name, $json->price);
+
+        $result = $this->helperAdo->update($ingredient);
+
+        if ($result->rowCount() > 0) {
+            $this->data[] = true;
+            $this->data[] = $ingredient->getAll();
+            $this->data[] = "Ingredient Modifyied";
+        } else if ($result->rowCount() == 0) {
+            $this->data[] = true;
+            $this->data[] = "Nothing Modifyied.";
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "Can't update the ingredient at this moment. Try again later.";
+            $this->data[] = $this->errors;
+        }
+    }
+
     public function removeIngredient() {
         $json = json_decode($this->jsonData);
 
         $result = $this->helperAdo->delete($json->id);
 
-        if ($result->rowCount()>0) {
+        if ($result->rowCount() > 0) {
             $this->data[] = true;
         } else {
             $this->data[] = false;

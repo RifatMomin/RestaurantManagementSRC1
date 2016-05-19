@@ -60,7 +60,7 @@ class MenuControllerClass implements ControllerInterface {
                 break;
             case 10066:
                 $this->deleteMenu();
-                break;
+                break;            
             //Menu Item methods
             case 11000:
                 $this->insertMenuItem();
@@ -73,6 +73,9 @@ class MenuControllerClass implements ControllerInterface {
                 break;
             case 11300:
                 $this->deleteMenuItem();
+                break;
+            case 11400:
+                $this->checkMenuItemInMenu();
                 break;
             //Courses CRUD methods
             case 12000:
@@ -97,6 +100,22 @@ class MenuControllerClass implements ControllerInterface {
         }
 
         return $this->data;
+    }
+    
+    public function checkMenuItemInMenu(){
+        $menuDecoded = json_decode($this->jsonData);
+        
+        $menuItemId = $menuDecoded->menuItemId;
+        
+        $result = $this->menuItemADO->findItemInMenu($menuItemId)->rowCount();
+        
+        if($result<=0){
+            $this->data[]=false;
+        }else{
+            $this->data[]=true;
+            $this->errors [] = "This Menu Item is already in a Menu. If you want to delete a Menu Item, be sure to delete the menu first.";
+            $this->data[]=$this->errors;
+        }
     }
 
     public function updateMenu() {
@@ -211,19 +230,20 @@ class MenuControllerClass implements ControllerInterface {
 
     public function insertMenuItem() {
         $menuItemDecoded = json_decode($this->jsonData);
-
-        //Create the object review to pass it to the ADO
-        $menuItem = new MenuItemClass();
-        $menuItem->setAll("", $menuItemDecoded->courseId, $menuItemDecoded->name, $menuItemDecoded->image, $menuItemDecoded->price);
-
-        $result = MenuItemADO::create($menuItem);
-
-        if ($result > 0) {
-            $this->data [] = true;
-            $this->data [] = $result;
-        } else {
+        
+        //First insert he menu Item in the table menu_item
+        $menuItem = new MenuItemClass(null, $menuItemDecoded->menuItem->courseId, $menuItemDecoded->menuItem->name, $menuItemDecoded->menuItem->image, $menuItemDecoded->menuItem->price);
+        
+        $result = $this->menuItemADO->create($menuItem);
+        
+        if($result!=null){
+            $this->data[]=true;
+            $this->data['menuItemId']=$result;
+        }else{
             $this->data [] = false;
-        }
+            $this->errors []="Can't insert the menu Item now, try again later. Sorry.";
+            $this->data [] = $this->errors;
+         }
     }
 
     public function getMenusItem() {
@@ -266,18 +286,27 @@ class MenuControllerClass implements ControllerInterface {
     public function deleteMenuItem() {
         $jsonDecoded = json_decode($this->jsonData);
 
-        $idMenuItem = $jsonDecoded;
-        //Construct the review
-        $menuItem = new MenuClass();
-        $menuItem->setId($idMenuItem);
-
-        $result = MenuItemADO::delete($menuItem);
-
-        if ($result->rowCount() > 0) {
-            $this->data [] = true;
-        } else {
-            $this->data[] = false;
-        }
+        //var_dump($jsonDecoded);
+        
+        $menuItemId = $jsonDecoded->menuItemId;
+        
+        $menuItem = new MenuItemClass($menuItemId,"","","","");
+        
+        $result = $this->menuItemADO->delete($menuItem)->rowCount();
+        
+        echo $result;
+//        $idMenuItem = $jsonDecoded->menuItemId;
+//        //Construct the review
+//        $menuItem = new MenuClass();
+//        $menuItem->setId($idMenuItem);
+//
+//        $result = MenuItemADO::delete($menuItem);
+//
+//        if ($result->rowCount() > 0) {
+//            $this->data [] = true;
+//        } else {
+//            $this->data[] = false;
+//        }
     }
 
     public function bubbleSort($A, $n) {

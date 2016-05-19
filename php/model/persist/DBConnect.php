@@ -52,7 +52,7 @@ class DBConnect {
             $this->link = new PDO('mysql:dbname=' . $this->dataBase . ';host=' . $this->server, $this->user, $this->password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
         } catch (PDOException $e) {
             $this->link = null;
-            echo "Error connecting to database.";
+            //echo "Error connecting to database.";
             error_log("Error connecting to database: " . $e);
         }
     }
@@ -65,9 +65,9 @@ class DBConnect {
                 $this->stmt->execute($vector);
             } catch (PDOException $e) {
                 $this->link = null;
-                echo "Error executing query. $e";
+                //echo "Error executing query. $e";
                 error_log("Error executing query: " . $e);
-                var_dump($e);
+                //var_dump($e);
             }
         } else {
             $this->stmt = null;
@@ -78,14 +78,15 @@ class DBConnect {
 
     //si necessitem altres coses, com per exemple, saber el darrer id insertat, l'hem de codificar a banda
     public function executionInsert($sql, $vector) {
-        if ($this->link != null) {
+        $id = null;
+        if ($this->link != null) {            
             $this->stmt = $this->link->prepare($sql);
             try {
                 $this->stmt->execute($vector);
                 $id = $this->link->lastInsertId();
             } catch (PDOException $e) {
                 $this->link = null;
-                echo "Error executing insert.";
+                //echo "Error executing insert.";
                 error_log("Error executing insert: " . $e);
             }
         } else {
@@ -94,9 +95,31 @@ class DBConnect {
 
         return $id;
     }
+    
+    public function executeTransaction($sql,$vector){
+        $id=0;
+        if ($this->link != null) {            
+            $this->link->beginTransaction();
+            $this->stmt= $this->link->prepare($sql);
+            try {
+                $this->stmt->execute($vector);
+                $id = $this->link->lastInsertId();
+                $this->link->commit();
+            } catch (PDOException $e) {
+                $this->link = null;
+                //echo "Error executing insert.";
+                error_log("Error executing insert: " . $e);
+            }
+        } else {
+            $id = null;
+        }
+        
+        return $id;
+
+    }
 
         
 
 }
-?>
+
 

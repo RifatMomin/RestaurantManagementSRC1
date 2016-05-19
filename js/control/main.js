@@ -352,10 +352,10 @@ $(document).ready(function () {
                 }
             });
         };
-        
-        
-        
-        
+
+
+
+
 
     });
 
@@ -374,17 +374,18 @@ $(document).ready(function () {
         $scope.hideButtonAdd = false;
         $scope.loadingIngredients = true;
         $scope.ingredientAux = new IngredientObj();
+        $scope.menuItemCreation = true;
 
         //Restaurant
         $scope.equalPhoneNumbers = false;
-        
+
         //Menu Items
         $scope.menuItems = [];
         $scope.newMenuItem = new MenuItemObj();
         $scope.loadingMenuItems = false;
         $scope.menuItemAux = new MenuItemObj();
         $scope.ingredientsNewMenuItem = [];
-        
+
         //Pagination
         $scope.pageSize = 5;
         $scope.currentPage = 1;
@@ -580,6 +581,7 @@ $(document).ready(function () {
             $scope.currentPage = 1;
             $scope.menuItems = [];
             $scope.loadingMenuItems = true;
+            $scope.menuItemCreation = true;
 
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11100, JSONData: JSON.stringify({none: ""})});
 
@@ -616,6 +618,7 @@ $(document).ready(function () {
         $scope.showFormAddNewMenuItem = function () {
             $("#buttonAddMenuItem").hide();
             $("#newMenuItemForm").toggle(800);
+            $("#divTableMenuItems").hide();
         };
 
         /**
@@ -631,33 +634,90 @@ $(document).ready(function () {
             $("#buttonAddMenuItem").fadeIn(500);
             $scope.newMenuItem = new MenuItemObj();
             $scope.newMenuItem.setCourseId($scope.arrayCourseType[0]);
+            $scope.ingredientsNewMenuItem = [];
+            $('.ingredientCheckBox').prop('checked', false);
+            $("#divTableMenuItems").fadeIn(500);
         };
 
-        
+
         $scope.addMenuItem = function () {
+            //New Menu Item without an image
+            //Set image default
             $scope.newMenuItem.setImage("images/menu_items/image.jpg");
             $scope.newMenuItem.setCourseId($scope.newMenuItem.getCourseId().course_id);
+
+            //Clear the scopes to send it to the server
             $scope.newMenuItem = angular.copy($scope.newMenuItem);
-            
-            $log.info($scope.newMenuItem);
-            
-            $scope.newMenuItem = new MenuItemObj();
-            $scope.newMenuItem.setCourseId($scope.arrayCourseType[0]);
-            $scope.ingredientsNewMenuItem = [];
+            $scope.ingredientsNewMenuItem = angular.copy($scope.ingredientsNewMenuItem);
+
+            //Sent the menuItem
+            var promise = accessService.getData("php/controllers/MainController.php", false, "POST", {controllerType: 3, action: 11000, JSONData: JSON.stringify({menuItem: $scope.newMenuItem})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {//If menu item inserted, insert his ingredients
+                    var menuItemId = data['menuItemId'];
+                    $scope.addMenuItemIngredients(menuItemId);
+                } else {
+                    errorGest(data);
+                }
+            });
         };
-        
-        $scope.managementMenuItemIngredients = function(index,ingredient){     
-            if($("#ingredientMenuItem"+index).is(":checked")){
+
+        $scope.addMenuItemIngredients = function (menuItemId) {
+            //Now insert the ingredients that correspond to the menu item
+            var promiseIngreidents = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 5, JSONData: JSON.stringify({ingredients: $scope.ingredientsNewMenuItem, menuItemId: menuItemId})});
+            promiseIngreidents.then(function (dataIngredients) {
+                if (dataIngredients[0] === true) {
+                    $log.info(dataIngredients);
+                    if (dataIngredients[1] == $scope.ingredientsNewMenuItem.length) {
+                        $scope.cancelNewMenuItem();
+                        successMessage("Menu Item created Successfully");
+                        $scope.getMenuItems();
+                    }
+                } else {
+                    errorGest(dataIngredients);
+                }
+            });
+        };
+
+        $scope.managementMenuItemIngredients = function (index, ingredient) {
+            if ($("#ingredientMenuItem" + index).is(":checked")) {
                 $scope.ingredientsNewMenuItem.push(ingredient);
-            }else{
-                $.each($scope.ingredientsNewMenuItem,function(i){                    
-                    if(angular.equals($scope.ingredientsNewMenuItem[i], ingredient)){
-                        $scope.ingredientsNewMenuItem.splice(i,1);
+            } else {
+                $.each($scope.ingredientsNewMenuItem, function (i) {
+                    if (angular.equals($scope.ingredientsNewMenuItem[i], ingredient)) {
+                        $scope.ingredientsNewMenuItem.splice(i, 1);
                     }
                 });
             }
-            
+
             $log.info($scope.ingredientsNewMenuItem);
+        };
+
+        $scope.removeMenuItem = function (menuItem) {
+            var item_id = angular.copy(menuItem.item_id);
+            //First check that the menu item isn't in a Menu
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11400, JSONData: JSON.stringify({menuItemId: item_id})});
+
+            promise.then(function (data) {
+                if (data[0] === false) {//The item doesn't exists in a menu
+                    //So we delete the menu items
+                    var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11300, JSONData: JSON.stringify({menuItemId: item_id})});
+
+                    promise.then(function (data) {
+                        $log.info(data);
+                    });
+                } else {//The item exists in a menu
+                   errorGest(data);
+                }
+            });
+
+
+//            var promise  = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11300, JSONData: JSON.stringify({menuItemId: item_id})});
+//        
+//            promise.then(function(data){
+//                $log.info(data);
+//            });
         };
 
     });
@@ -677,7 +737,7 @@ $(document).ready(function () {
             controllerAs: 'coursesTemplate'
         };
     });
-    
+
     restaurantApp.directive("tableMenuItems", function () {
         return {
             restrict: 'E',
@@ -837,7 +897,7 @@ $(document).ready(function () {
                 $http({
                     url: url,
                     method: method,
-                    asyn: async,
+                    async: async,
                     params: params,
                     data: data
                 })

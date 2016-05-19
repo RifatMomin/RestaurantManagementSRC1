@@ -8,11 +8,11 @@
     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
         <form class="well" id="newMenuItemForm" name="newMenuItemForm" novalidate hidden>
             <div class="form-group" ng-class="{'has-error': (!newMenuItemForm.menuItemName.$valid && !newMenuItemForm.menuItemName.$pristine), 'has-success': (newMenuItemForm.menuItemName.$valid && !newMenuItemForm.menuItemName.$pristine)}">
-                <label>Name: </label>
+                <label>Name*: </label>
                 <input type="text" class="form-control" name="menuItemName" ng-model="newMenuItem.name" ng-maxlength="25" required/>
             </div>
             <div class="form-group" ng-class="{'has-error': (!newMenuItemForm.menuItemPrice.$valid && !newMenuItemForm.menuItemPrice.$pristine), 'has-success': (newMenuItemForm.menuItemPrice.$valid && !newMenuItemForm.menuItemPrice.$pristine)}">
-                <label>Price: </label>
+                <label>Price*: </label>
                 <input type="text" class="form-control" name="menuItemPrice" ng-model="newMenuItem.price" ng-currency required/>
             </div>
 
@@ -24,21 +24,24 @@
             </div> 
 
             <div class="form-group">
-                <label>Ingredients: </label>
+                <label>Ingredients*: (Select at least One)</label>
                 <div class="col-xs-12">
                     <div class="btn-group" data-toggle="buttons" >
                         <div class="pull-left" style="margin-right: 5px; margin-bottom: 5px;" ng-repeat="ingredient in ingredients">
-                            
-                                <input id="ingredientMenuItem{{$index}}" ng-click="managementMenuItemIngredients($index,ingredient)" type="checkbox" autocomplete="off"> {{ingredient.ingredient_name}}
-                            
+                            <input class="ingredientCheckBox" id="ingredientMenuItem{{$index}}" ng-click="managementMenuItemIngredients($index,ingredient)" type="checkbox" autocomplete="off"> {{ingredient.ingredient_name}}
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <div class="form-group">
+                <label>Image (Optional):</label>
+                <input type="file" accept="image/*" id="menuItemImage" name="menuItemImage" required/>
+            </div>
 
             <div class="form-group" style="margin-top: 15px;">
-                <button class="btn btn-success" ng-disabled="newMenuItemForm.$invalid" ng-click="addMenuItem();newMenuItemForm.$setPristine()"><span class="glyphicon glyphicon-plus"></span> Add</button>
-                <button class="btn btn-danger" ng-click="cancelNewMenuItem();"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
+                <button class="btn btn-success" ng-disabled="newMenuItemForm.$invalid || ingredientsNewMenuItem.length == 0" ng-click="addMenuItem();menuItemCreation=true;newMenuItemForm.$setPristine()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                <button class="btn btn-danger" ng-click="cancelNewMenuItem();newMenuItemForm.$setPristine();getMenuItems()"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
             </div>
         </form>
     </div>
@@ -50,7 +53,7 @@
     <p>Loading Menu Items...</p>
 </div>
 
-<div class="col-xs-12" ng-if="!loadingMenuItems">
+<div class="col-xs-12" ng-if="!loadingMenuItems" id="divTableMenuItems">
     <table class="table table-stripped vertical-align">
         <thead>
         <th></th>
@@ -85,7 +88,7 @@
             </tr>
         </tbody>
     </table>
-    <div ng-show="!newMenuItem">
+    <div>
         <div class="text-center" boundary-links="true" >	
             <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
         </div>
