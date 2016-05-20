@@ -92,13 +92,20 @@ class CourseController implements ControllerInterface {
     public function deleteCourse(){
         $courseDecoded = json_decode(stripslashes($this->jsonData));
         //var_dump($courseDecoded);
+        
+        try{
         $result = $this->helperAdo->delete($courseDecoded);
-        //var_dump($result);
+        
         if ($result->rowCount()>0) {
             $this->data[] = true;
         } else {
             $this->data[] = false;
             $this->errors[] = "Can't delete course at this moment. Try later.";
+            $this->data [] = $this->errors;
+        }
+        }catch(ForeignKeyException $e){
+            $this->data[] = false;
+            $this->errors[] = "Can't delete the course because another item contains it.";
             $this->data [] = $this->errors;
         }
         

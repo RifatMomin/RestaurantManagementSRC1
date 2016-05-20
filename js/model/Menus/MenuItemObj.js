@@ -8,14 +8,15 @@
 MenuItemObj = function () {
     
     this.itemId = null;
-    this.courseId = null;
+    this.course = null;
     this.name = null;
     this.image = null;
     this.price = null;
+    this.ingredients = [];
 
-    this.construct = function(itemId, courseId, name, image, price){
+    this.construct = function(itemId, course, name, image, price){
         this.setItemId(itemId);
-        this.setCourseId(courseId);
+        this.setCourse(course);
         this.setName(name);
         this.setImage(image)
         this.setPrice(price);
@@ -27,11 +28,11 @@ MenuItemObj = function () {
     this.getItemId = function () {
         return this.itemId;
     }
-    this.setCourseId = function (courseId) {
-        this.courseId = courseId;
+    this.setCourse = function (course) {
+        this.course = course;
     }
-    this.getCourseId = function () {
-        return this.courseId;
+    this.getCourse = function () {
+        return this.course;
     }
     this.setName = function (name) {
         this.name = name;
@@ -51,6 +52,10 @@ MenuItemObj = function () {
     this.setPrice = function (price) {
         this.price= price;
     }
-    
-    
+    this.setIngredients = function(ingredients){
+        this.ingredients=ingredients;
+    };
+    this.getIngredients = function(){
+        return this.ingredients;
+    };
 };

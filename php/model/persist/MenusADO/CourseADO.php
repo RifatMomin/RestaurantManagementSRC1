@@ -23,8 +23,8 @@ class CourseADO implements EntityInterfaceADO {
         return $this->dataSource->executionInsert(self::INSERT_COURSE, $array);
     }
 
-    public function delete($courseId) {
-        return $this->dataSource->execution(self::DELETE_COURSE, $array=[$courseId->id]);
+    public function delete($course) {
+        return $this->dataSource->execution(self::DELETE_COURSE, $array=[$course->id]);
     }
 
     public function findAll() {
@@ -34,9 +34,9 @@ class CourseADO implements EntityInterfaceADO {
     public function update($course) {
         //var_dump($course);
         $array = [
-            $course->course_name,
+            $course->name,
             $course->priority,
-            $course->course_id
+            $course->id
         ];
         
         return $this->dataSource->execution(self::UPDATE_COURSE,$array);

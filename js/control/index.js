@@ -65,7 +65,7 @@ $(document).ready(function(){
         $scope.availableEmail = true;
         $scope.equalPasswords = true;
         $scope.menuItem = new MenuItemObj();
-        $scope.menuItemsArray = [1];
+        $scope.menuItemsArray = [];
         $scope.restaurantStreetMap = "";
         $scope.allMenus = [];
         
@@ -218,7 +218,7 @@ $(document).ready(function(){
                 //If the upload fails, don't upload the user information
                 $http({
                     method: 'POST',
-                    url: 'php/controllers/MainController.php?JSONData=""&controllerType=9&action=250&userName=' + $scope.registerUser.username,
+                    url: 'php/controllers/MainController.php?JSONData=""&controllerType=9&action=250&imageName=' + $scope.registerUser.username,
                     headers: {'Content-Type': undefined},
                     data: imagesArrayToSend,
                     transformRequest: function (data, headersGetterFunction) {

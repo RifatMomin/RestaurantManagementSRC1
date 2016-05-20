@@ -48,6 +48,7 @@ and open the template in the editor.
         <script src="js/model/Menus/CourseObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/MenuItemObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/IngredientObj.js" type="text/javascript"></script>
+        <script src="js/model/Menus/MenuObj.js" type="text/javascript"></script>
         <script src="js/model/RestaurantObj.js" type="text/javascript"></script>
         <script src="js/model/Users/UserObj.js" type="text/javascript"></script>
         <script src="js/control/generalFunctions.js" type="text/javascript"></script>

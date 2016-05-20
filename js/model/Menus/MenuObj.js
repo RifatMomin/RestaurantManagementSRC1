@@ -10,13 +10,14 @@ MenuObj = function () {
     this.menuId = null;
     this.image = null;
     this.price = null;
-
-    this.construct = function(menuId, first, second, dessert, drink, image, price){
+    this.description = null;
+    this.personalized = null;
+    this.items = [];
+    
+    this.construct = function(menuId, image,price, description,personalized){
         this.setMenuId(menuId);
-        this.setFirst(first);
-        this.setSecond(second);
-        this.setDessert(dessert);
-        this.setDrink(drink);
+        this.setDescription(description);
+        this.setPersonalized(personalized);
         this.setImage(image);
         this.setPrice(price);
     };
@@ -27,29 +28,17 @@ MenuObj = function () {
     this.getMenuId = function () {
         return this.menuId;
     }
-    this.setFirst = function (first) {
-        this.first = first;
+    this.setDescription = function(description){
+        this.description = description;
     }
-    this.getFirst = function () {
-        return this.first;
+    this.getDescription = function(){
+        return this.description;
     }
-    this.setSecond = function (second) {
-        this.second = second;
+    this.setPersonalized = function(personalized){
+        this.personalized = personalized;
     }
-    this.getSecond = function () {
-        return this.second;
-    }
-    this.getDessert= function () {
-        return this.dessert;
-    }
-    this.setDessert = function (dessert) {
-        this.dessert = dessert;
-    }
-    this.getDrink = function () {
-        return this.drink;
-    }
-    this.setDrink = function (drink) {
-        this.drink = drink;
+    this.getPersonalized = function(){
+        return this.personalized;
     }
     this.getImage = function () {
         return this.image;
@@ -63,5 +52,10 @@ MenuObj = function () {
     this.setPrice = function (price) {
         this.price = price;
     }
-    
+    this.setItems = function(items){
+        this.items = items;
+    }
+    this.getItems = function(){
+        return this.items;
+    }
 };

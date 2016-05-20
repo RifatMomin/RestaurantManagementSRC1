@@ -3,6 +3,7 @@
 require_once "ControllerInterface.php";
 require_once "../model/persist/MenusADO/IngredientADO.php";
 require_once "../model/Menus/IngredientClass.php";
+require_once "../exceptions/ForeginKeyException.php";
 
 class IngredientsController implements ControllerInterface {
 
@@ -65,8 +66,8 @@ class IngredientsController implements ControllerInterface {
 
     public function insertIngredientsMenuItem() {
         $ingredientsJson = json_decode($this->jsonData);
-
-        $idMenuItem = $ingredientsJson->menuItemId;
+        
+        $idMenuItem = $ingredientsJson->itemId;
         $ingredientsArray = $ingredientsJson->ingredients;
 
         if (is_array($ingredientsArray)) {
@@ -74,7 +75,7 @@ class IngredientsController implements ControllerInterface {
                 $numberIngredientsInserted = 0;
                 $this->data[] = true;
                 foreach ($ingredientsArray as $ing) {
-                    $newIng = new IngredientClass($ing->ingredient_id, $ing->ingredient_name, $ing->price);
+                    $newIng = new IngredientClass($ing->ingredientId, $ing->name, $ing->price);
                     $resultInsert = $this->helperAdo->createMenuItemIngredient($newIng, $idMenuItem)->rowCount();
                     if ($resultInsert > 0) {
                         $numberIngredientsInserted++;
@@ -96,8 +97,8 @@ class IngredientsController implements ControllerInterface {
 
     public function modifyIngredient() {
         $json = json_decode($this->jsonData);
-
-        $ingredient = new IngredientClass($json->ingredient_id, $json->ingredient_name, $json->price);
+                
+        $ingredient = new IngredientClass($json->ingredientId, $json->name, $json->price);
 
         $result = $this->helperAdo->update($ingredient);
 
@@ -118,13 +119,20 @@ class IngredientsController implements ControllerInterface {
     public function removeIngredient() {
         $json = json_decode($this->jsonData);
 
-        $result = $this->helperAdo->delete($json->id);
+        try {
+            $result = $this->helperAdo->delete($json->id);
 
-        if ($result->rowCount() > 0) {
-            $this->data[] = true;
-        } else {
+
+            if ($result->rowCount() > 0) {
+                $this->data[] = true;
+            } else {
+                $this->data[] = false;
+                $this->errors[] = "Can't delete the ingredient at this moment. Try again later.";
+                $this->data [] = $this->errors;
+            }
+        } catch (ForeignKeyException $e) {
             $this->data[] = false;
-            $this->errors[] = "Can't delete the ingredient at this moment. Try again later.";
+            $this->errors[] = "Can't delete the ingredient because another item contains it.";
             $this->data [] = $this->errors;
         }
     }

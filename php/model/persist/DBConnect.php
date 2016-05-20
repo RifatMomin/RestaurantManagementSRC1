@@ -1,6 +1,7 @@
 <?php
 
 /* Classe encarregada de gestionar las connexions a la base de dades */
+require_once "../exceptions/ForeginKeyException.php";
 
 class DBConnect {
 
@@ -65,9 +66,10 @@ class DBConnect {
                 $this->stmt->execute($vector);
             } catch (PDOException $e) {
                 $this->link = null;
-                //echo "Error executing query. $e";
+                if($e->getCode() == 23000){
+                    throw new ForeignKeyException("Foreign Key Fails.");
+                }                
                 error_log("Error executing query: " . $e);
-                //var_dump($e);
             }
         } else {
             $this->stmt = null;

@@ -23,17 +23,11 @@ class IngredientADO implements EntityInterfaceADO {
         return $this->dataSource->executionInsert(self::INSERT_INGREDIENT, $array);
     }
     
-    public function createMenuItemIngredient($ingredientMenuItem,$idMenuItem){
-        $sql = "INSERT INTO `menu_item_has_ingredient` (`menu_item_id`, `ingredient_id`, `quantity`) VALUES ('$idMenuItem', '".$ingredientMenuItem->getId()."', '0')";
-        
-        
-        $array = [$idMenuItem,$ingredientMenuItem->getId()];
-        
-        //return $this->dataSource->execution($sql, $array);
-        return $this->dataSource->execution(self::INSERT_MENU_ITEM_INGREDIENT, $array);
+    public function createMenuItemIngredient($ingredientMenuItem,$idMenuItem){     
+        return $this->dataSource->execution(self::INSERT_MENU_ITEM_INGREDIENT, $array = [$idMenuItem,$ingredientMenuItem->getId()]);
     }
 
-    public function delete($ingredientId) {
+    public function delete($ingredientId){
         return $this->dataSource->execution(self::DELETE_INGREDIENT, $array=[$ingredientId]);
     }
 

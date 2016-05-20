@@ -4,8 +4,8 @@
 */
 
 html, body {
-  padding-top: 30px; 
-  height: 100%;
+    padding-top: 30px; 
+    height: 100%;
 }
 
 .wrap {
@@ -29,10 +29,10 @@ html, body {
 }
 
 .carousel-inner > .item > img,
-  .carousel-inner > .item > a > img {
-      width: 70%;
-      margin: auto;
-  }
+.carousel-inner > .item > a > img {
+    width: 70%;
+    margin: auto;
+}
 
 .contactInfo{
     margin-bottom:5px;
@@ -92,4 +92,14 @@ html, body {
 
 .table.vertical-align > tbody > tr > td {
     vertical-align: middle;
+}
+
+#containerImageMenuItem > img{
+    width: 75px;
+    height: auto;
+}
+
+.menuItemImage{
+    width: 64px;
+    height: auto;
 }

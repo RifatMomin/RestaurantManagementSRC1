@@ -74,7 +74,7 @@ class FileControllerClass implements ControllerInterface {
 
                     //Set the new fileName
                     $newFileName = $username . "." . $extension;
-
+                    
 
                     //Move the file to the right place
                     move_uploaded_file($_FILES['images']['tmp_name'][$key],'../../images/users/' .  $newFileName);                    
@@ -91,11 +91,11 @@ class FileControllerClass implements ControllerInterface {
     }
 
     function saveFile() {
-        $username = $_REQUEST['userName'];
+        $imageName = str_replace(' ', '', $_REQUEST['imageName']);
         $newFileName = "";
         $i = 0;
 
-        if ($username != null && isset($_FILES['images'])) {
+        if ($imageName != null && isset($_FILES['images'])) {
             foreach ($_FILES['images']['error'] as $key => $error) {
                 //Check if there's some errors
                 if ($error == UPLOAD_ERR_OK) {
@@ -109,10 +109,16 @@ class FileControllerClass implements ControllerInterface {
                     $extension = end($fileNameParts);
 
                     //Set the new fileName
-                    $newFileName = $username . "." . $extension;
+                    $newFileName = $imageName . "." . $extension;
 
+                    $locationFile = '../../images/users/';
+                    
+                    if(isset($_REQUEST['menuItem'])){
+                        $locationFile = "../../images/menu_items/";
+                    }
+                    
                     //Move the file to the right place
-                    move_uploaded_file($_FILES['images']['tmp_name'][$key], '../../images/users/' . $newFileName);
+                    move_uploaded_file($_FILES['images']['tmp_name'][$key], $locationFile . $newFileName);
 
                     $i++;
 

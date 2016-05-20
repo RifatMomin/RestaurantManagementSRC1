@@ -43,17 +43,15 @@
         </thead>
         <tbody>
             <tr dir-paginate="course in arrayCourseType | itemsPerPage: pageSize" current-page="currentPage">
-                <td><p ng-show="!editInputCourses[$index]">{{course.course_name}}</p>
-                    <input ng-show="editInputCourses[$index]" type="text" class="form-control" ng-model="course.course_name" required/>
-                </td>
-                <td>{{course.priority}}</td>                    
+                <td>{{course.getName()}} </td>
+                <td>{{course.getPriority()}}</td>                    
                 <td class="text-center">
                     <button id="editCourse{{$index}}" class="btn btn-sm btn-warning" ng-click="editCourseForm(course)">
                         <span class="glyphicon glyphicon-edit"></span>
                     </button>
                 </td>
                 <td class="text-center">
-                    <button class="btn btn-sm btn-danger" ng-disabled="editingCourses" ng-click="removeCourse(course.course_id)">
+                    <button class="btn btn-sm btn-danger" ng-disabled="editingCourses" ng-click="removeCourse(course)">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
                 </td>
@@ -73,14 +71,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title text-center"><strong>Modifying Course {{courseModify.course_name}}</strong></h4>
+                <h4 class="modal-title text-center"><strong>Modifying Course {{courseModify.getName()}}</strong></h4>
             </div>
 
             <div class="modal-body">
                 <form novalidate name="modifyCourseForm">
                     <div class="form-group" ng-class="{'has-error': modifyCourseForm.nameModify.$invalid, 'has-success': modifyCourseForm.nameModify.$valid}">
                         <label>Name: </label>
-                        <input type="text" class="form-control" name="nameModify" ng-model="courseModify.course_name" ng-maxlength="25" required/>
+                        <input type="text" class="form-control" name="nameModify" ng-model="courseModify.name" ng-maxlength="25" required/>
                     </div>
                     
                     <div class="form-group" ng-class="{'has-error': modifyCourseForm.priorityModify.$invalid, 'has-success': modifyCourseForm.priorityModify.$valid}">

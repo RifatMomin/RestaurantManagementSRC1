@@ -60,7 +60,7 @@ class MenuControllerClass implements ControllerInterface {
                 break;
             case 10066:
                 $this->deleteMenu();
-                break;            
+                break;
             //Menu Item methods
             case 11000:
                 $this->insertMenuItem();
@@ -76,6 +76,12 @@ class MenuControllerClass implements ControllerInterface {
                 break;
             case 11400:
                 $this->checkMenuItemInMenu();
+                break;
+            case 11500:
+                $this->deleteIngredientsFromMenuItem();
+                break;
+            case 11600:
+                $this->modifyIngredientsMenuItem();
                 break;
             //Courses CRUD methods
             case 12000:
@@ -101,20 +107,59 @@ class MenuControllerClass implements ControllerInterface {
 
         return $this->data;
     }
-    
-    public function checkMenuItemInMenu(){
+
+    public function modifyIngredientsMenuItem() {
+        $jsonData = json_decode($this->jsonData);
+
+        $ingredientsToDelete = $jsonData->ingredients;
+
+        if (is_array($ingredientsToDelete)) {
+            if (count($ingredientsToDelete) > 0) {
+                foreach ($ingredientsToDelete as $ingredient) {
+                    $newIngredient = new IngredientClass($ingredient->ingredientId,$ingredient->name,$ingredient->price);
+                }
+            } else {
+                $this->data [] = false;
+                $this->errors [] = "There has been an error in the server, try again later. Sorry.";
+                $this->data [] = $this->errors;
+            }
+        } else {
+            $this->data [] = false;
+            $this->errors [] = "There has been an error in the server, try again later. Sorry.";
+            $this->data [] = $this->errors;
+        }
+    }
+
+    public function deleteIngredientsFromMenuItem() {
+        $jsonData = json_decode($this->jsonData);
+
+        $menuItemId = $jsonData->menuItemId;
+
+        $result = $this->menuItemADO->deleteIngredientsMenuItem($menuItemId);
+
+        if (($result->rowCount()) > 0) {
+            $this->data[] = true;
+            $this->data[] = $result->rowCount();
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "Can't delete the ingredient at this moment, try again later.";
+            $this->data[] = $this->errors;
+        }
+    }
+
+    public function checkMenuItemInMenu() {
         $menuDecoded = json_decode($this->jsonData);
-        
+
         $menuItemId = $menuDecoded->menuItemId;
-        
+
         $result = $this->menuItemADO->findItemInMenu($menuItemId)->rowCount();
-        
-        if($result<=0){
-            $this->data[]=false;
-        }else{
-            $this->data[]=true;
+
+        if ($result <= 0) {
+            $this->data[] = false;
+        } else {
+            $this->data[] = true;
             $this->errors [] = "This Menu Item is already in a Menu. If you want to delete a Menu Item, be sure to delete the menu first.";
-            $this->data[]=$this->errors;
+            $this->data[] = $this->errors;
         }
     }
 
@@ -189,7 +234,6 @@ class MenuControllerClass implements ControllerInterface {
                     //Select the properties of the item               
                     $itemsProperties = $this->menuItemADO->findItemsProps($item->item_id)->fetchAll(PDO::FETCH_OBJ);
                     foreach ($itemsProperties as $props) {
-                        //var_dump($props);
                         $newItem = [];
                         $newItem['item_id'] = $props->item_id;
                         $newItem['item_name'] = $props->name;
@@ -211,39 +255,24 @@ class MenuControllerClass implements ControllerInterface {
         }
     }
 
-    public function deleteMeal() {
-        $jsonDecoded = json_decode($this->jsonData);
-
-        $idMenu = $jsonDecoded;
-        //Construct the review
-        $menu = new MenuClass();
-        $menu->setId($menuId);
-
-        $result = MenuADO::delete($menu);
-
-        if ($result->rowCount() > 0) {
-            $this->data [] = true;
-        } else {
-            $this->data[] = false;
-        }
-    }
-
     public function insertMenuItem() {
         $menuItemDecoded = json_decode($this->jsonData);
-        
-        //First insert he menu Item in the table menu_item
-        $menuItem = new MenuItemClass(null, $menuItemDecoded->menuItem->courseId, $menuItemDecoded->menuItem->name, $menuItemDecoded->menuItem->image, $menuItemDecoded->menuItem->price);
-        
+
+
+//
+//        //First insert he menu Item in the table menu_item
+        $menuItem = new MenuItemClass(null, $menuItemDecoded->course->id, $menuItemDecoded->name, $menuItemDecoded->image, $menuItemDecoded->price);
+
         $result = $this->menuItemADO->create($menuItem);
-        
-        if($result!=null){
-            $this->data[]=true;
-            $this->data['menuItemId']=$result;
-        }else{
+
+        if ($result != null) {
+            $this->data[] = true;
+            $this->data['menuItemId'] = $result;
+        } else {
             $this->data [] = false;
-            $this->errors []="Can't insert the menu Item now, try again later. Sorry.";
+            $this->errors [] = "Can't insert the menu Item now, try again later. Sorry.";
             $this->data [] = $this->errors;
-         }
+        }
     }
 
     public function getMenusItem() {
@@ -263,50 +292,51 @@ class MenuControllerClass implements ControllerInterface {
     public function updateMenuItem() {
         $menuItemDecoded = json_decode($this->jsonData);
 
-        //Create the object review to pass it to the ADO
-        $menuItem = new MenuItemClass();
+        $menuItemUpdate = new MenuItemClass($menuItemDecoded->itemId, $menuItemDecoded->course->id, $menuItemDecoded->name, $menuItemDecoded->image, $menuItemDecoded->price);
 
-        $menuItem->setAll("", $menuItemDecoded->courseId, $menuItemDecoded->name, $menuItemDecoded->image, $menuItemDecoded->price);
-        $result = MealADO::update($menuItem);
+        $result = $this->menuItemADO->update($menuItemUpdate);
 
+        //Count the result 
         if ($result->rowCount() > 0) {
             $this->data [] = true;
-            $this->data [] = "Menu Item Updated";
         } else if ($result->rowCount() == 0) {
-            $errors = [0, "Nothing Updated."];
-            $this->data[] = false;
-            $this->data[] = $errors;
+            $this->data[] = true;
+            $this->errors [] = "Nothing Updated";
+            $this->data[] = $this->errors;
         } else {
-            $errors = [1, "Server Error, try again later."];
             $this->data[] = false;
-            $this->data[] = $errors;
+            $this->errors [] = "Server Error, try again later.";
+            $this->data[] = $this->errors;
         }
     }
 
     public function deleteMenuItem() {
         $jsonDecoded = json_decode($this->jsonData);
 
-        //var_dump($jsonDecoded);
-        
+
+
         $menuItemId = $jsonDecoded->menuItemId;
-        
-        $menuItem = new MenuItemClass($menuItemId,"","","","");
-        
-        $result = $this->menuItemADO->delete($menuItem)->rowCount();
-        
-        echo $result;
-//        $idMenuItem = $jsonDecoded->menuItemId;
-//        //Construct the review
-//        $menuItem = new MenuClass();
-//        $menuItem->setId($idMenuItem);
-//
-//        $result = MenuItemADO::delete($menuItem);
-//
-//        if ($result->rowCount() > 0) {
-//            $this->data [] = true;
-//        } else {
-//            $this->data[] = false;
-//        }
+
+        $menuItem = new MenuItemClass($menuItemId, "", "", "", "");
+
+        try {
+            $result = $this->menuItemADO->delete($menuItem)->rowCount();
+
+
+            if ($result > 0) {
+                $this->data [] = true;
+                $this->data[] = "Menu Item deleted correctly.";
+            } else {
+                $this->data[] = false;
+                $this->errors[] = "Can't delete the ingredient at this moment. Try again later.";
+                $this->data [] = $this->errors;
+            }
+        } catch (ForeignKeyException $e) {
+            error_log($e);
+            $this->data[] = false;
+            $this->errors[] = "Can't delete the menu item because another item contains it.";
+            $this->data [] = $this->errors;
+        }
     }
 
     public function bubbleSort($A, $n) {
@@ -322,8 +352,8 @@ class MenuControllerClass implements ControllerInterface {
 
         return $A;
     }
-    
-    public function insertCourse(){
+
+    public function insertCourse() {
         $courseDecoded = json_decode($this->jsonData);
 
         //Create the object review to pass it to the ADO
@@ -339,8 +369,8 @@ class MenuControllerClass implements ControllerInterface {
             $this->data [] = false;
         }
     }
-    
-    public function getCourses(){
+
+    public function getCourses() {
         $arrayCourses = [];
 
         $result = $this->courseADO->findAll();
@@ -354,12 +384,12 @@ class MenuControllerClass implements ControllerInterface {
             }
 
             $this->data[] = $arrayCourses;
-            
         } else {
             $this->data[] = false;
         }
     }
-    public function deleteCourse(){
+
+    public function deleteCourse() {
         $jsonDecoded = json_decode($this->jsonData);
 
         $courseId = $jsonDecoded;
@@ -375,7 +405,8 @@ class MenuControllerClass implements ControllerInterface {
             $this->data[] = false;
         }
     }
-    public function updateCourse(){
+
+    public function updateCourse() {
         $courseDecoded = json_decode($this->jsonData);
 
         //Create the object review to pass it to the ADO
@@ -397,5 +428,5 @@ class MenuControllerClass implements ControllerInterface {
             $this->data[] = $errors;
         }
     }
-    
+
 }
