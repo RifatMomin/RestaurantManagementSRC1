@@ -1,0 +1,124 @@
+<div class="page-header">
+    <h3>Tables <small>Create &bull; Modify &bull; Delete</small></h3>
+</div>
+<!--
+<div class="col-xs-12">
+    <button class="btn btn-info" style="margin-bottom: 5px;" id="buttonAddMenuItem" ng-click="showFormAddNewMenuItem(); getIngredients()"><span class="glyphicon glyphicon-plus"></span>Add New</button>
+    <button class="btn btn-primary pull-right" ng-click="getTables();"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
+        <form class="well" id="newMenuItemForm" name="newMenuItemForm" novalidate hidden>
+            <div class="form-group" ng-class="{'has-error': (!newMenuItemForm.menuItemName.$valid && !newMenuItemForm.menuItemName.$pristine), 'has-success': (newMenuItemForm.menuItemName.$valid && !newMenuItemForm.menuItemName.$pristine)}">
+                <label>Name*: </label>
+                <input type="text" class="form-control" name="menuItemName" ng-model="newMenuItem.name" ng-maxlength="25" required/>
+            </div>
+            <div class="form-group" ng-class="{'has-error': (!newMenuItemForm.menuItemPrice.$valid && !newMenuItemForm.menuItemPrice.$pristine), 'has-success': (newMenuItemForm.menuItemPrice.$valid && !newMenuItemForm.menuItemPrice.$pristine)}">
+                <label>Price*: </label>
+                <input type="text" class="form-control" name="menuItemPrice" ng-model="newMenuItem.price" ng-currency required/>
+            </div>
+
+            <div class="form-group">
+                <label>Course Type: </label>
+                <select class="form-control" ng-model="newMenuItem.courseId" ng-options="course.course_name for course in arrayCourseType track by course.course_id">
+
+                </select>
+            </div> 
+
+            <div class="form-group">
+                <label>Ingredients*: (Select at least One)</label>
+                <div class="col-xs-12">
+                    <div class="btn-group" data-toggle="buttons" >
+                        <div class="pull-left" style="margin-right: 5px; margin-bottom: 5px;" ng-repeat="ingredient in ingredients">
+                            <input class="ingredientCheckBox" id="ingredientMenuItem{{$index}}" ng-click="managementMenuItemIngredients($index,ingredient)" type="checkbox" autocomplete="off"> {{ingredient.ingredient_name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Image (Optional):</label>
+                <input type="file" accept="image/*" id="menuItemImage" name="menuItemImage" required/>
+            </div>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <button class="btn btn-success" ng-disabled="newMenuItemForm.$invalid || ingredientsNewMenuItem.length == 0" ng-click="addMenuItem();menuItemCreation=true;newMenuItemForm.$setPristine()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                <button class="btn btn-danger" ng-click="cancelNewMenuItem();newMenuItemForm.$setPristine();getMenuItems()"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+-->
+
+<div class="col-xs-12 text-center" ng-if="loadingTables">
+    <img class="img-responsive center-block" src="images/loading.gif" alt="Loading..." /> 
+    <p>Loading Tables...</p>
+</div>
+
+<div class="col-xs-12" ng-if="!loadingTables" id="divTableMenuItems">
+    <table class="table table-stripped vertical-align">
+        <thead>
+            <th>Table Id</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Location</th>
+            <th>Capacity</th>
+            <th class="text-center" style="width: 30px;">Modify</th>
+            <th class="text-center" style="width: 30px;">Delete</th>
+        </thead>
+        
+        <tbody>
+            <tr dir-paginate="table in arrayTables | itemsPerPage: pageSize" current-page="currentPage">
+                <td>{{table.table_id}}</td>
+                <td>{{table.name_type}}</td>
+                <td>{{table.name_status}}</td>
+                <td>{{table.name_location}}</td>
+                <td>{{table.capacity}}</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-warning" ng-click="">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-danger" ng-click="">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <div class="text-center" boundary-links="true" >	
+            <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
+        </div>
+    </div>
+</div>
+<!-- Modal modify ingredient
+<div class="modal fade" id="modifyIngredientModal" tabindex="-1" role="dialog" aria-labelledby="modalModifyIngredient">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center"><strong>Modifying Ingredient {{ingredientAux.ingredient_name}}</strong></h4>
+            </div>
+
+            <div class="modal-body">
+                <form novalidate name="modifyIngredientForm">
+                    <div class="form-group" ng-class="{'has-error': modifyIngredientForm.ingredientNameModify.$invalid, 'has-success': modifyIngredientForm.ingredientNameModify.$valid}">
+                        <label>Name: </label>
+                        <input type="text" class="form-control" name="ingredientNameModify" ng-model="ingredientAux.ingredient_name" ng-maxlength="25" required/>
+                    </div>
+
+                    <div class="form-group" ng-class="{'has-error': modifyIngredientForm.ingredientPriceModify.$invalid, 'has-success': newIngredientForm.ingredientPriceModify.$valid}">
+                        <label>Price: </label>
+                        <input type="text" class="form-control" name="ingredientPriceModify" ng-model="ingredientAux.price" ng-currency required/>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success" ng-disabled="modifyIngredientForm.$invalid" ng-click="modifyIngredient()">Modify</button>
+            </div>
+        </div>
+    </div>
+</div>-->

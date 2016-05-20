@@ -10,7 +10,7 @@
         <form id="coursesForm" name="coursesForm" novalidate hidden>
             <div class="form-group" ng-class="{'has-error': coursesForm.courseName.$invalid, 'has-success': courseForm.courseName.$valid}">
                 <label>Name: </label>
-                <input type="text" class="form-control" name="courseName" ng-model="newCourse.name" ng-maxlength="25" required/>
+                <input type="text" class="form-control" name="courseName" ng-model="newCourse.name" ng-pattern="/^[a-zA-Z\s]*$/" ng-maxlength="25" required/>
             </div>
             <div class="form-group" ng-class="{'has-error': coursesForm.coursePriority.$invalid, 'has-success': courseForm.coursePriority.$valid}">
                 <label>Priority </label>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * toDoClass class
+ * MenuControllerClass
  * it controls the hole server part of the application
  * @author Rifat Momin
  */
@@ -89,6 +89,19 @@ class MenuControllerClass implements ControllerInterface {
                 break;
             case 12300:
                 $this->deleteCourse();
+                break;
+            //Table Location CRUD
+            case 13000:
+                $this->insertTableLocation();
+                break;
+            case 13100:
+                $this->getTableLocation();
+                break;
+            case 13200:
+                $this->updateTableLocation();
+                break;
+            case 13300:
+                $this->deleteTableLocation();
                 break;
             default:
                 $errors = array();
@@ -397,5 +410,11 @@ class MenuControllerClass implements ControllerInterface {
             $this->data[] = $errors;
         }
     }
+    
+    public function insertTableLocation(){}
+    public function getTableLocation(){}
+    public function updateTableLocation(){}
+    public function deleteTableLocation(){}
+    
     
 }

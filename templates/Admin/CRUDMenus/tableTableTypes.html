@@ -1,0 +1,86 @@
+<div class="page-header">
+    <h3>Table Types <small>Create &bull; Modify &bull; Delete</small></h3>
+</div>
+
+<!--Table Locations Add Form -->
+<div class="col-xs-12">
+    <button class="btn btn-info pull-left" style="margin-bottom: 5px;" id="buttonAddTableType" ng-click="showAddNewTableTypeForm()">Add a Type</button>
+    <button class="btn btn-primary pull-right" ng-click="getTableTypes()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
+        <form id="tableTypesForm" name="tableTypesForm" novalidate hidden>
+            <div class="form-group" ng-class="{'has-error': tableTypesForm.tableTypeName.$invalid, 'has-success': tableTypesForm.tableTypeName.$valid}">
+                <label>Type: </label>
+                <input type="text" class="form-control" name="tableTypeName" ng-model="newTableType.name" ng-pattern="/^[a-zA-Z\s]*$/" ng-maxlength="25" required/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-success" ng-disabled="tableTypesForm.$invalid" ng-click="addTableType()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                <button class="btn btn-danger" ng-click="cancelNewTableType();"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="col-xs-12 text-center" ng-if="loadingTableTypes">
+    <img class="img-responsive center-block" src="images/loading.gif" alt="Loading..." /> 
+    <p>Loading Table Types...</p>
+</div>
+
+
+<!--Load Courses Table -->
+<div class="col-xs-12" ng-if="!loadingTableTypes">
+    <table class="table table-stripped">
+        <thead>
+        <th>Name</th>
+        <th class="text-center" style="width: 30px;">Modify</th>
+        <th class="text-center" style="width: 30px;">Delete</th>
+        </thead>
+        <tbody>
+            <tr dir-paginate="table in arrayTableTypes | itemsPerPage: pageSize" current-page="currentPage">
+                <td>{{table.name_type}}</td>                  
+                <td class="text-center">
+                    <button id="editTableLocation{{$index}}" class="btn btn-sm btn-warning" ng-click="editTableTypesForm(table)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-danger" ng-disabled="editingCourses" ng-click="removeTableType(table.type_id)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <div class="text-center" boundary-links="true" >	
+            <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
+        </div>
+    </div>
+</div>
+<!-- Modal modify table type-->
+<div class="modal fade" id="modifyTableTypesModal" tabindex="-1" role="dialog" aria-labelledby="modalModifyTableType">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center"><strong>Modifying Table Location{{tableTypeModify.name_type}}</strong></h4>
+            </div>
+
+            <div class="modal-body">
+                <form name="modifyTableTypeForm" novalidate>
+                    <div class="form-group" ng-class="{'has-error': modifyTableTypeForm.nameModify.$invalid, 'has-success': modifyTableTypeForm.nameModify.$valid}">
+                        <label>Name: </label>
+                        <input type="text" class="form-control" name="nameModify" ng-model="tableTypeModify.name_type" ng-pattern="/^[a-zA-Z\s]*$/"  ng-maxlength="25" required/>
+                    </div>
+                    
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success" ng-disabled="modifyTableTypeForm.$invalid" ng-click="modifyTableType()">Modify</button>
+            </div>
+        </div>
+    </div>
+</div>

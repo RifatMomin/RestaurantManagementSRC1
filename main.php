@@ -4,6 +4,7 @@ session_start();
 
 if (!isset($_SESSION['connectedUser'])) {
     header("Location: ../RestaurantManagementSRC1");
+    
 }
 ?>
 <!--
@@ -45,6 +46,10 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
         <!--Model and Control-->
+        <script src="js/model/Tables/TableTypeObj.js" type="text/javascript"></script>
+        <script src="js/model/Tables/TableStatusObj.js" type="text/javascript"></script>
+        <script src="js/model/Tables/TableLocationObj.js" type="text/javascript"></script>
+        <script src="js/model/Tables/TableObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/CourseObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/MenuItemObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/IngredientObj.js" type="text/javascript"></script>

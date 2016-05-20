@@ -30,9 +30,10 @@
 <div class="wrap">
     <div class="container">    
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">
-            <!--CRUD MENUS, MENU ITEM, INGREDIENTS-->
+            <!--CRUD MENUS, INGREDIENTS, TABLES-->
             <menus-template ng-if="actionAdmin == 1"></menus-template>
             <courses-template ng-if="actionAdmin == 2"></courses-template>
+            <tables-template ng-if="actionAdmin == 3"></tables-template>
             <!--CRUD Restaurant Info-->
             <restaurant-info-template ng-if="actionAdmin == 4"></restaurant-info-template>
             

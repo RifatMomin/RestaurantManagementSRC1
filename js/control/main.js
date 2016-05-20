@@ -392,13 +392,42 @@ $(document).ready(function () {
         $scope.loadingCourses = true;
         $scope.hideButtonAddCourse = false;
         $scope.courseModify = new CourseObj();
+
+        //Table Locations
+        $scope.newTableLocation = new TableLocationObj();
+        $scope.arrayTableLocations = []; //an array of table locations
+        $scope.loadingTableLocations = true;
+        $scope.hideButtonAddTableLocation = false;
         
+        //Table Types
+        $scope.newTableType = new TableTypeObj();
+        $scope.arrayTableTypes = []; //an array of table types
+        $scope.loadingTableTypes = true;
+        $scope.hideButtonAddTableType = false;
+        $scope.tableTypeModify = new TableTypeObj();
+        
+        //Table Status 
+        $scope.tableStatus = new TableStatusObj();
+        
+        //Tables
+        $scope.newTable = new TableObj();
+        $scope.arrayTables = [];
+        $scope.hideButtonAddTable = false;
+        $scope.loadingTables = true;
+        $scope.tableModify = new TableObj();
         
         //Pagination
         $scope.pageSize = 5;
         $scope.currentPage = 1;
 
 
+        /**
+         * @name checkPhoneNumbers
+         * @description Compares both phone numbers
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/15
+         */
         $scope.checkPhoneNumbers = function () {
             if ($scope.restaurantInfoForm.registerPhones.$valid) {
                 if ($scope.restaurantInfo.phone1 == $scope.restaurantInfo.phone2) {
@@ -408,7 +437,7 @@ $(document).ready(function () {
                 }
             }
         };
-        
+
         /**
          * @name getCourseTypes
          * @description Gets the course Types from the server
@@ -418,9 +447,9 @@ $(document).ready(function () {
          */
         $scope.getCourseTypes = function () {
             $scope.arrayCourseType = [];
-            $scope.currentPage= 1;
+            $scope.currentPage = 1;
             $scope.loadingCourses = true;
-            
+
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 1, JSONData: JSON.stringify("")});
             promise.then(function (data) {
                 if (data[0] === true) {
@@ -436,18 +465,18 @@ $(document).ready(function () {
                 }
             });
         };
-        
+
         /*
          * @description Inserts a new course to the db
          * @version 1
          * @author Rifat Momin
          * @date 2016/05/18 
          */
-         $scope.addCourse = function () {
+        $scope.addCourse = function () {
             $scope.newCourse = angular.copy($scope.newCourse);
             console.log($scope.newCourse);
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 2, JSONData: JSON.stringify($scope.newCourse)});
-            
+
             promise.then(function (data) {
                 if (data[0] === true) {
                     //$scope.cancelCourse();
@@ -458,7 +487,7 @@ $(document).ready(function () {
                 }
             });
         }
-        
+
         /*
          * @description Removes course from db
          * @version 1
@@ -480,7 +509,7 @@ $(document).ready(function () {
                 });
             }
         };
-        
+
         /**
          * @name showAddNewCourseForm
          * @description Shows the form to add a new course
@@ -489,10 +518,10 @@ $(document).ready(function () {
          * @date 2016/05/18
          */
         $scope.showAddNewCourseForm = function () {
-            $("#buttonAddCourse").hide();   
+            $("#buttonAddCourse").hide();
             $("#coursesForm").toggle(800);
         }
-        
+
         /*
          * @name cancelNewCourse
          * @description Cleans and hides the add form
@@ -505,7 +534,7 @@ $(document).ready(function () {
             $("#buttonAddCourse").fadeIn(500);
             $scope.newIngredient = new IngredientObj();
         };
-        
+
         /*
          * @name editCourseForm
          * @description Shows course modification form
@@ -519,7 +548,7 @@ $(document).ready(function () {
             $("#modifyCourseModal").modal("show");
 
         };
-        
+
         /*
          * @name modifyCourse
          * @description Allows user to modify course info
@@ -527,7 +556,7 @@ $(document).ready(function () {
          * @author Rifat Momin
          * @date 2016/05/18
          */
-        $scope.modifyCourse = function (courseModify){
+        $scope.modifyCourse = function (courseModify) {
             //console.log($scope.courseModify);
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 4, JSONData: JSON.stringify($scope.courseModify)});
 
@@ -825,7 +854,7 @@ $(document).ready(function () {
                         $log.info(data);
                     });
                 } else {//The item exists in a menu
-                   errorGest(data);
+                    errorGest(data);
                 }
             });
 
@@ -837,14 +866,377 @@ $(document).ready(function () {
 //            });
         };
 
+
+        //TABLE LOCATIONS
+        /**
+         * @name getTableLocations
+         * @description Gets the table locations from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.getTableLocations = function () {
+            $scope.currentPage = 1;
+            $scope.arrayTableLocations = [];
+            $scope.loadingTableLocations = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 1, JSONData: JSON.stringify("")});
+
+            //console.log($scope.arrayTableLocations);
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $scope.arrayTableLocations = angular.copy(data[1]);
+                        $scope.loadingTableLocations = false;
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        /*
+         * @name addTableLocation
+         * @description Inserts a table location to the db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19 
+         */
+        $scope.addTableLocation = function () {
+            $scope.newTableLocation = angular.copy($scope.newTableLocation);
+            console.log($scope.newTableLocation);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 2, JSONData: JSON.stringify($scope.newTableLocation)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        //$scope.cancelCourse();
+                        //$scope.getCourseTypes();
+                        successMessage("Table Location successfully added");
+
+                        $("#buttonAddTableLocation").show();
+                        $("#tableLocationsForm").hide();
+                        $("tableLocationsForm").$setPristine();
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        /*
+         * @name removeTableLocation
+         * @description Removes table location from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.removeTableLocation = function (tableLocationModify) {
+            //$log.info(idCourse);
+            if (confirm("Are you sure you want to delete this table location?")) {
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 3, JSONData: JSON.stringify({id: tableLocationModify})});
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        //$scope.getTableLocations();
+                        successMessage("Table Location Deleted");
+                    } else {
+                        errorGest(data);
+                    }
+                });
+            }
+        };
+
+        /*
+         * @name modifyTableLocation
+         * @description Allows user to modify table location name
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.modifyTableLocation = function (tableLocationModify) {
+            //console.log($scope.courseModify);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 4, JSONData: JSON.stringify($scope.tableLocationModify)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        successMessage("Table Location Successfully Modified");
+                        $("#modifyTableLocationModal").modal("hide");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+
+        /**
+         * @name showAddNewTableLocationForm
+         * @description Shows the form when 
+         * the button is clicked
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.showAddNewTableLocationForm = function () {
+            $("#buttonAddTableLocation").hide();
+            $("#tableLocationsForm").toggle(800);
+        };
+
+        /*
+         * @name cancelNewTableLocation
+         * @description Cleans and hides the add form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18
+         */
+        $scope.cancelNewTableLocation = function () {
+            $("#tableLocationsForm").toggle(500);
+            $("#buttonAddTableLocation").fadeIn(500);
+            $scope.newTableLocation = new TableLocationObj();
+        };
+
+        /*
+         * @name editTableLocationsForm
+         * @description Shows table locations modification form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.editTableLocationsForm = function (tableLocationModify) {
+            $scope.tableLocationModify = angular.copy(tableLocationModify);
+            $("#modifyTableLocationsModal").modal("show");
+
+        };
+
+        //TABLE TYPES CRUD
+        /**
+         * @name showAddNewTableTypeForm
+         * @description Shows the form when 
+         * the button is clicked
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.showAddNewTableTypeForm = function () {
+            $("#buttonAddTableType").hide();
+            $("#tableTypesForm").toggle(800);
+        };
+
+        /*
+         * @name cancelNewTableTypes
+         * @description Cleans and hides the add form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.cancelNewTableType = function () {
+            $("#tableTypesForm").toggle(500);
+            $("#buttonAddTableType").fadeIn(500);
+            $scope.newTablenewTableType = new TableTypeObj();
+        };
+
+        /**
+         * @name getTableTypes
+         * @description Gets the table types from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.getTableTypes = function () {
+            $scope.currentPage = 1;
+            $scope.arrayTableTypes = [];
+            $scope.loadingTableTypes = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 5, JSONData: JSON.stringify("")});
+
+            //console.log($scope.arrayTableLocations);
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $scope.arrayTableTypes = angular.copy(data[1]);
+                        $scope.loadingTableTypes = false;
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        /*
+         * @name addTableType
+         * @description Inserts a new table type to the db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.addTableType = function () {
+            $scope.newTableType = angular.copy($scope.newTableType);
+            console.log($scope.newTableType);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 6, JSONData: JSON.stringify($scope.newTableType)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+
+                    $scope.getTableTypes();
+                    successMessage("Table Type added");
+
+                    $("#buttonAddTableType").show();
+                    $("#tableTypesForm").hide();
+
+                    
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        /*
+         * @name editTableTypesForm
+         * @description Shows table types modification form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.editTableTypesForm = function (tableTypeModify) {
+            $scope.tableTypeModify = angular.copy(tableTypeModify);
+            $("#modifyTableTypesModal").modal("show");
+
+        };
+
+        /*
+         * @name modifyTableType
+         * @description Allows user to modify table type name
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.modifyTableType = function (tableTypeModify) {
+            //console.log($scope.courseModify);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 8, JSONData: JSON.stringify($scope.tableTypeModify)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        successMessage("Table Type Successfully Modified");
+                        $("#modifyTableTypesModal").modal("hide");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        /*
+         * @name removeTableType
+         * @description Removes table type from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.removeTableType = function (tableId) {
+            //$log.info(idCourse);
+            if (confirm("Are you sure you want to delete this table type?")) {
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 7, JSONData: JSON.stringify({id: tableId})});
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        $scope.getIngredients();
+                        successMessage("Table Type Deleted");
+                    } else {
+                        errorGest(data);
+                    }
+                });
+            }
+        };
+        
+        //TABLES
+//        
+//        $scope.newTable = new TableObj();
+//        $scope.arrayTables = [];
+//        $scope.hideButtonAddTable = false;
+//        $scope.loadingTables = true;
+//        $scope.tableModify = new TableObj();
+//        
+    
+        $scope.getTables = function (){
+            $scope.currentPage = 1;
+            $scope.arrayTables = [];
+            $scope.loadingTables = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 9, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $.each(data[1], function (index) {
+                            $scope.arrayTables.push(data[1][index]);
+                            console.log($scope.arrayTables);
+                        });
+
+                        //$log.info($scope.menuItems);
+                        $scope.loadingTables = false;
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+            
+        };
+        
     });
 
     /*
      * ***** TEMPLATES *****
      * 
      * The templates are used to display different contents on the page
-     * without change the location of the URL
+     * without changing the location of the URL
      */
+    restaurantApp.directive("tableTables", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDMenus/tableTables.html",
+            controller: function () {
+            },
+            controllerAs: 'tableTables'
+        };
+    });
+
+    restaurantApp.directive("tableTableTypes", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDMenus/tableTableTypes.html",
+            controller: function () {
+            },
+            controllerAs: 'tableTableTypes'
+        };
+    });
+
+    restaurantApp.directive("tableTableLocations", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDMenus/tableTableLocations.html",
+            controller: function () {
+            },
+            controllerAs: 'tableTableLocations'
+        };
+    });
+
+    restaurantApp.directive("tablesTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDMenus/tablesTemplate.html",
+            controller: function () {
+            },
+            controllerAs: 'tablesTemplate'
+        };
+    });
+
     restaurantApp.directive("coursesTemplate", function () {
         return {
             restrict: 'E',
