@@ -36,6 +36,7 @@ $(document).ready(function () {
      */
     restaurantApp.controller("restaurantController", function ($scope, $http, accessService, $log) {
         //Scope variables
+        $scope.date = new Date();
         $scope.action = 5;
         $scope.userLoggedIn = new UserObj();
         $scope.beforeUser = new UserObj();
@@ -1987,7 +1988,16 @@ $(document).ready(function () {
         };
 
 
+
+
     });
+
+    restaurantApp.controller("customerController", function ($scope, accessService, $log, $http) {
+        //Scope variables to control the flow of the page
+        $scope.actionCustomer = 1;
+
+    });
+
 
     /*
      * ***** TEMPLATES *****
@@ -2076,6 +2086,16 @@ $(document).ready(function () {
         };
     });
 
+    restaurantApp.directive("customerTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Customer/customerTemplate.html",
+            controller: function () {
+            },
+            controllerAs: 'customerTemplate'
+        };
+    });
+
     restaurantApp.directive("adminTemplate", function () {
         return {
             restrict: 'E',
@@ -2149,6 +2169,43 @@ $(document).ready(function () {
             },
             controllerAs: 'successMessage'
         };
+    });
+
+    //CUSTOMER TEMPLATES
+    restaurantApp.directive("makeOrderTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Customer/makeOrderTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'makeOrderTemplate'
+        };
+
+    });
+    
+    restaurantApp.directive("orderHistoricTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Customer/orderHistoricTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'orderHistoricTemplate'
+        };
+
+    });
+    
+    restaurantApp.directive("viewReviewsTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Customer/viewReviewsTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'viewReviewsTemplate'
+        };
+
     });
 
 
