@@ -74,7 +74,7 @@ and open the template in the editor.
         
         
         <!--Customer Template-->
-        
+        <customer-template ng-controller="customerController as customerCtrl" ng-if="rolePage == 0"></customer-template>
         
         
         
