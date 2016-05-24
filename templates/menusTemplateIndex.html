@@ -1,11 +1,12 @@
-<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">
-    <div class="page-header" id="menus">
-        <h2>Welcome to {{restaurantInfo.name}}</h2>
-    </div> 
+
+<div class="page-header" id="menus">
+    <h2>Welcome to {{restaurantInfo.name}}</h2>
+</div> 
+<div class="col-md-8 col-lg-8 col-sm-12 col-xs-12 center-block">
     <div id="myCarousel" class="carousel slide" data-ride="carousel"> 
         <div class="carousel-inner">
             <div class="item" id="imageMenu{{$index}}" ng-class="{'active': $index == 0}" ng-repeat="menu in allMenus track by $index"> 
-                <img src="http://lorempixel.com/640/480/food/" style="width:100%; height:auto;" alt="First slide">
+                <img ng-src="{{menu.image}}" style="width:100%; height:auto;" alt="First slide">
                 <div class="container">
                     <div class="carousel-caption hidden-xs">
                         <h4>{{menu.description}}</h4>

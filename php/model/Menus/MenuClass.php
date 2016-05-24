@@ -7,91 +7,93 @@
  */
 require_once "../model/EntityInterface.php";
 
-class MenuClass implements EntityInterface{
+class MenuClass implements EntityInterface {
+
     private $menuId;
-    private $first;
-    private $second;
-    private $dessert;
-    private $drink;
+    private $items = [];
+    private $active;
+    private $personalized;
+    private $description;
     private $image;
     private $price;
-    
-    function __construct($menuId, $first, $second, $dessert, $drink, $image, $price) {
+
+    function __construct($menuId, $items, $activate, $personalized, $description, $image, $price) {
         $this->menuId = $menuId;
-        $this->first = $first;
-        $this->second = $second;
-        $this->dessert = $dessert;
-        $this->drink = $drink;
+        $this->items = $items;
+        $this->active = $activate;
+        $this->personalized = $personalized;
+        $this->description = $description;
         $this->image = $image;
         $this->price = $price;
     }
-    
-    public function getMenuId() {
+
+    function getMenuId() {
         return $this->menuId;
     }
 
-    public function getFirst() {
-        return $this->first;
+    function getItems() {
+        return $this->items;
     }
 
-    public function getSecond() {
-        return $this->second;
+    function getActive() {
+        return $this->active;
     }
 
-    public function getDessert() {
-        return $this->dessert;
+    function getPersonalized() {
+        return $this->personalized;
     }
 
-    public function getDrink() {
-        return $this->drink;
+    function getDescription() {
+        return $this->description;
     }
 
-    public function getImage() {
+    function getImage() {
         return $this->image;
     }
 
-    public function getPrice() {
+    function getPrice() {
         return $this->price;
     }
 
-    public function setMenuId($menuId) {
+    function setMenuId($menuId) {
         $this->menuId = $menuId;
     }
 
-    public function setFirst($first) {
-        $this->first = $first;
+    function setItems($items) {
+        $this->items = $items;
     }
 
-    public function setSecond($second) {
-        $this->second = $second;
+    function setActive($activate) {
+        $this->active = $activate;
     }
 
-    public function setDessert($dessert) {
-        $this->dessert = $dessert;
+    function setPersonalized($personalized) {
+        $this->personalized = $personalized;
     }
 
-    public function setDrink($drink) {
-        $this->drink = $drink;
+    function setDescription($description) {
+        $this->description = $description;
     }
 
-    public function setImage($image) {
+    function setImage($image) {
         $this->image = $image;
     }
 
-    public function setPrice($price) {
+    function setPrice($price) {
         $this->price = $price;
     }
-    
-    function getAll(){
+
+    function getAll() {
         $data = [];
-        
+
         $data['menuId'] = $this->getMenuId();
-        $data['first'] = $this->getFirst();
-        $data['second'] = $this->getSecond();
-        $data['dessert'] = $this->getDessert();
-        $data['drink'] = $this->getDrink();
+        $data['items'] = $this->getItems();
+        $data['active'] = $this->getActive();
+        $data['personalized'] = $this->getPersonalized();
+        $data['description'] = $this->getDescription();
         $data['image'] = $this->getImage();
         $data['price'] = $this->getPrice();
+        
         return $data;
     }
 

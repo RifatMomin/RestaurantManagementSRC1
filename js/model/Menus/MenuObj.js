@@ -12,6 +12,7 @@ MenuObj = function () {
     this.price = null;
     this.description = null;
     this.personalized = null;
+    this.active = 1;
     this.items = [];
     
     this.construct = function(menuId, image,price, description,personalized){

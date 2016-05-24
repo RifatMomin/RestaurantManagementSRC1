@@ -2,36 +2,91 @@
     <h3>Menus <small>Create &bull; Modify &bull; Delete</small></h3>
 </div>
 
-<!--<div class="col-xs-12">
-    <button class="btn btn-info pull-left" style="margin-bottom: 5px;" id="buttonAdd" ng-click="showFromAddNewMenu()"><span class="glyphicon glyphicon-plus"></span>Add New</button>
+<div class="col-xs-12">
+    <button class="btn btn-info pull-left" style="margin-bottom: 5px;" id="buttonAddMenu" ng-click="showFormAddNewMenu();  getMenuItems(false); filterDataMenuItems()"><span class="glyphicon glyphicon-plus"></span>Add New</button>
     <button class="btn btn-primary pull-right" ng-click="getMenus(true)"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
         <form class="well" id="newMenuForm" name="newMenuForm" novalidate hidden>
-            <div class="form-group" ng-class="{'has-error': newMenuForm.ingredientName.$invalid, 'has-success': newMenuForm.ingredientName.$valid}">
-                <label>Name: </label>
-                <input type="text" class="form-control" name="menuName" ng-model="newIngredient.name" ng-maxlength="25" required/>
+            <div class="form-group" ng-class="{'has-error': newMenuForm.menuDescription.$invalid && !newMenuForm.menuDescription.$pristine, 'has-success': newMenuForm.menuDescription.$valid && !newMenuForm.menuDescription.$pristine}">
+                <label>Description:  </label>
+                <textarea rows="3" cols="" type="text" class="form-control" name="menuDescription" ng-model="newMenu.description" ng-maxlength="180" required></textarea>
             </div>
 
-            <div class="form-group" ng-class="{'has-error': newIngredientForm.ingredientPrice.$invalid, 'has-success': newIngredientForm.ingredientPrice.$valid}">
+            <div class="form-group" ng-class="{'has-error': newMenuForm.menuPrice.$invalid && !newMenuForm.menuPrice.$pristine, 'has-success': newIngredientForm.menuPrice.$valid && !newMenuForm.menuPrice.$pristine}">
                 <label>Price: </label>
-                <input type="text" class="form-control" name="ingredientPrice" ng-model="newIngredient.price" ng-currency required/>
+                <input type="text" class="form-control" name="menuPrice" ng-model="newMenu.price" ng-currency required/>
             </div>
 
             <div class="form-group">
-                <button class="btn btn-success" ng-disabled="newIngredientForm.$invalid" ng-click="addIngredient()"><span class="glyphicon glyphicon-plus"></span> Add</button>
-                <button class="btn btn-danger" ng-click="cancelNewIngredient();"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
+                <h4>Items of the menu:</h4>
+                <hr/>
+                <div class="row">
+                    <div class="col-lg-6 col-xs-12">
+                        <label>Item type: </label>
+
+                        <select class="form-control" ng-model="dataCourse.courseTypeMenu" ng-change="filterDataMenuItems()" ng-options="course.name for course in arrayCourseTypeAux" required>
+                            <option value="">-- Select Type --</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-xs-12">
+                        <label>Item: </label>
+
+                        <select class="form-control" ng-model="dataMenu.item" ng-options="menuItem.name for menuItem in menuItemsFiltered" required>
+                            <option value="">-- Select Item --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-sm btn-info" ng-click="addItemToMenu()"><span class="glyphicon glyphicon-plus"></span> Add Item</button>
+            </div>
+
+            <div class="form-group"  ng-if="newMenu.items.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <th></th>
+                        <th>Course</th>
+                        <th>Name</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in newMenu.items">
+                                <td><a class="text-danger link" ng-click="removeItemFromMenu(item)"><span class="glyphicon glyphicon-remove-circle"></span> Remove</a></td>
+                                <td>{{item.course.name}}</td>
+                                <td>{{item.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Image (Optional):</label>
+                <div class="form-group" id="containerImageMenu">
+                    <!--Container to put the preview of the Image-->
+                </div>                
+
+                <div>                            
+                    <input type="file"  accept="image/*" ng-model="editImageMenu" preview-container="containerImageMenu" id="editImageMenu" name="editImageMenu" media-preview/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-success" ng-disabled="newMenuForm.$invalid || newMenu.items.length == 0" ng-click="addMenu()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                <button class="btn btn-danger" ng-click="cancelNewMenu(); getMenus()"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
             </div>
         </form>
     </div>
 
-</div>-->
+</div>
 
 <div class="col-xs-12 text-center" ng-if="loadingMenus">
     <img class="img-responsive center-block" src="images/loading.gif" alt="Loading..." /> 
     <p>Loading Menus...</p>
 </div>
 
-<div class="col-xs-12" ng-if="!loadingMenus">
+<div class="col-xs-12" id="divTableMenus" ng-if="!loadingMenus">
     <table class="table table-stripped">
         <thead>
         <th></th>
@@ -39,28 +94,26 @@
         <th>Price</th>
         <th>Items</th>
         <th class="text-center" style="width: 30px;">Modify</th>
-        <th class="text-center" style="width: 30px;">Delete</th>
+        <th class="text-center" style="width: 30px;">Active</th>
         </thead>
         <tbody>
             <tr dir-paginate="menu in allMenus | itemsPerPage: pageSize" current-page="currentPage">
-                <td><img class="img-responsive menuItemImage" src="{{menu.getImage()}}" alt="{{menu.getDescription()}}"/></td>
+                <td><img class="img-responsive menuItemImage" ng-src="{{menu.getImage()}}" alt="{{menu.getDescription()}}"/></td>
                 <td><p>{{menu.getDescription()}}</p></td>
                 <td>{{menu.getPrice() | currency}}</td>       
                 <td>
                     <ul>
-                        <li class="list-group-item-text" ng-repeat="item in menu.getItems() | orderBy: 'priority'">{{item.getName()}}</li>
+                        <li class="list-group-item-text" ng-repeat="item in menu.getItems()">{{item.getName()}}</li>
                     </ul>
                 </td>
-                
+
                 <td class="text-center">
-                    <button class="btn btn-sm btn-warning" ng-click="editMenuForm(menu)">
+                    <button ng-click="adminCtrl.modifyMenuForm(menu); getMenuItems(false)" class="btn btn-sm btn-warning">
                         <span class="glyphicon glyphicon-edit"></span>
                     </button>
                 </td>
                 <td class="text-center">
-                    <button class="btn btn-sm btn-danger" ng-click="removeMenu(menu)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </button>
+                    <input type="checkbox" id="setActiveMenu" ng-click="managementMenuActive(menu)" ng-model="menu.active" /> <span ng-show="menu.active">YES</span> <span ng-show="!menu.active">NO</span>
                 </td>
             </tr>
         </tbody>
@@ -72,33 +125,100 @@
     </div>
 </div>
 
-<!-- Modal modify ingredient-->
-<!--<div class="modal fade" id="modifyIngredientModal" tabindex="-1" role="dialog" aria-labelledby="modalModifyIngredient">
+<!-- Modal modify Menu-->
+<div class="modal fade" id="modifyMenuModal" tabindex="-1" role="dialog" aria-labelledby="modalModifyMenu">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title text-center"><strong>Modifying Ingredient {{ingredientAux.getName()}}</strong></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeModalMenu()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center"><strong>Modifying Menu</strong></h4>
             </div>
 
             <div class="modal-body">
-                <form novalidate name="modifyIngredientForm">
-                    <div class="form-group" ng-class="{'has-error': modifyIngredientForm.ingredientNameModify.$invalid, 'has-success': modifyIngredientForm.ingredientNameModify.$valid}">
-                        <label>Name: </label>
-                        <input type="text" class="form-control" name="ingredientNameModify" ng-model="ingredientAux.name" ng-maxlength="25" required/>
+                <form novalidate name="modifyMenuForm">
+                    <div class="form-group" ng-class="{'has-error': modifyMenuForm.menuDescription.$invalid && !modifyMenuForm.menuDescription.$pristine, 'has-success': modifyMenuForm.menuDescription.$valid && !modifyMenuForm.menuDescription.$pristine}">
+                        <label>Description:  </label>
+                        <textarea rows="3" cols="" type="text" class="form-control" name="menuDescription" ng-model="menuAux.description" ng-maxlength="180" required></textarea>
                     </div>
 
-                    <div class="form-group" ng-class="{'has-error': modifyIngredientForm.ingredientPriceModify.$invalid, 'has-success': newIngredientForm.ingredientPriceModify.$valid}">
+                    <div class="form-group" ng-class="{'has-error': modifyMenuForm.menuPrice.$invalid && !modifyMenuForm.menuPrice.$pristine, 'has-success': modifyMenuForm.menuPrice.$valid && !modifyMenuForm.menuPrice.$pristine}">
                         <label>Price: </label>
-                        <input type="text" class="form-control" name="ingredientPriceModify" ng-model="ingredientAux.price" ng-currency required/>
+                        <input type="text" class="form-control" name="menuPrice" ng-model="menuAux.price" ng-currency required/>
                     </div>
+
+                    <div class="form-group">
+                        <h4>Items of the menu:</h4>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-12">
+                                <label>Item type: </label>
+
+                                <select class="form-control" ng-model="dataCourse.courseTypeMenu" ng-change="filterDataMenuItems()" ng-options="course.name for course in arrayCourseTypeAux" required>
+                                    <option value="">-- Select Type --</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6 col-xs-12">
+                                <label>Item: </label>
+
+                                <select class="form-control" ng-model="dataMenu.item" ng-options="menuItem.name for menuItem in menuItemsFiltered" required>
+                                    <option value="">-- Select Item --</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-info" ng-click="addItemToMenuModify()"><span class="glyphicon glyphicon-plus"></span> Add Item</button>
+                    </div>
+
+                    <div class="form-group"  ng-if="menuAux.items.length > 0">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <th></th>
+                                <th>Course</th>
+                                <th>Name</th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in menuAux.items track by $index">
+                                        <td><a class="text-danger link" ng-click="removeItemFromMenuModify(item)"><span class="glyphicon glyphicon-remove-circle"></span> Remove</a></td>
+                                        <td>{{item.course.name}}</td>
+                                        <td>{{item.name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image (Optional):</label>
+                        <div class="form-group" ng-show="changeImage" id="containerImageModifyMenu">
+                            <!--Container to put the preview of the Image-->
+
+                        </div>                
+
+                        <div ng-show="!changeImage">
+                            <img class="img-responsive media-preview" ng-src="{{menuAux.image}}" alt="{{menuAux.name}}" />
+                        </div>
+
+                        <div>                            
+                            <input type="file"  accept="image/*"  onchange="angular.element(this).scope().hidePreviousImage(this)" ng-model="containerImageModifyMenu" preview-container="containerImageModifyMenu" id="imageModifyMenu" name="imageModifyMenu" media-preview/>
+                        </div>
+
+
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-danger" ng-click="cancelImageModifyMenu()">Cancel Image</button>
+                    </div>
+
                 </form>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-success" ng-disabled="modifyIngredientForm.$invalid" ng-click="modifyIngredient()">Modify</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="closeModalMenu()">Cancel</button>
+                <button type="submit" class="btn btn-success" ng-disabled="modifyMenutForm.$invalid || menuAux.items.length == 0" ng-click="modifyMenu()">Modify</button>
             </div>
         </div>
     </div>
-</div>-->
+</div>

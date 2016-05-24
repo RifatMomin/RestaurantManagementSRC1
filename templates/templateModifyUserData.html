@@ -15,7 +15,7 @@
                             <!--Container to put the preview of the Image-->
                         </div>
 
-                        <img class="img-responsive" id="userImage" width="auto" height="150" src="{{userLoggedIn.image}}" alt="{{userLoggedIn.username}}"/>
+                        <img class="img-responsive" id="userImage" width="auto" height="150" ng-src="{{userLoggedIn.image}}" alt="{{userLoggedIn.username}}"/>
 
 
                         <button style="margin-top:10px;" class="btn btn-sm btn-info" id="buttonShowImage" ng-click="showEditImage()"><span class="glyphicon glyphicon-edit"></span>Edit Profile Image</button>

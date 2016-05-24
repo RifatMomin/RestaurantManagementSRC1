@@ -1,14 +1,14 @@
-<div class="col-xs-12">
+<div class="col-xs-12" ng-init="getMenus(true)">
     <ul class="nav nav-tabs">
         <li ng-class="{'active': actionMenu == 1}"><a ng-click="actionMenu = 1; getMenus(true)" class="navtabs-crud">Menus</a></li>
-        <li ng-class="{'active': actionMenu == 2}"><a ng-click="actionMenu = 2; getIngredients(false); getMenuItems();" class="navtabs-crud">Items</a></li>
+        <li ng-class="{'active': actionMenu == 2}"><a ng-click="actionMenu = 2; getIngredients(false); getMenuItems(true);" class="navtabs-crud">Items</a></li>
         <li ng-class="{'active': actionMenu == 3}"><a ng-click="actionMenu = 3; getIngredients(true)" class="navtabs-crud">Ingredients</a></li>
     </ul>
 </div>
 
 <div class="col-xs-12">
     <table-menus ng-show="actionMenu == 1"></table-menus>
-    <table-menu-items ng-init="getCourseTypes()" ng-show="actionMenu == 2"></table-menu-items>
+    <table-menu-items ng-init="getCourseTypes(false)" ng-show="actionMenu == 2"></table-menu-items>
     <table-ingredients ng-show="actionMenu == 3"></table-ingredients>
 </div>
 

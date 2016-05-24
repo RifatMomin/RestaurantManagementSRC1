@@ -1,0 +1,95 @@
+<div class="page-header">
+    <h3>Modify the data of the restaurant</h3>
+</div>
+
+<div class="col-md-6 col-xs-12 center-block">
+    <form name="restaurantInfoForm"  novalidate ng-submit="saveRestaurantInfo() && restaurantInfoForm.$valid">
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantCif.$invalid, 'has-success': restaurantInfoForm.restaurantCif.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-hand-right"></span></span>
+                <input class="form-control" type="text"  ng-model="restaurantInfo.CIF" ng-pattern="/^[a-zA-Z0-9]*$/" name="restaurantCif" placeholder="CIF" required>
+                <span ng-show="restaurantInfoForm.restaurantCif.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="restaurantInfoForm.restaurantCif.$invalid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantName.$invalid, 'has-success':restaurantInfoForm.restaurantName.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-hand-right"></span></span>
+                <input class="form-control" type="text"  placeholder="Restaurant Name" ng-model="restaurantInfo.name" ng-pattern="/^[a-zA-Zñá-ú\s]+$/" name="restaurantName" required/>
+                <span ng-show="restaurantInfoForm.restaurantName.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="restaurantInfoForm.restaurantName.$invalid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>                                    
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantEmail.$invalid, 'has-success':restaurantInfoForm.restaurantEmail.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-envelope"></span></span>
+                <input class="form-control" type="email"  ng-model="restaurantInfo.email" ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/" placeholder="Email" name="restaurantEmail" required>
+                <span ng-show="restaurantInfoForm.restaurantEmail.$valid && availableEmail" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="restaurantInfoForm.restaurantEmail.$invalid || !availableEmail" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.phone1.$invalid, 'has-success':restaurantInfoForm.phone1.$valid}">            
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-phone"></span></span>
+                <input class="form-control" type="text" ng-model="restaurantInfo.phone1" ng-minlength="9" ng-maxlength="9" name="phone1" ng-pattern="/^[6-9][0-9]{8}$/" placeholder="Phone1" required>
+                <span ng-show="restaurantInfoForm.phone1.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="!restaurantInfoForm.phone1.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <p class="text-danger" ng-show="restaurantInfoForm.phone1.$error.maxlength"><strong>Error</strong> Maximum 9 numbers</p>
+        </div>
+
+        <div class="form-group"  ng-class="{'has-error': restaurantInfoForm.phone2.$invalid, 'has-success':restaurantInfoForm.phone2.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-phone-alt"></span></span>
+                <input class="form-control" type="text" ng-model="restaurantInfo.phone2" ng-minlength="9" ng-maxlength="9" name="phone2" ng-pattern="/^[6-9][0-9]{8}$/" placeholder="Phone2">
+                <span ng-show="restaurantInfoForm.phone2.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="!restaurantInfoForm.phone2.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <p class="text-danger" ng-show="restaurantInfoForm.phone2.$error.maxlength"><strong>Error</strong> Maximum 9 numbers</p>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantAddress.$invalid, 'has-success':restaurantInfoForm.restaurantAddress.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
+                <input class="form-control" type="text" ng-model="restaurantInfo.address" placeholder="Address" name="restaurantAddress" required>
+                <span ng-show="restaurantInfoForm.restaurantAddress.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="!restaurantInfoForm.restaurantAddress.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantCity.$invalid, 'has-success':restaurantInfoForm.restaurantCity.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
+                <input class="form-control" type="text"  ng-model="restaurantInfo.city" name="restaurantCity" ng-pattern="/^[a-zA-Zñá-ú\s]+$/" placeholder="City" required> 
+                <span ng-show="restaurantInfoForm.restaurantCity.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="!restaurantInfoForm.restaurantCity.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantZipCode.$invalid, 'has-success':restaurantInfoForm.restaurantZipCode.$valid}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-home"></span></span>
+                <input class="form-control" type="text"  ng-model="restaurantInfo.zipCode" ng-minlength="5" ng-maxlength="5" ng-pattern="/^[0-9]{5}$/" name="restaurantZipCode" placeholder="Zipcode" required>
+                <span ng-show="restaurantInfoForm.restaurantZipCode.$valid" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                <span ng-show="!restaurantInfoForm.restaurantZipCode.$valid" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <p class="text-danger" ng-show="restaurantInfoForm.restaurantZipCode.$error.maxlength"><strong>Error</strong> Maximum 5 numbers</p>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': restaurantInfoForm.restaurantDescription.$invalid, 'has-success':restaurantInfoForm.restaurantDescription.$valid}">
+            <label for="description">Description (Max. 120 Characters) <span ng-class="{'text-danger': restaurantInfoForm.restaurantDescription.$invalid, 'text-success':restaurantInfoForm.restaurantDescription.$valid}">{{restaurantInfo.description.length}}</span></label>
+            <textarea ng-trim="false" class="form-control" rows="2" ng-maxlength="120" ng-model="restaurantInfo.description" name="restaurantDescription" placeholder="Describe your restaurant" required> </textarea>
+            
+        </div>
+
+        <div class="form-group">
+            <button type="submit" ng-click="saveRestaurantInfo()" class="btn btn-info" ng-disabled="restaurantInfoForm.$invalid || equalPhoneNumbers"><span class="glyphicon glyphicon-save"></span> Save</button>
+        </div>
+
+
+    </form>
+</div>

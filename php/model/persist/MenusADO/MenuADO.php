@@ -19,9 +19,13 @@ class MenuADO implements EntityInterfaceADO {
 
     //Queries
     const SELECT_ALL = 'SELECT * FROM menu WHERE personalized = 1';
-//    const INSERT = "INSERT INTO ProjectDAW2_Restaurant. menu (menu_id, first, second, dessert, image, price ) VALUES (?, ?, ?, ?, ?, ?)";
-//    const SELECT_ID = "SELECT * FROM menu WHERE menu_id = ?";
-
+    const SELECT_ALL_CLIENTS = 'SELECT * FROM menu WHERE personalized = 1 and `active` = 1';
+    const INSERT_MENU = "INSERT INTO `menu` (`image`, `price`, `description`, `personalized`, `active`) VALUES ( ?, ?, ?, ?, ?)";
+    const INSERT_MENU_HAS_ITEM = "INSERT INTO `menu_has_item` (`menu_id`, `item_id`) VALUES (?, ?)";
+    const UPDATE_ACTIVE = "UPDATE `menu` SET active = ? WHERE `menu_id` = ?";
+    const UPDATE = "UPDATE `menu` SET `image`=?,`price`=?,`description`=? WHERE `menu_id`=?";
+    const DELETE_ITEMS_MENU = "DELETE FROM `menu_has_item` WHERE `menu_id` = ?";
+    
     private $dbSource;
     private $meal;
 
@@ -29,34 +33,54 @@ class MenuADO implements EntityInterfaceADO {
         try {
             $this->dbSource = DBConnect::getInstance();
         } catch (Exception $ex) {
-            error_log("Error in DBCONNECT: " . $e->getMessage() . " ");
+            error_log("Error in DBCONNECT: " . $ex . " ");
             die();
         }
     }
 
-    public function create($entity) {
-        $this->meal = new MealClass($entity->getMealId(), $entity->getCourse(), $entity->getName(), $entity->getPrice());
-        //:course_id,:meal_name,:meal_price,:meal_image
-        $vector = [ ":course_id" => $entity->getCourse(),
-            ":meal_name" => $entity->getName(),
-            ":meal_image" => $entity->getImage(),
-            ":meal_price" => $entity->getPrice()
+    public function insertItemsMenu($item, $menuId) {
+        return $this->dbSource->execution(self::INSERT_MENU_HAS_ITEM, $array = [$menuId, $item->getItemId()]);
+    }
+
+    public function updateActive($active, $menuId) {
+        return $this->dbSource->execution(self::UPDATE_ACTIVE, $array = [$active, $menuId]);
+    }
+
+    public function create($menu) {
+        //`image`, `price`, `description`, `personalized`, `active`
+        $vector = [
+            $menu->getImage(),
+            $menu->getPrice(),
+            $menu->getDescription(),
+            $menu->getPersonalized(),
+            $menu->getActive()
         ];
 
-        return $this->dbSource->executionInsert(self::INSERT, $vector);
+        return $this->dbSource->executeTransaction(self::INSERT_MENU, $vector);
+    }
+    
+    public function deleteItemsFromMenu($menuId){
+        return $this->dbSource->execution(self::DELETE_ITEMS_MENU,$array=[$menuId]);
     }
 
     public function delete($entity) {
         
     }
 
-    public function update($entity) {
-        
+    public function update($menu) {
+          $array=[$menu->getImage(), 
+                  $menu->getPrice(),
+                  $menu->getDescription(),
+                  $menu->getMenuId()];
+        return $this->dbSource->execution(self::UPDATE, $array);
     }
 
     public function findAll() {
         return $result = $this->dbSource->execution(self::SELECT_ALL, $vector = []);
     }
-    
+
+    public function findAllMenusClients() {
+        return $result = $this->dbSource->execution(self::SELECT_ALL_CLIENTS, $vector = []);
+    }
 
 }

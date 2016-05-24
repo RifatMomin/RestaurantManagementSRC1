@@ -18,7 +18,7 @@ class TableLocationClass{
     private $name;
     
     //constructor
-    function __construct() {  
+    function __construct($id, $name) {  
         $this->id = $id;
         $this->name=$name;
     } 

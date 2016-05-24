@@ -4,6 +4,7 @@ session_start();
 
 if (!isset($_SESSION['connectedUser'])) {
     header("Location: ../RestaurantManagementSRC1");
+    
 }
 ?>
 <!--
@@ -24,11 +25,12 @@ and open the template in the editor.
 
         <!--Bootstrap CSS-->
         <link href="css/bootstrap-3.3.6-dist-pers/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-
+        <link href="css/bootstrap-switch/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css"/>
+        
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
 
-        <!--AngularJS and jQueryJS-->
+        <!--AngularJS and jQueryJS, and others-->
         <script src="js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
         <script src="js/frameworks/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular.min.js" type="text/javascript"></script>
@@ -36,6 +38,7 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
         <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/ng-currency.js" type="text/javascript"></script>
+        <script src="css/bootstrap-switch/js/bootstrap-switch.js" type="text/javascript"></script>
         
         <!--Library to SHA1 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
@@ -45,6 +48,10 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
         <!--Model and Control-->
+        <script src="js/model/Tables/TableTypeObj.js" type="text/javascript"></script>
+        <script src="js/model/Tables/TableStatusObj.js" type="text/javascript"></script>
+        <script src="js/model/Tables/TableLocationObj.js" type="text/javascript"></script>
+        <script src="js/model/Tables/TableObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/CourseObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/MenuItemObj.js" type="text/javascript"></script>
         <script src="js/model/Menus/IngredientObj.js" type="text/javascript"></script>

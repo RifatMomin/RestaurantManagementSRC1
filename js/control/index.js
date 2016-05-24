@@ -429,7 +429,7 @@ $(document).ready(function(){
         $scope.getMenus = function () {
             $scope.allMenus = [];
 
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10025, JSONData: JSON.stringify({none: ""})});
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10055, JSONData: JSON.stringify({none: ""})});
 
             promise.then(function (data) {
                 //console.log(data);
@@ -491,7 +491,7 @@ $(document).ready(function(){
     mainApp.directive("menusTemplate", function () {
         return {
             restrict: 'E',
-            templateUrl: "templates/menusTemplate.html",
+            templateUrl: "templates/menusTemplateIndex.html",
             controller: function () {
 
             },

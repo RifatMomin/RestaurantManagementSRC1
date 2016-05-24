@@ -1,4 +1,5 @@
 <?php
+
 require_once "ControllerInterface.php";
 require_once "../model/persist/RestaurantInfoADO.php";
 
@@ -55,54 +56,47 @@ class RestaurantInfoController implements ControllerInterface {
         return $this->data;
     }
 
-    public function getInfo(){
+    public function getInfo() {
         $result = $this->helperAdo->findAll();
-        $this->data[]=true;
-        $this->data[]=$result->fetchAll();
-        
+        $this->data[] = true;
+        $this->data[] = $result->fetchAll();
     }
-    
-    public function insertInfo(){
-        $restaurant= json_decode(stripslashes($this->getJsonData()));
+
+    public function insertInfo() {
+        $restaurant = json_decode(stripslashes($this->getJsonData()));
         $result = $this->helperAdo->create($restaurant);
-        
-        if($result!=null){
+
+        if ($result != null) {
             $this->data [] = false;
             $this->errors [] = "Restaurant Info insert";
             $this->data [] = $this->errors;
-        }
-        else{
+        } else {
             $this->data [] = false;
             $this->errors [] = "Restaurant Info could not be inserted";
             $this->data [] = $this->errors;
         }
     }
-    
-    public function updateInfo(){
 
-        $restaurant= json_decode(stripslashes($this->getJsonData()));
-        //var_dump($restaurant);
-        $rest= new RestaurantClass($restaurant->id_restaurant, $restaurant->CIF, $restaurant->name, $restaurant->address, $restaurant->city, $restaurant->zipCode, $restaurant->phone1, $restaurant->phone2, $restaurant->email, $restaurant->description);
+    public function updateInfo() {
+        $restaurant = json_decode(stripslashes($this->getJsonData()));
+        
+        $rest = new RestaurantClass($restaurant->id_restaurant, $restaurant->CIF, $restaurant->name, $restaurant->address, $restaurant->city, $restaurant->zipCode, $restaurant->phone1, $restaurant->phone2, $restaurant->email, $restaurant->description);
         $result = $this->helperAdo->update($rest)->rowCount();
-        //var_dump($result);
-        if($result>0){
+
+        if ($result > 0) {
             $this->data [] = true;
-            $this->errors [] = "Restaurant Info updated";
-            $this->data [] = $this->errors;
-        }
-        else{
-            if($result==0){
-                $this->data [] = false;
+            $this->data [] = "Restaurant Info updated";
+        } else {
+            if ($result == 0) {
+                $this->data [] = true;
                 $this->errors [] = "Restaurant Info hasn't been modified";
                 $this->data [] = $this->errors;
-            }else{
-            $this->data [] = false;
-            $this->errors [] = "Restaurant Info could not be updated";
-            $this->data [] = $this->errors;
+            } else {
+                $this->data [] = false;
+                $this->errors [] = "Restaurant Info could not be updated";
+                $this->data [] = $this->errors;
             }
         }
-        
-       
     }
 
 }

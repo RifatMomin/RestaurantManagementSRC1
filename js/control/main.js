@@ -19,6 +19,8 @@
  */
 $(document).ready(function () {
     $('.btn').button('reset');
+
+
 });
 
 
@@ -341,7 +343,9 @@ $(document).ready(function () {
             promise.then(function (data) {
                 console.log(data);
                 if (data[0] === true) {
-                    alert("Restaurant information updated");
+                    if (angular.isString(data[1])) {
+                        successMessage("Restaurant Info Updated");
+                    }
                 } else {
 
                     if (angular.isArray(data[1])) {
@@ -366,7 +370,8 @@ $(document).ready(function () {
         //Scope variables
         $scope.actionAdmin = 1;//Controls the action of the admin
         $scope.actionMenu = 1; //Cobtrols the action of the CRUD MENU
-        $scope.arrayCourseType = [];
+        $scope.actionTable = 1;//Controls the action of the CRUD TABLES
+        $scope.resultDeleteImage = false;
 
         //Ingredients
         $scope.ingredients = []; //Array of ingredients
@@ -382,23 +387,55 @@ $(document).ready(function () {
 
         //Menu Items
         $scope.menuItems = [];
+        $scope.menuItemsAux = [];
         $scope.newMenuItem = new MenuItemObj();
         $scope.loadingMenuItems = true;
         $scope.menuItemAux = new MenuItemObj();
         $scope.ingredientsNewMenuItem = [];
         $scope.modifiedIngredients = false;
+        $scope.changeImage = false;
 
         //Courses 
         $scope.newCourse = new CourseObj();
         $scope.arrayCourseType = []; //an array of courses
+        $scope.arrayCourseTypeAux = [];
         $scope.loadingCourses = true;
         $scope.hideButtonAddCourse = false;
         $scope.courseModify = new CourseObj();
 
+        //Table Locations
+        $scope.newTableLocation = new TableLocationObj();
+        $scope.arrayTableLocations = []; //an array of table locations
+        $scope.loadingTableLocations = true;
+        $scope.hideButtonAddTableLocation = false;
+
+        //Table Types
+        $scope.newTableType = new TableTypeObj();
+        $scope.arrayTableTypes = []; //an array of table types
+        $scope.loadingTableTypes = true;
+        $scope.hideButtonAddTableType = false;
+        $scope.tableTypeModify = new TableTypeObj();
+
+        //Table Status 
+        $scope.tableStatus = new TableStatusObj();
+
+        //Tables
+        $scope.newTable = new TableObj();
+        $scope.arrayTables = [];
+        $scope.hideButtonAddTable = false;
+        $scope.loadingTables = true;
+        $scope.tableModify = new TableObj();
+
         //Menus
         $scope.newMenu = new MenuObj();
+        $scope.newMenu.construct(0, "", 3, "Menu Description", 1);
         $scope.allMenus = [];
+        $scope.menuItemsFiltered = [];
         $scope.loadingMenus = true;
+        $scope.dataCourse = {};
+        $scope.dataMenu = {};
+        $scope.menuAux = new MenuObj();
+        $scope.menuItemsModified = false;
 
         //Pagination
         $scope.pageSize = 5;
@@ -407,13 +444,30 @@ $(document).ready(function () {
 
 
         //Methods
-        $scope.getMenus = function (pagination) {
+        $scope.deleteImage = function (imagePath) {
+
+            if (imagePath !== null) {
+                var promise = accessService.getData("php/controllers/MainController.php", false, "POST", {controllerType: 9, action: 280, JSONData: "", imageToDelete: imagePath});
+
+                promise.then(function (data) {
+                    $scope.resultDeleteImage = false;
+                    if (data[0] === true) {
+                        $scope.resultDeleteImage = true;
+                    }
+                });
+            }
+
+        };
+
+
+        $scope.getMenus = function () {
             $scope.allMenus = [];
             $scope.loadingMenus = true;
 
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10025, JSONData: JSON.stringify({none: ""})});
 
             promise.then(function (data) {
+                $log.info(data);
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
                         //$log.info(data[1]);
@@ -421,14 +475,20 @@ $(document).ready(function () {
                         $.each(data[1], function (index) {
                             var newMenu = new MenuObj();
                             newMenu.construct(data[1][index].menu_id, data[1][index].image, data[1][index].price, data[1][index].description, 1);
+                            if (data[1][index].active == 0) {
+                                newMenu.active = false;
+                            } else {
+                                newMenu.active = true;
+                            }
+
 
                             //Iterate the items of the menu if there are items
                             if (typeof data[1][index].items !== 'undefined') {
                                 $.each(data[1][index].items, function (i) {
                                     var menuItem = new MenuItemObj();
                                     var course = new CourseObj();
-                                    course.construct(0, data[1][index].items[i].course_name, data[1][index].items[i].priority);
-                                    menuItem.construct(data[1][index].items[i].item_id, course, data[1][index].items[i].item_name, "", 0);
+                                    course.construct(data[1][index].items[i].course_id, data[1][index].items[i].course_name, data[1][index].items[i].priority);
+                                    menuItem.construct(data[1][index].items[i].item_id, course, data[1][index].items[i].item_name, data[1][index].items[i].item_image, data[1][index].items[i].item_price);
                                     newMenu.items.push(menuItem);
                                 });
                             } else {
@@ -452,10 +512,301 @@ $(document).ready(function () {
             });
         };
 
+        $scope.filterDataMenuItems = function () {
+            $scope.menuItemsFiltered = [];
+
+            //Filter the items
+            $.each($scope.menuItemsAux, function (index, item) {
+                if ($scope.dataCourse.courseTypeMenu.id === item.course.id) {
+                    $scope.menuItemsFiltered.push(item);
+                }
+            });
+
+            $scope.dataMenu.item = $scope.menuItemsFiltered[0];
+
+        };
+
+        $scope.addItemToMenu = function () {
+
+            if ($scope.newMenu.items.length == 0) {
+                $scope.newMenu.items.push($scope.dataMenu.item);
+            } else {
+                if ($scope.newMenu.items.indexOf($scope.dataMenu.item) == -1) {
+                    $scope.newMenu.items.push($scope.dataMenu.item);
+                } else {
+                    alert("Item already added");
+                }
+            }
+
+            //$log.info($scope.newMenu.items);
+        };
 
 
+        $scope.removeItemFromMenu = function (item) {
+            var index = $scope.newMenu.items.indexOf(item);
+
+            if (index !== -1) {
+                $scope.newMenu.items.splice(index, 1);
+            }
+
+            //$log.info($scope.newMenu.items);
+        };
+
+        $scope.showFormAddNewMenu = function () {
+            $scope.dataMenu = {};
+            $scope.dataCourse = {};
+            $("#buttonAddMenu").hide();
+            $("#containerImageMenu").html("");
+            $("#editImageMenu").val("");
+            $("#divTableMenus").hide();
+            $("#newMenuForm").toggle(800);
+        };
+
+        $scope.cancelNewMenu = function () {
+            $("#newMenuForm").toggle(500);
+            $("#buttonAddMenu").fadeIn(500);
+            $scope.newMenu = new MenuObj();
+        };
 
 
+        $scope.addMenu = function () {
+            //Get the image
+            var imageFile = $("#editImageMenu")[0].files[0];
+            var imagesArrayToSend = new FormData();
+            imagesArrayToSend.append('images[]', imageFile);
+
+
+            //Check if the image is putted in the input or not
+            if ($("#editImageMenu")[0].files.length > 0) {
+                //Upload the image first.
+                //If the upload fails, don't upload the menu item info
+                $http({
+                    method: 'POST',
+                    url: 'php/controllers/MainController.php?JSONData=""&controllerType=9&action=250&menu=1&imageName=' + $scope.newMenu.getDescription(),
+                    headers: {'Content-Type': undefined},
+                    data: imagesArrayToSend,
+                    transformRequest: function (data, headersGetterFunction) {
+                        return data;
+                    }
+                }).success(function (data) {
+                    ////$log.info(data);
+                    if (data[0] === true && angular.isString(data[1])) {
+                        $scope.newMenu.setImage("images/menus/" + data[1]);
+                        $scope.addMenuInfo();
+                    } else {
+                        errorGest(data);
+                    }
+                });
+
+            } else {
+                $scope.newMenu.setImage("images/menus/image.jpg");
+                $scope.addMenuInfo();
+            }
+
+        };
+
+        $scope.addMenuInfo = function () {
+            //Insert menu item info
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10000, JSONData: angular.toJson($scope.newMenu)});
+
+
+            promise.then(function (data) {
+                if (data[0] === true) {//Now, if the insert goes OK, we will insert the 
+                    //Menu items into the menu has item table
+                    //Before insert the menu items, we must put tghe ID of the menu item inserted
+                    $scope.newMenu.setMenuId(data[1].menuId)
+                    $scope.insertMenuItems();
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        $scope.insertMenuItems = function () {
+            //Insert menu item info
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10010, JSONData: angular.toJson($scope.newMenu)});
+
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.equals($scope.newMenu.items.length, data[1])) {
+                        $scope.cancelNewMenu();
+                        $scope.getMenus();
+                        successMessage("Menu created successfully! ");
+                    } else {
+                        errorGest("There has been an error inserting the items of the menu, try it later.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        $scope.managementMenuActive = function (menu) {
+            if (menu.active !== false) {
+                menu.active = 0;
+            } else {
+                menu.active = 1;
+            }
+
+            //Send the new value to the server
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10015, JSONData: angular.toJson(menu)});
+
+            promise.then(function (data) {
+                if (data[0] !== true) {
+                    errorGest(data);
+                }
+            });
+        };
+
+        this.modifyMenuForm = function (menu) {
+            $scope.menuItemsModified = false;
+            $scope.menuAux = angular.copy(menu);
+            $scope.dataMenu = {};
+            $scope.dataCourse = {};
+
+            //Show modal
+            $("#modifyMenuModal").modal({
+                show: true,
+                backdrop: false
+            });
+
+            $log.info($scope.menuAux);
+        };
+
+        $scope.closeModalMenu = function () {
+            $("#modifyMenuModal").modal({
+                show: false
+            });
+
+            $scope.getMenus();
+        };
+
+        $scope.addItemToMenuModify = function () {
+            $scope.menuItemsModified = true;
+            $scope.dataMenu = angular.copy($scope.dataMenu);
+
+            if ($scope.menuAux.items.length == 0) {
+                $scope.menuAux.items.push($scope.dataMenu.item);
+            } else {
+                var itemInArray = false;
+                $.each($scope.menuAux.items, function (index, item) {
+                    if (item.itemId == $scope.dataMenu.item.itemId) {
+                        itemInArray = true;
+                    }
+                });
+
+                if (itemInArray) {
+                    alert("Item already added");
+                } else {
+                    $scope.menuAux.items.push($scope.dataMenu.item);
+                }
+            }
+            $log.info($scope.menuAux.items);
+        };
+
+        $scope.removeItemFromMenuModify = function (item) {
+            $scope.menuItemsModified = true;
+            var index = $scope.menuAux.items.indexOf(item);
+
+            if (index !== -1) {
+                $scope.menuAux.items.splice(index, 1);
+            }
+
+            $log.info($scope.menuAux.items);
+        };
+
+        $scope.cancelImageModifyMenu = function () {
+            $("#imageModifyMenu").val("");
+            $scope.changeImage = false;
+        };
+
+
+        $scope.modifyMenu = function () {
+            //Get the image
+            var imageFile = $("#imageModifyMenu")[0].files[0];
+            var imagesArrayToSend = new FormData();
+            imagesArrayToSend.append('images[]', imageFile);
+
+            //Check if the image is putted in the input or not
+            if ($("#imageModifyMenu")[0].files.length > 0) {
+                //Modify The Image of the menu
+                //Upload the image first.
+                //If the upload fails, don't upload the menu menu info
+                $http({
+                    method: 'POST',
+                    url: 'php/controllers/MainController.php?JSONData=""&controllerType=9&menu=1&action=280&menu=' + angular.toJson($scope.menuAux),
+                    headers: {'Content-Type': undefined},
+                    data: imagesArrayToSend,
+                    transformRequest: function (data, headersGetterFunction) {
+                        return data;
+                    }
+                }).success(function (data) {
+                    //$log.info(data);
+                    if (data[0] === true && angular.isString(data[1])) {
+                        $scope.menuAux.setImage("images/menus/" + data[1]);
+                        $scope.updateInfoMenu();
+                    } else {
+                        errorGest(data);
+                    }
+                });
+
+            } else {
+                //Upload a menuItem without an image
+                $scope.updateInfoMenu();
+            }
+        };
+
+        $scope.updateInfoMenu = function () {
+            if ($scope.menuAux.active) {
+                $scope.menuAux.active = 1;
+            } else {
+                $scope.menuAux.active = 0;
+            }
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10035, JSONData: angular.toJson($scope.menuAux)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {//Menu info is modified correctly
+                    if ($scope.menuItemsModified) {
+                        $scope.updateMenuItemsFromMenu();
+                    } else {
+                        $("#modifyMenuModal").modal("hide");
+                        successMessage("Menu modified Correctly");
+                        $scope.getMenus();
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+            $log.info($scope.menuAux);
+        };
+
+
+        $scope.updateMenuItemsFromMenu = function () {
+            //First delete the items associated with the menu
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10070, JSONData: angular.toJson($scope.menuAux)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {//If the delete goes OK, then push the new items of the menu
+                    var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10080, JSONData: angular.toJson($scope.menuAux)});
+
+                    promise.then(function (data) {
+                        if (data[0] === true) {
+                            $("#modifyMenuModal").modal("hide");
+                            successMessage("Menu modified Correctly");
+                            $scope.getMenus();
+                        } else {
+                            errorGest(data);
+                        }
+                    });
+
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
 
         $scope.checkPhoneNumbers = function () {
             if ($scope.restaurantInfoForm.registerPhones.$valid) {
@@ -474,7 +825,7 @@ $(document).ready(function () {
          * @author Victor Moreno García / Rifat Momin
          * @date 2016/05/17
          */
-        $scope.getCourseTypes = function () {
+        $scope.getCourseTypes = function (pagination) {
             $scope.arrayCourseType = [];
             $scope.currentPage = 1;
             $scope.loadingCourses = true;
@@ -483,15 +834,21 @@ $(document).ready(function () {
             promise.then(function (data) {
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
-                        $log.info(data[1]);
+                        //$log.info(data[1]);
                         $.each(data[1], function (i) {
                             var course = new CourseObj();
                             course.construct(data[1][i].course_id, data[1][i].course_name, data[1][i].priority);
-                            $scope.arrayCourseType.push(course);
+                            if (pagination) {
+                                $scope.arrayCourseType.push(course);
+                            } else {
+                                $scope.arrayCourseTypeAux.push(course);
+                                $scope.newMenuItem.setCourse($scope.arrayCourseTypeAux[0]);
+                            }
+
                         });
-                        $scope.newMenuItem.setCourse($scope.arrayCourseType[0]);
+
                         $scope.loadingCourses = false;
-                        $log.info($scope.arrayCourseType);
+                        //$log.info($scope.arrayCourseType);
                     } else {
                         errorGest("Can't get the course types at this moment, try again later.");
                     }
@@ -514,7 +871,7 @@ $(document).ready(function () {
 
             promise.then(function (data) {
                 if (data[0] === true) {
-                    $scope.getCourseTypes();
+                    $scope.getCourseTypes(true);
                     successMessage("Course added");
                 } else {
                     errorGest(data);
@@ -535,7 +892,7 @@ $(document).ready(function () {
 
                 promise.then(function (data) {
                     if (data[0] === true) {
-                        $scope.getCourseTypes();
+                        $scope.getCourseTypes(true);
                         successMessage("Course Deleted");
                     } else {
                         errorGest(data);
@@ -597,7 +954,7 @@ $(document).ready(function () {
             promise.then(function (data) {
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
-                        $scope.getCourseTypes();
+                        $scope.getCourseTypes(true);
                         successMessage("Course Successfully Modified");
                         $("#modifyCourseModal").modal("hide");
                     }
@@ -754,7 +1111,7 @@ $(document).ready(function () {
         $scope.modifyIngredient = function () {
             $scope.ingredientAux = angular.copy($scope.ingredientAux);
 
-            $log.info($scope.ingredientAux);
+            //$log.info($scope.ingredientAux);
 
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 4, JSONData: JSON.stringify($scope.ingredientAux)});
 
@@ -780,9 +1137,10 @@ $(document).ready(function () {
          * @author Victor Moreno García
          * @date 2016/05/16
          */
-        $scope.getMenuItems = function () {
+        $scope.getMenuItems = function (pagination) {
             $scope.currentPage = 1;
             $scope.menuItems = [];
+            $scope.menuItemsAux = [];
             $scope.loadingMenuItems = true;
             $scope.menuItemCreation = true;
 
@@ -815,7 +1173,11 @@ $(document).ready(function () {
 
                             newMenuItem.setIngredients(ingredientsMenuItem);
 
-                            $scope.menuItems.push(newMenuItem);
+                            if (pagination) {
+                                $scope.menuItems.push(newMenuItem);
+                            } else {
+                                $scope.menuItemsAux.push(newMenuItem);
+                            }
                         });
 
                         $scope.loadingMenuItems = false;
@@ -856,7 +1218,7 @@ $(document).ready(function () {
             $("#containerImageMenuItem").html("");
             $("#editImageMenuItem").val("");
             $scope.newMenuItem = new MenuItemObj();
-            $scope.newMenuItem.setCourse($scope.arrayCourseType[0]);
+            $scope.newMenuItem.setCourse($scope.arrayCourseTypeAux[0]);
             $scope.ingredientsNewMenuItem = [];
             $('.ingredientCheckBox').prop('checked', false);
             $("#divTableMenuItems").fadeIn(500);
@@ -884,7 +1246,7 @@ $(document).ready(function () {
                         return data;
                     }
                 }).success(function (data) {
-                    $log.info(data);
+                    ////$log.info(data);
                     if (data[0] === true && angular.isString(data[1])) {
                         $scope.addMenuItemInfo("images/menu_items/" + data[1]);
                     } else {
@@ -911,7 +1273,7 @@ $(document).ready(function () {
             var promise = accessService.getData("php/controllers/MainController.php", false, "POST", {controllerType: 3, action: 11000, JSONData: angular.toJson($scope.newMenuItem)});
 
             promise.then(function (data) {
-                $log.info(data);
+                //$log.info(data);
                 if (data[0] === true) {//If menu item inserted, insert his ingredients
                     $scope.newMenuItem.setItemId(data['menuItemId']);
                     $scope.addMenuItemIngredients();
@@ -927,11 +1289,11 @@ $(document).ready(function () {
             var promiseIngreidents = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 5, JSONData: angular.toJson($scope.newMenuItem)});
             promiseIngreidents.then(function (dataIngredients) {
                 if (dataIngredients[0] === true) {
-                    $log.info(dataIngredients);
+                    //$log.info(dataIngredients);
                     if (dataIngredients[1] == $scope.newMenuItem.ingredients.length) {
                         $scope.cancelNewMenuItem();
                         successMessage("Menu Item created Successfully");
-                        $scope.getMenuItems();
+                        $scope.getMenuItems(true);
                     } else {
                         errorGest(dataIngredients);
                     }
@@ -952,11 +1314,11 @@ $(document).ready(function () {
                 }
             }
 
-            $log.info($scope.newMenuItem.getIngredients());
+            //$log.info($scope.newMenuItem.getIngredients());
         };
 
         $scope.removeMenuItem = function (menuItem) {
-            if (confirm("You want to delete the Menu Item <strong>" + menuItem.getName()+"</strong>")) {
+            if (confirm("You want to delete the Menu Item <strong>" + menuItem.getName() + "</strong>")) {
                 var item_id = angular.copy(menuItem.getItemId());
                 //First check that the menu item isn't in a Menu
                 var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11400, JSONData: JSON.stringify({menuItemId: item_id})});
@@ -973,8 +1335,10 @@ $(document).ready(function () {
 
                                 promise.then(function (data) {
                                     if (data[0] === true) {//The menu item has deleted correctly from the DB
+                                        //Now delete the image of the menu item
+                                        $scope.deleteImage(menuItem.getImage());
                                         successMessage(data[1]);//We show the message from the server
-                                        $scope.getMenuItems();
+                                        $scope.getMenuItems(true);
                                     } else {
                                         errorGest(data);
                                     }
@@ -1001,9 +1365,31 @@ $(document).ready(function () {
         $scope.editMenutItemForm = function (menuItem) {
             $scope.getIngredients(false);
             $scope.menuItemAux = angular.copy(menuItem);
+            $("#imageModifyMenuItem").val("");
+            $scope.changeImage = false;
+            $("#modifyMenuItemModal").modal({
+                show: true,
+                backdrop: false
+            });
 
-            $("#modifyMenuItemModal").modal("show");
+        };
 
+        $scope.cancelModalMenuItem = function () {
+            $("#modifyMenuItemModal").modal({
+                show: false
+            });
+            $scope.getMenuItems(true);
+        };
+
+        $scope.hidePreviousImage = function (element) {
+            $scope.$apply(function ($scope) {
+                $scope.changeImage = true;
+            });
+        };
+
+        $scope.cancelImageModifyItem = function () {
+            $("#imageModifyMenuItem").val("");
+            $scope.changeImage = false;
         };
 
         $scope.checkIngredientMenu = function (ing) {
@@ -1019,15 +1405,50 @@ $(document).ready(function () {
         };
 
         $scope.modifyMenuItem = function () {
-            //Upload a menuItem without an image
-            $log.info($scope.menuItemAux);
+            //Get the image
+            var imageFile = $("#imageModifyMenuItem")[0].files[0];
+            var imagesArrayToSend = new FormData();
+            imagesArrayToSend.append('images[]', imageFile);
+
+            //Check if the image is putted in the input or not
+            if ($("#imageModifyMenuItem")[0].files.length > 0) {
+                //Modify The Image of the menu item
+                //Upload the image first.
+                //If the upload fails, don't upload the menu item info
+                $http({
+                    method: 'POST',
+                    url: 'php/controllers/MainController.php?JSONData=""&controllerType=9&menuItem=1&action=270&item=' + angular.toJson($scope.menuItemAux),
+                    headers: {'Content-Type': undefined},
+                    data: imagesArrayToSend,
+                    transformRequest: function (data, headersGetterFunction) {
+                        return data;
+                    }
+                }).success(function (data) {
+                    //$log.info(data);
+                    if (data[0] === true && angular.isString(data[1])) {
+                        $scope.menuItemAux.setImage("images/menu_items/" + data[1]);
+                        $scope.updateInfoMenuItem();
+                    } else {
+                        errorGest(data);
+                    }
+                });
+
+            } else {
+                //Upload a menuItem without an image
+                $scope.updateInfoMenuItem();
+            }
+
+
+        };
+
+
+        $scope.updateInfoMenuItem = function () {
             $scope.menuItemAux = angular.copy($scope.menuItemAux);
 
             //First update the menu item in the database
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11200, JSONData: JSON.stringify($scope.menuItemAux)});
 
             promise.then(function (data) {
-
                 if (data[0] === true) {
                     //If the menu item is correctly updated, then update the ingredients from 
                     //the table menu item has ingredient if they are modified
@@ -1035,14 +1456,15 @@ $(document).ready(function () {
                         $scope.modifyIngredientsMenuItem();
                     } else {
                         successMessage("Menu Item Update correctly.");
+                        $("#modifyMenuItemModal").modal("hide");
+                        $scope.getMenuItems(true);
                     }
-
                 } else {
                     errorGest();
                 }
             });
-
         };
+
 
         $scope.modifyIngredientsMenuItem = function () {
             //First we delete the ingredients from the table menu item has ingredient
@@ -1054,11 +1476,11 @@ $(document).ready(function () {
                     var promiseIngreidents = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 5, action: 5, JSONData: angular.toJson($scope.menuItemAux)});
                     promiseIngreidents.then(function (dataIngredients) {
                         if (dataIngredients[0] === true) {
-                            //$log.info(dataIngredients);
+                            ////$log.info(dataIngredients);
                             if (dataIngredients[1] == $scope.menuItemAux.ingredients.length) {
                                 successMessage("Menu Item Updated Successfully");
                                 $("#modifyMenuItemModal").modal("hide");
-                                $scope.getMenuItems();
+                                $scope.getMenuItems(true);
                             } else {
                                 errorGest(dataIngredients);
                             }
@@ -1086,7 +1508,330 @@ $(document).ready(function () {
                     }
                 });
             }
-            $log.info($scope.menuItemAux.ingredients);
+            //$log.info($scope.menuItemAux.ingredients);
+        };
+
+
+        //TABLE LOCATIONS
+        /**
+         * @name getTableLocations
+         * @description Gets the table locations from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.getTableLocations = function () {
+            $scope.currentPage = 1;
+            $scope.arrayTableLocations = [];
+            $scope.loadingTableLocations = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 1, JSONData: JSON.stringify("")});
+
+            //console.log($scope.arrayTableLocations);
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $scope.arrayTableLocations = angular.copy(data[1]);
+                        $scope.loadingTableLocations = false;
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        /*
+         * @name addTableLocation
+         * @description Inserts a table location to the db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19 
+         */
+        $scope.addTableLocation = function () {
+            $scope.newTableLocation = angular.copy($scope.newTableLocation);
+            console.log($scope.newTableLocation);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 2, JSONData: JSON.stringify($scope.newTableLocation)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        //$scope.cancelCourse();
+                        //$scope.getCourseTypes();
+                        successMessage("Table Location successfully added");
+
+                        $("#buttonAddTableLocation").show();
+                        $("#tableLocationsForm").hide();
+                        $("tableLocationsForm").$setPristine();
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        /*
+         * @name removeTableLocation
+         * @description Removes table location from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.removeTableLocation = function (tableLocationModify) {
+            //$log.info(idCourse);
+            if (confirm("Are you sure you want to delete this table location?")) {
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 3, JSONData: JSON.stringify({id: tableLocationModify})});
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        //$scope.getTableLocations();
+                        successMessage("Table Location Deleted");
+                    } else {
+                        errorGest(data);
+                    }
+                });
+            }
+        };
+
+        /*
+         * @name modifyTableLocation
+         * @description Allows user to modify table location name
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.modifyTableLocation = function (tableLocationModify) {
+            //console.log($scope.courseModify);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 4, JSONData: JSON.stringify($scope.tableLocationModify)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        successMessage("Table Location Successfully Modified");
+                        $("#modifyTableLocationModal").modal("hide");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+
+        /**
+         * @name showAddNewTableLocationForm
+         * @description Shows the form when 
+         * the button is clicked
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.showAddNewTableLocationForm = function () {
+            $("#buttonAddTableLocation").hide();
+            $("#tableLocationsForm").toggle(800);
+        };
+
+        /*
+         * @name cancelNewTableLocation
+         * @description Cleans and hides the add form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/18
+         */
+        $scope.cancelNewTableLocation = function () {
+            $("#tableLocationsForm").toggle(500);
+            $("#buttonAddTableLocation").fadeIn(500);
+            $scope.newTableLocation = new TableLocationObj();
+        };
+
+        /*
+         * @name editTableLocationsForm
+         * @description Shows table locations modification form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.editTableLocationsForm = function (tableLocationModify) {
+            $scope.tableLocationModify = angular.copy(tableLocationModify);
+            $("#modifyTableLocationsModal").modal("show");
+
+        };
+
+        //TABLE TYPES CRUD
+        /**
+         * @name showAddNewTableTypeForm
+         * @description Shows the form when 
+         * the button is clicked
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.showAddNewTableTypeForm = function () {
+            $("#buttonAddTableType").hide();
+            $("#tableTypesForm").toggle(800);
+        };
+
+        /*
+         * @name cancelNewTableTypes
+         * @description Cleans and hides the add form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.cancelNewTableType = function () {
+            $("#tableTypesForm").toggle(500);
+            $("#buttonAddTableType").fadeIn(500);
+            $scope.newTablenewTableType = new TableTypeObj();
+        };
+
+        /**
+         * @name getTableTypes
+         * @description Gets the table types from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.getTableTypes = function () {
+            $scope.currentPage = 1;
+            $scope.arrayTableTypes = [];
+            $scope.loadingTableTypes = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 5, JSONData: JSON.stringify("")});
+
+            //console.log($scope.arrayTableLocations);
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $scope.arrayTableTypes = angular.copy(data[1]);
+                        $scope.loadingTableTypes = false;
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        /*
+         * @name addTableType
+         * @description Inserts a new table type to the db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.addTableType = function () {
+            $scope.newTableType = angular.copy($scope.newTableType);
+            console.log($scope.newTableType);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 6, JSONData: JSON.stringify($scope.newTableType)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+
+                    $scope.getTableTypes();
+                    successMessage("Table Type added");
+
+                    $("#buttonAddTableType").show();
+                    $("#tableTypesForm").hide();
+
+
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        /*
+         * @name editTableTypesForm
+         * @description Shows table types modification form
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.editTableTypesForm = function (tableTypeModify) {
+            $scope.tableTypeModify = angular.copy(tableTypeModify);
+            $("#modifyTableTypesModal").modal("show");
+
+        };
+
+        /*
+         * @name modifyTableType
+         * @description Allows user to modify table type name
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/19
+         */
+        $scope.modifyTableType = function (tableTypeModify) {
+            //console.log($scope.courseModify);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 8, JSONData: JSON.stringify($scope.tableTypeModify)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        successMessage("Table Type Successfully Modified");
+                        $("#modifyTableTypesModal").modal("hide");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        /*
+         * @name removeTableType
+         * @description Removes table type from db
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/20
+         */
+        $scope.removeTableType = function (tableId) {
+            //$log.info(idCourse);
+            if (confirm("Are you sure you want to delete this table type?")) {
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 7, JSONData: JSON.stringify({id: tableId})});
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        $scope.getIngredients();
+                        successMessage("Table Type Deleted");
+                    } else {
+                        errorGest(data);
+                    }
+                });
+            }
+        };
+
+        //TABLES
+//        
+//        $scope.newTable = new TableObj();
+//        $scope.arrayTables = [];
+//        $scope.hideButtonAddTable = false;
+//        $scope.loadingTables = true;
+//        $scope.tableModify = new TableObj();
+//        
+
+        $scope.getTables = function () {
+            $scope.currentPage = 1;
+            $scope.arrayTables = [];
+            $scope.loadingTables = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 9, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $.each(data[1], function (index) {
+                            $scope.arrayTables.push(data[1][index]);
+                            console.log($scope.arrayTables);
+                        });
+
+                        //$log.info($scope.menuItems);
+                        $scope.loadingTables = false;
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
         };
 
 
@@ -1098,11 +1843,50 @@ $(document).ready(function () {
      * The templates are used to display different contents on the page
      * without change the location of the URL
      */
+    restaurantApp.directive("tableTables", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDTables/tableTables.html",
+            controller: function () {
+            },
+            controllerAs: 'tableTables'
+        };
+    });
+
+    restaurantApp.directive("tableTableTypes", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDTables/tableTableTypes.html",
+            controller: function () {
+            },
+            controllerAs: 'tableTableTypes'
+        };
+    });
+
+    restaurantApp.directive("tableTableLocations", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDTables/tableTableLocations.html",
+            controller: function () {
+            },
+            controllerAs: 'tableTableLocations'
+        };
+    });
+
+    restaurantApp.directive("tablesTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Admin/CRUDTables/tablesTemplate.html",
+            controller: function () {
+            },
+            controllerAs: 'tablesTemplate'
+        };
+    });
 
     restaurantApp.directive("coursesTemplate", function () {
         return {
             restrict: 'E',
-            templateUrl: "templates/Admin/CRUDMenus/coursesTemplate.html",
+            templateUrl: "templates/Admin/CRUDCourses/coursesTemplate.html",
             controller: function () {
             },
             controllerAs: 'coursesTemplate'
@@ -1158,57 +1942,12 @@ $(document).ready(function () {
             },
             controllerAs: 'menusTemplate'
         };
-    });
-
-
-    restaurantApp.directive("customerNav", function () {
-        return {
-            restrict: 'E',
-            templateUrl: "templates/navbar/customerNav.html",
-            controller: function () {
-
-            },
-            controllerAs: 'customerNav'
-        };
-    });
-
-    restaurantApp.directive("adminNav", function () {
-        return {
-            restrict: 'E',
-            templateUrl: "templates/navbar/adminNav.html",
-            controller: function () {
-
-            },
-            controllerAs: 'adminNav'
-        };
-    });
-
-    restaurantApp.directive("chefNav", function () {
-        return {
-            restrict: 'E',
-            templateUrl: "templates/navbar/chefNav.html",
-            controller: function () {
-
-            },
-            controllerAs: 'chefNav'
-        };
-    });
-
-    restaurantApp.directive("waiterNav", function () {
-        return {
-            restrict: 'E',
-            templateUrl: "templates/navbar/waiterNav.html",
-            controller: function () {
-
-            },
-            controllerAs: 'waiterNav'
-        };
-    });
+    });    
 
     restaurantApp.directive("restaurantInfoTemplate", function () {
         return {
             restrict: 'E',
-            templateUrl: "templates/CRUDRestaurant/restaurantInfoTemplate.html",
+            templateUrl: "templates/Admin/CRUDRestaurant/restaurantInfoTemplate.html",
             controller: function () {
 
             },
@@ -1278,12 +2017,13 @@ $(document).ready(function () {
                         .error(function (msg, code) {
                             deferred.reject(msg);
                             $log.error(msg, code);
-                            alert("There has been an error in the server, try later");
+                            //alert("There has been an error in the server, try later");
                         });
 
                 return deferred.promise;
             }
         };
     });
+
 
 })();

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * toDoClass class
+ * MenuControllerClass
  * it controls the hole server part of the application
  * @author Rifat Momin
  */
@@ -52,14 +52,29 @@ class MenuControllerClass implements ControllerInterface {
             case 10000:
                 $this->insertMenu();
                 break;
+            case 10010:
+                $this->insertItemsMenu();
+                break;
+            case 10015:
+                $this->changeActiveMenu();
+                break;
             case 10025:
                 $this->getMenus();
+                break;
+            case 10055:
+                $this->getMenusClients();
                 break;
             case 10035:
                 $this->updateMenu();
                 break;
             case 10066:
                 $this->deleteMenu();
+                break;
+            case 10070:
+                $this->deleteItemsFromMenu();
+                break;
+            case 10080:
+                $this->insertItemsMenu();
                 break;
             //Menu Item methods
             case 11000:
@@ -80,9 +95,6 @@ class MenuControllerClass implements ControllerInterface {
             case 11500:
                 $this->deleteIngredientsFromMenuItem();
                 break;
-            case 11600:
-                $this->modifyIngredientsMenuItem();
-                break;
             //Courses CRUD methods
             case 12000:
                 $this->insertCourse();
@@ -96,6 +108,19 @@ class MenuControllerClass implements ControllerInterface {
             case 12300:
                 $this->deleteCourse();
                 break;
+            //Table Location CRUD
+            case 13000:
+                $this->insertTableLocation();
+                break;
+            case 13100:
+                $this->getTableLocation();
+                break;
+            case 13200:
+                $this->updateTableLocation();
+                break;
+            case 13300:
+                $this->deleteTableLocation();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -107,16 +132,61 @@ class MenuControllerClass implements ControllerInterface {
 
         return $this->data;
     }
+    
+    public function deleteItemsFromMenu(){
+        $jsonData = json_decode($this->jsonData);
+        
+        $result = $this->menuADO->deleteItemsFromMenu($jsonData->menuId);
+        
+        $error = $result->errorInfo();
+        
+        if($error[1]==null){
+            $this->data[]=true;
+            $this->data[]=$result->rowCount();
+        }else{
+            $this->data[] = false;
+            $this->errors[] = "Can't delete the items of the menu at this moment, try again later.";
+            $this->data[] = $this->errors;
+        }
+    }
 
-    public function modifyIngredientsMenuItem() {
+    public function changeActiveMenu() {
         $jsonData = json_decode($this->jsonData);
 
-        $ingredientsToDelete = $jsonData->ingredients;
+        $result = $this->menuADO->updateActive($jsonData->active, $jsonData->menuId)->rowCount();
 
-        if (is_array($ingredientsToDelete)) {
-            if (count($ingredientsToDelete) > 0) {
-                foreach ($ingredientsToDelete as $ingredient) {
-                    $newIngredient = new IngredientClass($ingredient->ingredientId,$ingredient->name,$ingredient->price);
+        if ($result > 0) {
+            $this->data[] = true;
+        } else {
+            $this->data [] = false;
+            $this->errors [] = "There has been an error in the server, try again later. Sorry.";
+            $this->data [] = $this->errors;
+        }
+    }
+
+    public function insertItemsMenu() {
+        $jsonData = json_decode($this->jsonData);
+
+        $menuItems = $jsonData->items;
+
+        if (is_array($menuItems)) {
+            if (count($menuItems) > 0) {
+                $insertedItems = 0;
+                foreach ($menuItems as $item) {
+                    $newItem = new MenuItemClass($item->itemId, $item->course->id, $item->name, $item->image, $item->price);
+                    $result = $this->menuADO->insertItemsMenu($newItem, $jsonData->menuId)->rowCount();
+                    if ($result > 0) {
+                        $insertedItems++;
+                    }
+                }
+
+                if ($insertedItems == count($menuItems)) {
+                    $this->data [] = true;
+                    $this->data[] = $insertedItems;
+                } else {
+                    $this->data [] = false;
+                    $this->errors [] = "There has been an error in the server, try again later. Sorry.";
+                    $this->data [] = $this->errors;
                 }
             } else {
                 $this->data [] = false;
@@ -129,6 +199,7 @@ class MenuControllerClass implements ControllerInterface {
             $this->data [] = $this->errors;
         }
     }
+   
 
     public function deleteIngredientsFromMenuItem() {
         $jsonData = json_decode($this->jsonData);
@@ -166,23 +237,22 @@ class MenuControllerClass implements ControllerInterface {
     public function updateMenu() {
         $menuDecoded = json_decode($this->jsonData);
 
+
         //Create the object review to pass it to the ADO
-        $meal = new MenuClass();
+        $menu = new MenuClass($menuDecoded->menuId, $menuDecoded->items, $menuDecoded->active, $menuDecoded->personalized, $menuDecoded->description, $menuDecoded->image, $menuDecoded->price);
 
-        $meal->setAll($menuDecoded->menuId, $menuDecoded->first, $menuDecoded->second, $menuDecoded->dessert, $menuDecoded->drink, $menuDecoded->image, $menuDecoded->price);
-        $result = MealADO::update($meal);
+        $result = $this->menuADO->update($menu)->rowCount();
 
-        if ($result->rowCount() > 0) {
-            $this->data [] = true;
-            $this->data [] = "Menu Updated";
-        } else if ($result->rowCount() == 0) {
-            $errors = [0, "Nothing Updated."];
+        if ($result > 0) {
+            $this->data[] = true;
+            $this->data[] = $menu;
+        } else if ($result == 0) {
+            $this->data[] = true;
             $this->data[] = false;
-            $this->data[] = $errors;
         } else {
-            $errors = [1, "Server Error, try again later."];
-            $this->data[] = false;
-            $this->data[] = $errors;
+            $this->data [] = false;
+            $this->errors [] = "Can't modify menu at this moment, try again later.";
+            $this->data[] = $this->errors;
         }
     }
 
@@ -190,16 +260,18 @@ class MenuControllerClass implements ControllerInterface {
         $menuDecoded = json_decode($this->jsonData);
 
         //Create the object review to pass it to the ADO
-        $menu = new MenuClass();
-        $menu->setAll("", $menuDecoded->first, $menuDecoded->second, $menuDecoded->dessert, $menuDecoded->drink, $menuDecoded->image, $menuDecoded->price);
+        $menu = new MenuClass(null, $menuDecoded->items, $menuDecoded->active, $menuDecoded->personalized, $menuDecoded->description, $menuDecoded->image, $menuDecoded->price);
 
-        $result = MenuADO::create($menu);
+        $result = $this->menuADO->create($menu);
 
         if ($result > 0) {
+            $menu->setMenuId($result);
             $this->data [] = true;
-            $this->data [] = $result;
+            $this->data [] = $menu->getAll();
         } else {
             $this->data [] = false;
+            $this->errors [] = "Can't add the menu at this moment, try again later.";
+            $this->data[] = $this->errors;
         }
     }
 
@@ -226,6 +298,53 @@ class MenuControllerClass implements ControllerInterface {
                 $menuArray['description'] = $menu->description;
                 $menuArray['image'] = $menu->image;
                 $menuArray['price'] = $menu->price;
+                $menuArray['active'] = $menu->active;
+
+                //Select all the items from the menus (table menu has item)
+                $itemsMenu = $this->menuItemADO->findMenuHasItem($menu->menu_id)->fetchAll(PDO::FETCH_OBJ);
+                $itemInfo = [];
+                foreach ($itemsMenu as $item) {
+                    //Select the properties of the item               
+                    $itemsProperties = $this->menuItemADO->findItemsProps($item->item_id)->fetchAll(PDO::FETCH_OBJ);
+                    foreach ($itemsProperties as $props) {
+                        $newItem = [];
+                        $newItem['item_id'] = $props->item_id;
+                        $newItem['item_name'] = $props->name;
+                        $newItem['item_image'] = $props->image;
+                        $newItem['item_price'] = $props->price;
+                        $newItem['course_name'] = $props->course_name;
+                        $newItem['course_id'] = $props->course_id;
+                        $newItem['priority'] = $props->priority;
+                        $itemInfo [] = $newItem;
+                    }
+                    $menuArray['items'] = $itemInfo;
+                }
+
+                $arrayAllMenus [] = $menuArray;
+            }
+
+            $this->data[] = $arrayAllMenus;
+        } catch (Exception $e) {
+            error_log("ERROR: " + $e);
+            $this->data[0] = false;
+            $this->data[1] = "An error occurred in the database, try again later.";
+        }
+    }
+
+    public function getMenusClients() {
+        try {
+            //Select all the menus
+            $menus = $this->menuADO->findAllMenusClients()->fetchAll(PDO::FETCH_OBJ);
+            $this->data[] = true;
+            $arrayAllMenus = [];
+            foreach ($menus as $menu) {
+                $menuArray = [];
+                //Put the menu properties
+                $menuArray['menu_id'] = $menu->menu_id;
+                $menuArray['description'] = $menu->description;
+                $menuArray['image'] = $menu->image;
+                $menuArray['price'] = $menu->price;
+                $menuArray['active'] = $menu->active;
 
                 //Select all the items from the menus (table menu has item)
                 $itemsMenu = $this->menuItemADO->findMenuHasItem($menu->menu_id)->fetchAll(PDO::FETCH_OBJ);
@@ -258,10 +377,9 @@ class MenuControllerClass implements ControllerInterface {
     public function insertMenuItem() {
         $menuItemDecoded = json_decode($this->jsonData);
 
-
-//
-//        //First insert he menu Item in the table menu_item
+        //First insert he menu Item in the table menu_item
         $menuItem = new MenuItemClass(null, $menuItemDecoded->course->id, $menuItemDecoded->name, $menuItemDecoded->image, $menuItemDecoded->price);
+
 
         $result = $this->menuItemADO->create($menuItem);
 
@@ -313,8 +431,6 @@ class MenuControllerClass implements ControllerInterface {
     public function deleteMenuItem() {
         $jsonDecoded = json_decode($this->jsonData);
 
-
-
         $menuItemId = $jsonDecoded->menuItemId;
 
         $menuItem = new MenuItemClass($menuItemId, "", "", "", "");
@@ -337,20 +453,6 @@ class MenuControllerClass implements ControllerInterface {
             $this->errors[] = "Can't delete the menu item because another item contains it.";
             $this->data [] = $this->errors;
         }
-    }
-
-    public function bubbleSort($A, $n) {
-        for ($i = 1; $i < $n; $i++) {
-            for ($j = 0; $j < $n - $i; $j++) {
-                if ($A[$j] > $A[$j + 1]) {
-                    $k = $A[$j + 1];
-                    $A[$j + 1] = $A[$j];
-                    $A[$j] = $k;
-                }
-            }
-        }
-
-        return $A;
     }
 
     public function insertCourse() {

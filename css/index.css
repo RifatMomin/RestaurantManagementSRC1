@@ -16,7 +16,7 @@ html, body {
 }
 
 .container-index{
-    width:100%;
+    width:75%;
     margin-bottom: 10px;
 }
 
@@ -88,6 +88,10 @@ html, body {
 
 .navtabs-crud:hover{
     cursor: pointer;
+}
+
+.link:hover{
+    cursor:pointer;
 }
 
 .table.vertical-align > tbody > tr > td {

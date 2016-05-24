@@ -16,7 +16,7 @@ class MenuItemADO implements EntityInterfaceADO {
     const SELECT_ALL_WITH_INGREDIENTS = "SELECT mi.*, c.*, GROUP_CONCAT(ing.ingredient_id SEPARATOR ';') ingredient_id,GROUP_CONCAT(ing.price SEPARATOR ';') ingredient_price,GROUP_CONCAT(ing.ingredient_name SEPARATOR ';') ingredient_name FROM menu_item mi, course c, menu_item_has_ingredient item_ingredient, ingredient ing WHERE mi.course_id = c.course_id AND mi.item_id = item_ingredient.menu_item_id AND item_ingredient.ingredient_id = ing.ingredient_id GROUP BY mi.item_id ORDER BY c.priority   ";
     const SELECT_MENU_HAS_ITEM = "SELECT item_id FROM menu_has_item WHERE menu_id = ?";
     const SELECT_ITEM_IN_MENU = "SELECT `menu_id`, `item_id` FROM `menu_has_item` WHERE `item_id` = ?";
-    const SELECT_ITEM_PROPS = "SELECT c.course_name, c.priority, i.item_id, i.name FROM course c, menu_item i WHERE i.item_id = ? AND i.course_id = c.course_id";
+    const SELECT_ITEM_PROPS = "SELECT c.*, i.* FROM course c, menu_item i WHERE i.item_id = ? AND i.course_id = c.course_id";
     const INSERT = "INSERT INTO menu_item (course_id, name, image, price) VALUES (?, ?, ?, ?)";
     const SELECT_ID = "SELECT * FROM menu_item WHERE item_id = ?";
     const DELETE = "DELETE FROM menu_item WHERE item_id = ?";

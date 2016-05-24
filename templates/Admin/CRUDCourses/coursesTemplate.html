@@ -1,16 +1,16 @@
-<div class="page-header">
+<div class="page-header" ng-init="getCourseTypes(true)">
     <h3>Courses <small>Create &bull; Modify &bull; Delete</small></h3>
 </div>
 
 <!--Courses Add Form -->
 <div class="col-xs-12">
     <button class="btn btn-info pull-left" style="margin-bottom: 5px;" id="buttonAddCourse" ng-click="showAddNewCourseForm()">Add a Course</button>
-    <button class="btn btn-primary pull-right" ng-click="getCourseTypes()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
+    <button class="btn btn-primary pull-right" ng-click="getCourseTypes(true)"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
         <form id="coursesForm" name="coursesForm" novalidate hidden>
             <div class="form-group" ng-class="{'has-error': coursesForm.courseName.$invalid, 'has-success': courseForm.courseName.$valid}">
                 <label>Name: </label>
-                <input type="text" class="form-control" name="courseName" ng-model="newCourse.name" ng-maxlength="25" required/>
+                <input type="text" class="form-control" name="courseName" ng-model="newCourse.name" ng-pattern="/^[a-zA-Z\s]*$/" ng-maxlength="25" required/>
             </div>
             <div class="form-group" ng-class="{'has-error': coursesForm.coursePriority.$invalid, 'has-success': courseForm.coursePriority.$valid}">
                 <label>Priority </label>
