@@ -20,7 +20,7 @@ class TableClass {
     private $location;
     private $capacity;
     
-    function __construct($tableId, $type, $status, $location, $capacity) {
+    function __construct($tableId="", $type="", $status="", $location="", $capacity="") {
         $this->tableId = $tableId;
         $this->type = $type;
         $this->status = $status;

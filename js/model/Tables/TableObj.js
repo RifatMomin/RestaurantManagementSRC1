@@ -7,16 +7,16 @@
 
 TableObj = function () {
     this.tableId = null;
-    this.status = null;
-    this.type = null;
-    this.location = null;
+    this.tableStatus = null;
+    this.tableType = null;
+    this.tableLocation = null;
     this.capacity = null;
 
-    this.construct = function(tableId,status,type,location,capacity){
+    this.construct = function(tableId, tableType, tableStatus, tableLocation, capacity){
         this.setTableId(tableId);
-        this.setStatus(status);
-        this.setType(type);
-        this.setLocation(location);
+        this.setTableType(tableType);
+        this.setTableStatus(tableStatus);
+        this.setTableLocation(tableLocation);
         this.setCapacity(capacity);
     };
 
@@ -26,23 +26,23 @@ TableObj = function () {
     this.getTableId = function () {
         return this.tableId;
     }
-    this.setStatus = function (status) {
-        this.status = status;
+    this.setTableStatus = function (tableStatus) {
+        this.tableStatus = tableStatus;
     }
-    this.getStatus = function () {
-        return this.status;
+    this.getTableStatus = function () {
+        return this.tableStatus;
     }
-    this.setType = function (type) {
-        this.type = type;
+    this.setTableType = function (tableType) {
+        this.tableType = tableType;
     }
-    this.getType = function () {
-        return this.type;
+    this.getTableType = function () {
+        return this.tableType;
     }
-    this.setLocation = function (location) {
-        this.location = location;
+    this.setTableLocation = function (tableLocation) {
+        this.tableLocation = tableLocation;
     }
-    this.getLocation = function () {
-        return this.location;
+    this.getTableLocation = function () {
+        return this.tableLocation;
     }
     this.setCapacity = function (capacity) {
         this.capacity = capacity;
