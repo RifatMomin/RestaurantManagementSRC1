@@ -15,6 +15,8 @@ class ReviewClass {
 
     //attributes
     private $idReview;
+    private $clientId;
+    private $restaurantId;
     private $foodQuality;
     private $menuVariety;
     private $customerTreatment;
@@ -23,10 +25,12 @@ class ReviewClass {
     private $location;
     private $waitingTime;
     private $observations;
-    private $date;
+    private $dateReview;
 
-    function __construct($idReview, $foodQuality, $menuVariety, $customerTreatment, $cleanliness, $pricing, $location, $waitingTime, $observations, $date) {
+    function __construct($idReview, $clientId, $restaurantId, $foodQuality, $menuVariety, $customerTreatment, $cleanliness, $pricing, $location, $waitingTime, $observations, $dateReview) {
         $this->idReview = $idReview;
+        $this->clientId = $clientId;
+        $this->restaurantId = $restaurantId;
         $this->foodQuality = $foodQuality;
         $this->menuVariety = $menuVariety;
         $this->customerTreatment = $customerTreatment;
@@ -35,13 +39,20 @@ class ReviewClass {
         $this->location = $location;
         $this->waitingTime = $waitingTime;
         $this->observations = $observations;
-        $this->date = $date;
+        $this->dateReview = $dateReview;
     }
 
     public function getIdReview() {
         return $this->idReview;
     }
-
+    
+    public function getClientId(){
+        return $this->clientId;
+    }
+    public function getRestaurantId(){
+        return $this->restaurantId;
+    }
+    
     public function getFoodQuality() {
         return $this->foodQuality;
     }
@@ -75,7 +86,7 @@ class ReviewClass {
     }
 
     public function getDate() {
-        return $this->date;
+        return $this->dateReview;
     }
 
     public function setIdReview($idReview) {
@@ -115,14 +126,20 @@ class ReviewClass {
     }
 
     public function setDate($date) {
-        $this->date = $date;
+        $this->dateReview = $dateReview;
     }
-    
-    
+    public function setClientId(){
+        $this->clientId = $clientId;
+    }
+    public function setRestaurantId(){
+        $this->restaurantId = $restaurantId;
+    }
     
     public function getAll() {
         $data = array();
         $data["idReview"] = $this->idReview;
+        $data["clientId"] = $this->clientId;
+        $data["restaurantId"] = $this->restaurantId;
         $data["foodQuality"] = $this->foodQuality;
         $data["menuVariety"] = $this->menuVariety;
         $data["customerTreatment"] = $this->customerTreatment;
@@ -131,7 +148,7 @@ class ReviewClass {
         $data["location"] = $this->location;
         $data["waitingTime"] = $this->waitingTime;
         $data["observations"] = $this->observations;
-        $data["date"] = $this->date;
+        $data["dateReview"] = $this->dateReview;
         
         return $data;
     }

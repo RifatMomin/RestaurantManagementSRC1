@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once "./OrderControllerClass.php";
 require_once "./TableController.php";
 require_once "./UserControllerClass.php";
 require_once "./FileControllerClass.php";

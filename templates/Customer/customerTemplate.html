@@ -31,7 +31,7 @@
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">           
             <make-order-template ng-if="actionCustomer == 1"></make-order-template>
             <view-reviews-template ng-if="actionCustomer == 2"></view-reviews-template>
-            <order-historic-template ng-if="actionCustomer == 3"></order-historic-template>
+            <order-historic-template ng-if="actionCustomer == 3" ng-init="getOrderHistoric()"></order-historic-template>
         </div>
     </div>
 </div>

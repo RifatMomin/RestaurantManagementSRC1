@@ -1,3 +1,95 @@
-<div class="page-header">
-    <h3>Your Reviews</h3>
+<div class="page-header"></br>
+    <h3>Share your review with the world:</h3>
+
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
+        <form class="well" id="newReviewForm" name="newReviewForm" novalidate>
+            <div class="form-group" >
+                <label>Food Quality*: </label>
+                <input type="radio" ng-repeat="rating in reviewRating" ng-model="newReview.foodQuality" value="{{newReview.foodQuality}}" required />
+            </div> 
+
+            <div class="form-group">
+                <label>Menu Variety*: </label>
+                <input type="radio" ng-repeat="rating in reviewRating" ng-model="newReview.menuVariety" value="{{newReview.foodQuality}}" required />
+            </div> 
+
+            <div class="form-group">
+                <label>Customer Treatment*: </label>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="1" required/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="2"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="3"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="4"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="5"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="6"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="8"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="9"/>
+                <input type="radio" name="customerTreatment" ng-model="newReview.customerTreatment" value="10"/>
+            </div> 
+
+            <div class="form-group">
+                <label>Cleanliness*: </label>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="1" required/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="2"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="3"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="4"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="5"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="6"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="8"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="9"/>
+                <input type="radio" name="cleanliness" ng-model="newReview.cleaniless" value="10"/>
+            </div>
+
+            <div class="form-group">
+                <label>Pricing*: </label>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="1" required/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="2"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="3"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="4"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="5"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="6"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="8"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="9"/>
+                <input type="radio" name="pricing" ng-model="newReview.pricing" value="10"/>
+            </div>
+
+            <div class="form-group">
+                <label>Location*: </label>
+                <input type="radio" name="location" ng-model="newReview.location" value="1" required/>
+                <input type="radio" name="location" ng-model="newReview.location" value="2"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="3"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="4"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="5"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="6"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="8"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="9"/>
+                <input type="radio" name="location" ng-model="newReview.location" value="10"/>
+            </div>
+
+
+            <div class="form-group">
+                <label>Waiting Time*: </label>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="1" required/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="2"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="3"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="4"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="5"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="6"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="8"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="9"/>
+                <input type="radio" name="waitingTime" ng-model="newReview.waitingTime" value="10"/>
+            </div>
+
+            <div class="form-group">
+                <label>Observations</label></br>
+                <textarea ng-model="newReview.observations" maxlength="150" placeholder="Write any suggestions, ideas, future improvements..."></textarea>
+            </div>
+
+
+            <div class="form-group" style="margin-top: 15px;">
+                <button class="btn btn-success" ng-disabled="newReviewForm.$invalid" ng-click="addReview()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                <button class="btn btn-danger" ng-click="cancelNewReview();
+                    newReviewForm.$setPristine()"><span class="glyphicon glyphicon-remove-circle"></span> Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>

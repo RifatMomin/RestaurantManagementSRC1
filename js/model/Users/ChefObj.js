@@ -6,17 +6,25 @@
  */
 
 ChefObj = function () {
-    this.chef_id = null;
+    this.userId = null;
+    this.chefId = null;
+    this.chefLevel = null;
 
-    this.construct = function(chef_id){
-        this.setWaiter_id(chef_id);
+    this.construct = function(userId, chefId, chefLevel){
+        this.setUserId(userId);
+        this.setWaiterId(chefId);
+        this.setChefLevel(chefLevel);
     };
-
-    this.setChef_id = function (chef_id) {
-        this.chef_id = chef_id;
+    
+    this.setUserId = function(user_id){
+        this.userId = userId;
     }
-    this.getChef_id = function () {
-        return this.chef_id;
+
+    this.setChefId = function (chefId) {
+        this.chefId = chefId;
+    }
+    this.getChefId = function () {
+        return this.chefId;
     }
 
 };

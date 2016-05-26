@@ -1,3 +1,42 @@
 <div class="page-header">
     <h3>These are your orders since you have been with us!</h3>
+    
+    <div class="col-xs-12" ng-if="!existingOrders" id="divOrderHistoric">
+    <table class="table table-stripped vertical-align">
+        <thead>
+        <th>Order Id</th>
+        <th>Order Date</th>
+        <th>Total Price</th>
+        <th>Menu Id</th>
+        <th>Total Price</th>
+
+        <th class="text-center" style="width: 30px;">Modify</th>
+        <th class="text-center" style="width: 30px;">Delete</th>
+        </thead>
+        <tbody>
+            <tr dir-paginate="order in arrayTables | itemsPerPage: pageSize" current-page="currentPage">
+                <td>{{table.getTableId()}}</td>
+                <td>{{table.getTableType().getName()}}</td> 
+                <td>{{table.getTableStatus().getName()}}</td>
+                <td>{{table.getTableLocation().getName()}}</td>
+                <td>{{table.getCapacity()}}</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-warning" ng-click="editTableForm(table)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-danger" ng-click="removeTable(table)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <div class="text-center" boundary-links="true">	
+            <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
+        </div>
+    </div>
+</div>
 </div>

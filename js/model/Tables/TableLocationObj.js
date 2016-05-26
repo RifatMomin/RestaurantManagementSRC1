@@ -6,25 +6,27 @@
  */
 
 TableLocationObj = function () {
-    this.id = null;
-    this.name = null;
+    this.location_id = null;
+    this.name_location = null;
 
-    this.construct = function(id,name){
-        this.setId(id);
-        this.setName(name);
+    this.construct = function(location_id, name_location){
+        this.setLocationId(location_id);
+        this.setNameLocation(name_location);
     };
-
-    this.setId = function (id) {
-        this.id = id;
+    
+    this.setLocationId = function(location_id){
+        this.location_id = location_id;
     }
-    this.getId = function () {
-        return this.id;
+    
+    this.getLocationId = function (){
+        return this.location_id;
     }
-    this.setName = function (name) {
-        this.name = name;
+    
+    this.setNameLocation = function (name_location){
+        this.name_location = name_location;
     }
-    this.getName = function () {
-        return this.name;
+    this.getNameLocation = function (){
+        return this.name_location;
     }
 
 

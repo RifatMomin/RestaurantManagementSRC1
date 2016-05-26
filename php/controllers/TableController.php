@@ -89,15 +89,15 @@ class TableController implements ControllerInterface {
             case 10:
                 $this->addNewTable();
                 break;
-            case 11:
-                $this->deleteTable();
-                break;
             case 12:
                 $this->updateTable();
                 break;
             //Table Status methods
             case 13:
                 $this->getAllTablesStatus();
+                break;
+            case 14:
+                $this->setActiveTable();
                 break;
             default:
                 $errors = array();
@@ -142,7 +142,7 @@ class TableController implements ControllerInterface {
 
     public function addNewTableLocation() {
         $tableLocation = json_decode(stripslashes($this->getJsonData()));
-        $table = new TableLocationClass("", $tableLocation->name);
+        $table = new TableLocationClass($tableLocation->location_id, $tableLocation->name_location);
 
         $result = $this->helperLocationAdo->create($table);
 
@@ -236,7 +236,7 @@ class TableController implements ControllerInterface {
 
     public function addNewTableTypes() {
         $tableType = json_decode(stripslashes($this->getJsonData()));
-        $table = new TableTypeClass("", $tableType->name);
+        $table = new TableTypeClass("", $tableType->name_type);
 
         $result = $this->helperTypeAdo->create($table);
 
@@ -329,8 +329,8 @@ class TableController implements ControllerInterface {
     public function addNewTable() {
 
         $table = json_decode($this->jsonData);
-        //var_dump($table);
-        $tableObj = new TableClass("", $table->tableType, $table->tableStatus, $table->tableLocation, $table->capacity);
+
+        $tableObj = new TableClass(null, $table->tableType, $table->tableStatus, $table->tableLocation, $table->capacity, $table->active);
 
         $result = $this->helperTableAdo->create($tableObj);
 
@@ -339,30 +339,6 @@ class TableController implements ControllerInterface {
         } else {
             $this->data [] = false;
             $this->errors [] = "Can't insert the table now, try again later. Sorry.";
-            $this->data [] = $this->errors;
-        }
-    }
-
-    /*
-     * @name deleteTable
-     * @description deletes table from db
-     * @version 1
-     * @author Rifat Momin
-     * @date 2016/05/23
-     */
-
-    public function deleteTable() {
-        $tableDecoded = json_decode(stripslashes($this->jsonData));
-
-        $result = $this->helperTableAdo->delete($tableDecoded);
-        //var_dump($result);
-        if ($result->rowCount() > 0) {
-            $this->data[] = true;
-            $this->errors = [];
-            $this->data [] = $this->errors;
-        } else {
-            $this->data[] = false;
-            $this->errors[] = "Can't delete table type at this moment. Try later.";
             $this->data [] = $this->errors;
         }
     }
@@ -377,7 +353,7 @@ class TableController implements ControllerInterface {
 
     public function updateTable() {
         $tableDecoded = json_decode(stripslashes($this->jsonData));
-        //var_dump($tableDecoded);
+        var_dump($tableDecoded);
         $result = $this->helperTableAdo->update($tableDecoded);
 
         if ($result->rowCount() > 0) {
@@ -398,7 +374,6 @@ class TableController implements ControllerInterface {
      * @author Rifat Momin
      * @date 2016/05/23
      */
-
     public function getAllTablesStatus() {
         $result = $this->helperStatusAdo->findAll()->fetchAll(PDO::FETCH_OBJ);
 
@@ -411,5 +386,27 @@ class TableController implements ControllerInterface {
             $this->data[] = $this->errors;
         }
     }
-
+    
+    /*
+     * @name setActiveTable
+     * @description activates or disactivates a table
+     * @version 1
+     * @author Rifat Momin
+     * @date 2016/05/23
+     */
+    public function setActiveTable(){
+        $activeTable= json_decode($this->jsonData);
+        
+        $result = $this->helperTableAdo->updateActiveTable($activeTable);
+        
+        if ($result!=null) {
+            $this->data[] = true;
+            
+        } else {
+            $this->data [] = false;
+            $this->errors [] = "There has been an error in the server, try again later. Sorry.";
+            $this->data [] = $this->errors;
+        }
+    }
+    
 }

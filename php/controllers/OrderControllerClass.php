@@ -1,10 +1,13 @@
 <?php
 require_once "ControllerInterface.php";
-require_once "../model/persist/ReviewsADO.php";
+require_once "../model/persist/OrdersADO/OrderADO.php";
+require_once "../model/persist/OrdersADO/OrderStatusADO.php";
+require_once "../model/Menus/CourseClass.php";
 
-class ReviewsController implements ControllerInterface {
+class OrderController implements ControllerInterface {
 
-    private $helperAdo;
+    private $helperOrderAdo;
+    private $helperOrderStatusAdo;
     private $action;
     private $jsonData;
     private $data = [];
@@ -13,7 +16,8 @@ class ReviewsController implements ControllerInterface {
     function __construct($action, $jsonData) {
         $this->setAction($action);
         $this->setJsonData($jsonData);
-        $this->helperAdo = new ReviewADO();
+        $this->helperOrderAdo = new OrderADO();
+        $this->helperOrderStatusAdo = new OrderStatusADO();
     }
 
     public function getAction() {
@@ -35,10 +39,7 @@ class ReviewsController implements ControllerInterface {
     public function doAction() {
         switch ($this->getAction()) {
             case 1:
-                $this->getAllReviews();
-                break;
-            case 2:
-                $this->addReview();
+                $this->getAllOrders();
                 break;
             default:
                 $errors = array();
@@ -52,33 +53,20 @@ class ReviewsController implements ControllerInterface {
         return $this->data;
     }
 
-    public function getAllReviews(){
-        $result = $this->helperAdo->findAll()->fetchAll(PDO::FETCH_OBJ);
-        
-        if($result!=null && is_array($result)){
-            $this->data[]=true;
-            $this->data[] = $result;
-        }else{
-            $this->data[] = false;
-            $this->errors[] = "Sorry there has been an error in the server, try again later or in a few minuts.";
-        }
-    }
     
-    public function addReview(){
-        $reviewDecoded = json_decode(stripslashes($this->getJsonData()));
-        $review= new ReviewClass("", $reviewDecoded->name, $reviewDecoded->priority);
-        var_dump($reviewDecoded);
-        $result = $this->helperAdo->create($review);
+    public function getAllOrders() {
+        $result = $this->helperOrderAdo->findAll()->fetchAll(PDO::FETCH_OBJ);
 
-        if ($result != null) {
+        if ($result != null && is_array($result)) {
             $this->data[] = true;
-            //$this->data[] = $courseDecoded->findAll();
+            $this->data[] = $result;
         } else {
             $this->data[] = false;
-            $this->errors[] = "Sorry there has been an error in the server, try again later or in a few minutes.";
+            $this->errors[] = "Sorry there has been an error in the server, try again later or in a few minuts.";
             $this->data[] = $this->errors;
         }
     }
+    
     
 
 }

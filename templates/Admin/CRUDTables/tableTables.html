@@ -9,30 +9,38 @@
         <form class="well" id="newTableForm" name="newTableForm" novalidate hidden>
             <div class="form-group">
                 <label>Type*: </label>
-                <select class="form-control" ng-model="newTable.tableType" ng-options="tableType.name_type for tableType in arrayTableTypes track by tableType.getId()">
+                <select class="form-control" ng-model="newTable.tableType" ng-options="tableType.name_type for tableType in arrayTableTypes track by tableType.type_id" required>
 
                 </select>
             </div> 
 
             <div class="form-group">
                 <label>Status*: </label>
-                <select class="form-control" ng-model="newTable.tableStatus" ng-options="tableStatus.name_status for tableStatus in arrayTableStatus track by tableStatus.getId()">
+                <select class="form-control" ng-model="newTable.tableStatus" ng-options="tableStatus.name_status for tableStatus in arrayTableStatus track by tableStatus.table_status_id" required>
 
                 </select>
             </div> 
 
             <div class="form-group">
                 <label>Location*: </label>
-                <select class="form-control" ng-model="newTable.tableLocation" ng-options="tableLocation.name_location for tableLocation in arrayTableLocations track by tableLocation.getId()">
+                <select class="form-control" ng-model="newTable.tableLocation" ng-options="tableLocation.name_location for tableLocation in arrayTableLocations track by tableLocation.location_id" required>
 
                 </select>
             </div> 
 
             <div class="form-group" ng-class="{'has-error': (!newTableForm.capacity.$valid && !newTableForm.capacity.$pristine), 'has-success': (newTableForm.capacity.$valid && !newTableForm.capacity.$pristine)}">
                 <label>Capacity*: </label>
-                <input type="text" class="form-control" name="capacity" ng-model="newTable.capacity" ng-pattern="/^[0-9]+$/" ng-maxlength="5" required/>
+                <input type="text" class="form-control" name="capacity" ng-model="newTable.capacity" ng-pattern="/^[0-9]+$/" ng-maxlength="2" required/>
             </div>
 
+            <div class="form-group">
+                <label>Active</label>
+                <input type="checkbox" ng-model="newTable.active" ng-true-value="1" ng-false-value="0" name="active">
+                {{newTable.active}}
+            </div>
+            
+            
+                
             <div class="form-group" style="margin-top: 15px;">
                 <button class="btn btn-success" ng-disabled="newTableForm.$invalid" ng-click="addTable()"><span class="glyphicon glyphicon-plus"></span> Add</button>
                 <button class="btn btn-danger" ng-click="cancelNewTable();
@@ -49,7 +57,7 @@
     <p>Loading Tables...</p>
 </div>
 
-<div class="col-xs-12" ng-if="!loadingTables" id="divTableMenuItems">
+<div class="col-xs-12" ng-if="!loadingTables" id="divTableMenuItems" ng-init="getTableStatus()">
     <table class="table table-stripped vertical-align">
         <thead>
         <th>Table Id</th>
@@ -57,25 +65,24 @@
         <th>Status</th>
         <th>Location</th>
         <th>Capacity</th>
+        <th>Active</th>
 
         <th class="text-center" style="width: 30px;">Modify</th>
-        <th class="text-center" style="width: 30px;">Delete</th>
         </thead>
         <tbody>
             <tr dir-paginate="table in arrayTables | itemsPerPage: pageSize" current-page="currentPage">
                 <td>{{table.getTableId()}}</td>
-                <td>{{table.getTableType().getName()}}</td> 
-                <td>{{table.getTableStatus().getName()}}</td>
-                <td>{{table.getTableLocation().getName()}}</td>
+                <td>{{table.getTableType().getNameType()}}</td> 
+                <td>{{table.getTableStatus().name_status}}</td>
+                <td>{{table.getTableLocation().getNameLocation()}}</td>
                 <td>{{table.getCapacity()}}</td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-warning" ng-click="editTableForm(table)">
-                        <span class="glyphicon glyphicon-edit"></span>
-                    </button>
+                <td>
+                    <input type="checkbox" ng-model="table.active" ng-click="tableActive(table)" ng-true-value="1" ng-false-value="0">
+                    {{table.active}}
                 </td>
                 <td class="text-center">
-                    <button class="btn btn-sm btn-danger" ng-click="removeTable(table)">
-                        <span class="glyphicon glyphicon-remove"></span>
+                    <button id="editTable{{$index}}" class="btn btn-sm btn-warning" ng-click="editTableForm(table)">
+                        <span class="glyphicon glyphicon-edit"></span>
                     </button>
                 </td>
             </tr>
@@ -93,7 +100,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title text-center"><strong>Modifying Table {{tableModify.tableId}}</strong></h4>
+                <h4 class="modal-title text-center"><strong>Modifying Table {{tableModify.table_id}}</strong></h4>
             </div>
 
             <div class="modal-body">
@@ -101,28 +108,28 @@
 
                     <div class="form-group">
                         <label>Type*: </label>
-                        <select class="form-control" ng-model="tableModify.tableType" ng-options="tableType.name_type for tableType in arrayTableTypes track by tableType.getId()">
+                        <select class="form-control" ng-model="tableModify.tableType" ng-options="tableType.name_type for tableType in arrayTableTypes track by tableType.type_id">
 
                         </select>
                     </div> 
 
                     <div class="form-group">
                         <label>Status*: </label>
-                        <select class="form-control" ng-model="tableModify.tableStatus" ng-options="tableStatus.name_status for tableStatus in arrayTableStatus track by tableStatus.getId()">
+                        <select class="form-control" ng-model="tableModify.tableStatus" ng-options="tableStatus.name_status for tableStatus in arrayTableStatus track by tableStatus.table_status_id">
 
                         </select>
                     </div> 
 
                     <div class="form-group">
                         <label>Location*: </label>
-                        <select class="form-control" ng-model="tableModify.tableLocation" ng-options="tableLocation.name_location for tableLocation in arrayTableLocations track by tableLocation.getId()">
+                        <select class="form-control" ng-model="tableModify.tableLocation" ng-options="tableLocation.name_location for tableLocation in arrayTableLocations track by tableLocation.location_id">
 
                         </select>
                     </div> 
 
                     <div class="form-group" ng-class="{'has-error': (!modifyTableForm.capacity.$valid && !modifyTableForm.capacity.$pristine), 'has-success': (modifyTableForm.capacity.$valid && !modifyTableForm.capacity.$pristine)}">
                         <label>Capacity*: </label>
-                        <input type="text" class="form-control" name="capacity" ng-model="newTable.capacity" ng-pattern="/^[0-9]+$/" ng-maxlength="2" required/>
+                        <input type="text" class="form-control" name="capacity" ng-model="tableModify.capacity" ng-pattern="/^[0-9]+$/" ng-maxlength="2" required/>
                     </div>
 
                 </form>

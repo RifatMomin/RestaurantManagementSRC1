@@ -6,9 +6,10 @@ require_once "../model/Tables/TableClass.php";
 class TableADO {
     //Queries
     const SELECT_ALL_TABLES= "SELECT tab.*, type.*, stat.*, locat.* FROM tables_restaurant tab, table_status stat, table_types type, table_locations locat WHERE tab.type_id = type.type_id AND tab.table_status = stat.table_status_id AND TAB.table_location = locat.location_id ORDER BY table_id";
-    const INSERT_TABLE = "INSERT INTO tables_restaurant(type_id, table_status, table_location, capacity) VALUES (?, ?, ?, ?)";
+    const INSERT_TABLE = "INSERT INTO tables_restaurant(type_id, table_status, table_location, capacity, active) VALUES (?, ?, ?, ?, ?)";
     const DELETE_TABLE= "DELETE FROM tables_restaurant WHERE table_id = ?";
-    const UPDATE_TABLE = "UPDATE tables_restaurant SET type_id= ?, table_status = ?, table_location = ?, capacity = ? WHERE table_id = ?";
+    const UPDATE_TABLE = "UPDATE tables_restaurant SET type_id= ?, table_status = ?, table_location = ?, capacity = ?, active = ? WHERE table_id = ?";
+    const UPDATE_ACTIVE_TABLE = "UPDATE tables_restaurant SET active = ? WHERE table_id = ?";
     
     private $dataSource;
 
@@ -17,19 +18,21 @@ class TableADO {
     }
 
     public function create($table) {
-        //var_dump($table);
-        $array=[
-            $table->getType(),
-            $table->getStatus(),
-            $table->getLocation(),
-            $table->getCapacity()
-           ];
         
+        $array=[
+            $table->getType_id()->type_id,
+            $table->getTable_status()->table_status_id,
+            $table->getTable_location()->location_id,
+            $table->getCapacity(),
+            $table->getActive()
+           ];
+           
         return $this->dataSource->executionInsert(self::INSERT_TABLE, $array);
     }
 
-    public function delete($tableId) {
-        return $this->dataSource->execution(self::DELETE_TABLE, $array=[$tableId->id]);
+    public function delete($table) {
+        
+        return $this->dataSource->execution(self::DELETE_TABLE, $array=[$table->table_id]);
     }
 
     public function findAll() {
@@ -50,7 +53,15 @@ class TableADO {
         
         return $this->dataSource->execution(self::UPDATE_TABLE,$array);
     }
-
+    
+    public function updateActiveTable ($table){
+        $array = [
+            $table->active, 
+            $table->table_id
+        ];
+        //var_dump($array);
+        return $this->dataSource->execution(self::UPDATE_ACTIVE_TABLE, $array);
+    }
 
 }
 

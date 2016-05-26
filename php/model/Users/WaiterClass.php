@@ -4,24 +4,33 @@
  * autor  Roberto Plana
  * version 2012/09
  */
- require_once "../EntityInterface.php";
+
 class WaiterClass extends UserClass {
 
     //attributes
+    private $userId;
     private $waiterId;
     
     //constructor
-    function __construct() {  
-        parent::__construct($id, $username, $password, $name, $username, $email, $phone, $address, $city, $zipCode, $registerDate, $role);  
+    function __construct($userId, $waiterId) {  
+        $this->userId = $userId;
         $this->waiterId = $waiterId;  
     }  
     
     //getters
+    function getUserId() {
+        return $this->userId;
+    }
+    
     public function getWaiterId() {  
-         return $this->waiterId;  
+       return $this->waiterId;  
     }  
     
     //setters
+    function setUserId($userId) {
+        $this->userId = $userId;
+    }
+    
     public function setWaiterId($waiterId) {
         $this->waiterId = $waiterId;
     }

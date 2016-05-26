@@ -7,7 +7,7 @@
  */
 require_once "../model/EntityInterface.php";
 
-class UserClass implements EntityInterface {
+class UserClass{
 
     //attributes
     private $id;
@@ -23,8 +23,9 @@ class UserClass implements EntityInterface {
     private $registerDate;
     private $role;
     private $image;
+    private $active;
 
-    function __construct($id = "", $username = "", $password = "", $name = "", $surname = "", $email = "", $phone = "", $address = "", $city = "", $zipCode = "",$image="", $registerDate = "", $role = "") {
+    function __construct($id = "", $username = "", $password = "", $name = "", $surname = "", $email = "", $phone = "", $address = "", $city = "", $zipCode = "",$image="", $registerDate = "", $role = "", $active = "") {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
@@ -38,6 +39,7 @@ class UserClass implements EntityInterface {
         $this->registerDate = $registerDate;
         $this->role = $role;
         $this->image = $image;
+        $this->active = $active;
     }
 
     function getImage() {
@@ -96,6 +98,10 @@ class UserClass implements EntityInterface {
     public function getRole() {
         return $this->role;
     }
+    
+    public function getActive() {
+        return $this->active;
+    }
 
     //setters
     public function setId($id) {
@@ -136,6 +142,10 @@ class UserClass implements EntityInterface {
 
     public function setRole($registerDate) {
         $this->role = $role;
+    }
+    
+    public function setActive($active){
+        $this->active = $active;
     }
 
     //methods

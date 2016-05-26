@@ -6,9 +6,6 @@
  * version 2012/09
  */
 
-
-require_once "../EntityInterface.php";
-
 class AdminClass extends UserClass {
 
 

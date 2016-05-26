@@ -44,6 +44,9 @@ class RestaurantInfoController implements ControllerInterface {
             case 3:
                 $this->updateInfo();
                 break;
+            case 4:
+                $this->findRestId();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -98,5 +101,13 @@ class RestaurantInfoController implements ControllerInterface {
             }
         }
     }
+        
+    public function findRestId(){
+        $result = $this->helperAdo->findId();
+        $this->data[] = true;
+        $this->data[] = $result->fetchAll();
+    }
+
+    
 
 }
