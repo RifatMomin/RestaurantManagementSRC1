@@ -12,9 +12,9 @@
  * @author victor
  */
 
-require_once "EntityInterface.php";
+require_once "../model/EntityInterface.php";
 
-class OrderStatusClass implements EntityInterface{
+class OrderStatusClass{
 
     private $id;
     private $name;

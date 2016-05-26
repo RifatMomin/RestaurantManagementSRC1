@@ -33,11 +33,12 @@ and open the template in the editor.
         <script src="js/frameworks/jquery-ui-1.11.4/external/jquery/jquery.js" type="text/javascript"></script>
         <script src="js/frameworks/jquery-ui-1.11.4/jquery-ui.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular.min.js" type="text/javascript"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
         <script src="js/frameworks/angular/dirPagination.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/angular-file-upload.js" type="text/javascript"></script>
         <script src="css/bootstrap-3.3.6-dist-pers/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="js/frameworks/angular/ng-currency.js" type="text/javascript"></script>
-        <script src="css/bootstrap-switch/js/bootstrap-switch.js" type="text/javascript"></script>
+        <script src="js/frameworks/angular/ui-bootstrap-tpls-1.3.3.min.js" type="text/javascript"></script>
         
         <!--Library to SHA1 CRYOPT-->
         <script src="js/frameworks/cryptoJS/components/core-min.js" type="text/javascript"></script>
@@ -47,6 +48,12 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
         <!--Model and Control-->
+        <script src="js/model/ReviewObj.js" type="text/javascript"></script>
+        <script src="js/model/Users/WaiterObj.js" type="text/javascript"></script>
+        <script src="js/model/Users/ClientObj.js" type="text/javascript"></script>
+        <script src="js/model/Users/ChefObj.js" type="text/javascript"></script>
+        <script src="js/model/Users/AdminObj.js" type="text/javascript"></script>
+        <script src="js/model/Orders/OrderStatusObj.js" type="text/javascript"></script>
         <script src="js/model/Orders/OrderObj.js" type="text/javascript"></script>
         <script src="js/model/Tables/TableTypeObj.js" type="text/javascript"></script>
         <script src="js/model/Tables/TableStatusObj.js" type="text/javascript"></script>

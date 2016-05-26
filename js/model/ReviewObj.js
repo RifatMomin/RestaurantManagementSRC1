@@ -8,6 +8,8 @@
 
 ReviewObj = function () {
     this.idReview = null;
+    this.clientId = null;
+    this.restaurantId = null;
     this.foodQuality = null;
     this.menuVariety = null;
     this.customerTreatment = null;
@@ -16,10 +18,12 @@ ReviewObj = function () {
     this.location = null;
     this.waitingTime = null;
     this.observations = null;
-    this.date = null;
+    this.dateReview = null;
 
-    this.construct = function (idReview, foodQuality, menuVariety, customerTreatment, cleaniless, pricing, location, waitingTime, observations, date) {
+    this.construct = function (idReview, clientId, restaurantId, foodQuality, menuVariety, customerTreatment, cleaniless, pricing, location, waitingTime, observations, dateReview) {
         setIdReview(idReview);
+        setClientId(clientId);
+        setRestaurantId(restaurantId);
         setFoodQuality(foodQuality);
         setMenuVariety(menuVariety);
         setCustomerTreatment(customerTreatment);
@@ -28,7 +32,7 @@ ReviewObj = function () {
         setLocation(location);
         setWaitingTime(waitingTime);
         setObservations(observations);
-        setDate(date);
+        setDate(dateReview);
     };
 
     this.setIdReview = function (idReview) {
@@ -36,6 +40,18 @@ ReviewObj = function () {
     }
     this.getIdReview = function () {
         return this.idReview;
+    }
+    this.setClientId = function (clientId){
+        this.clientId = clientId;
+    }
+    this.getClientId = function (){
+        return this.clientId;
+    }
+    this.setRestaurantId = function (restaurantId){
+        this.restaurantId = restaurantId;
+    }
+    this.getRestaurantId = function (){
+        return this.restaurantId;
     }
     this.setFoodQuality = function (foodQuality) {
         this.foodQuality = foodQuality;
@@ -86,9 +102,9 @@ ReviewObj = function () {
         return this.observations;
     }
     this.setDate = function (date) {
-        this.date = date;
+        this.dateReview = date;
     }
     this.getDate = function () {
-        return this.date;
+        return this.dateReview;
     }
 };  

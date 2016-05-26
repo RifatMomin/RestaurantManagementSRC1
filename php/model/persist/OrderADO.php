@@ -12,6 +12,7 @@ require_once "../model/Orders/OrderClass.php";
 class OrderADO implements EntityInterfaceADO {
 
     //Queries
+    const SELECT_ALL_ORDERS = "SELECT ord.*, stat.*, tab.*, ch.*, wa.*, cl.*, m.* FROM orders ord, status_order stat, tables_restaurant tab, chef ch, waiter wa, client cl, menu m WHERE ord.status_id = stat.status_id AND ord.table_id = tab.table_id AND ord.chef_id = ch.chef_id AND ord.waiter_id = wa.waiter_id AND ord.client_id = cl.client_id AND ord.menu_id = m.menu_id ORDER by order_date";
     const CHEF_AVAILABLE = "SELECT count(o.chef_id) num_orders, c.chef_id FROM orders o RIGHT OUTER JOIN chef c ON o.chef_id = c.chef_id AND o.status_id = 1 GROUP BY o.chef_id, c.chef_id ORDER BY num_orders ";
     const WAITER_AVAILABLE = "SELECT count(o.waiter_id) num_orders, w.waiter_id FROM orders o RIGHT OUTER JOIN waiter w ON o.chef_id = w.waiter_id AND o.status_id = 3 GROUP BY o.waiter_id, w.waiter_id ORDER BY num_orders";
     const INSERT_ORDER = "INSERT INTO `orders` (`status_id`, `table_id`, `chef_id`, `waiter_id`, `client_id`, `menu_id`, `order_date`, `total_price`) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)";
@@ -58,7 +59,7 @@ class OrderADO implements EntityInterfaceADO {
     }
 
     public function findAll() {
-        
+        return $this->dataSource->execution(self::SELECT_ALL_ORDERS, $array = []);
     }
 
     public function update($entity) {

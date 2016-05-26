@@ -18,7 +18,7 @@ class TableLocationsADO {
 
     public function create($tableLocation) {
         
-        $array=[$tableLocation->getName()];
+        $array=[$tableLocation->getNameLocation()];
         
         return $this->dataSource->executionInsert(self::INSERT_TABLE_LOCATION, $array);
     }

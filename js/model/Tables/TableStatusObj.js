@@ -6,25 +6,29 @@
  */
 
 TableStatusObj = function () {
-    this.id = null;
-    this.name = null;
+    
+    this.table_status_id = null;
+    this.name_status = null;
 
-    this.construct = function(id,name){
-        this.setId(id);
-        this.setName(name);
+    this.construct = function(table_status_id, name_status){
+        this.setTableStatusId(table_status_id);
+        this.setNameStatus(name_status);
     };
 
-    this.setId = function (id) {
-        this.id = id;
+    this.setTableStatusId = function (table_status_id){
+        this.table_status_id = table_status_id;
     }
-    this.getId = function () {
-        return this.id;
+    
+    this.setNameStatus = function (name_status){
+        this.name_status = name_status;
     }
-    this.setName = function (name) {
-        this.name = name;
+    
+    this.getTableStatusId = function (){
+        return this.table_status_id;
     }
-    this.getName = function () {
-        return this.name;
+    
+    this.getNameStatus = function (){
+        return this.name_status;
     }
 
 

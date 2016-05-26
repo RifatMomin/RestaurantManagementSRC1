@@ -6,25 +6,26 @@
  */
 
 TableTypeObj = function () {
-    this.id = null;
-    this.name = null;
+    
+    this.type_id = null;
+    this.name_type = null;
 
-    this.construct = function(id,name){
-        this.setId(id);
-        this.setName(name);
+    this.construct = function(type_id, name_type){
+        this.setTypeId(type_id);
+        this.setNameType(name_type);
     };
 
-    this.setId = function (id) {
-        this.id = id;
+    this.setTypeId = function (type_id) {
+        this.type_id = type_id;
     }
-    this.getId = function () {
-        return this.id;
+    this.getTypeId = function () {
+        return this.type_id;
     }
-    this.setName = function (name) {
-        this.name = name;
+    this.setNameType = function (name_type) {
+        this.name_type = name_type;
     }
-    this.getName = function () {
-        return this.name;
+    this.getNameType = function () {
+        return this.name_type;
     }
 
 

@@ -7,7 +7,7 @@
  */
 require_once "../model/EntityInterface.php";
 
-class OrderClass implements EntityInterface {
+class OrderClass {
 
     private $orderId;
     private $statusId;

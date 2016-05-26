@@ -14,30 +14,30 @@
 class TableStatusClass {
     
     //attributes
-    private $id;
-    private $name;
+    private $table_status_id;
+    private $name_status;
     
     //constructor
-    function __construct() {  
-        $this->id = $id;
-        $this->name=$name;
+    function __construct($table_status_id, $name_status) {  
+        $this->table_status_id = $table_status_id;
+        $this->name_status = $name_status;
     } 
     
     //getters
-    public function getId(){
-        return $this->id;
+    public function getTableStatusId(){
+        return $this->table_status_id;
     }
     
-    public function getName(){
-        return $this->name;
+    public function getNameStatus(){
+        return $this->name_status;
     }
     
     //setters
-    public function setId(){
-        $this->id=$id;
+    public function setTableStatusId($table_status_id){
+        $this->table_status_id=$table_status_id;
     }
     
-    public function setName(){
-        $this->name=$name;
+    public function setNameStatus($name_status){
+        $this->name_status = $name_status;
     }
 }

@@ -14,30 +14,30 @@
 class TableTypeClass {
     
     //attributes
-    private $id;
-    private $name;
+    private $type_id;
+    private $name_type;
     
     //constructor
-    function __construct($id, $name) {  
-        $this->id = $id;
-        $this->name=$name;
+    function __construct($type_id, $name_type) {  
+        $this->type_id = $type_id;
+        $this->name_type = $name_type;
     } 
     
     //getters
-    public function getId(){
-        return $this->id;
+    public function getTableTypeId(){
+        return $this->type_id;
     }
     
-    public function getName(){
-        return $this->name;
+    public function getNameType(){
+        return $this->name_type;
     }
     
     //setters
-    public function setId(){
-        $this->id=$id;
+    public function setTableTypeId($type_id){
+        $this->type_id = $type_id;
     }
     
-    public function setName(){
-        $this->name=$name;
+    public function setNameType($name_type){
+        $this->name_type=$name_type;
     }
 }

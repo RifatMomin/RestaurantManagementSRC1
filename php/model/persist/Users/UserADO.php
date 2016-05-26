@@ -6,10 +6,10 @@
  * version 2012/09
  */
 require_once "../model/persist/DBConnect.php";
-include "../model/persist/EntityInterfaceADO.php";
+//include "../model/persist/EntityInterfaceADO.php";
 require_once "../model/Users/UserClass.php";
 
-class UserADO implements EntityInterfaceADO {
+class UserADO{
 
     //Constants of the QUERIES
     const SELECT_NICK_PASS = "SELECT * FROM users WHERE username = ? AND user_password = ?";
@@ -24,6 +24,7 @@ class UserADO implements EntityInterfaceADO {
     const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
     const UPDATE_PASSWD_ID = "UPDATE users SET user_password = ? WHERE user_id = ? ";
     const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=? ,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
+     
     
     private $dataSource;
 

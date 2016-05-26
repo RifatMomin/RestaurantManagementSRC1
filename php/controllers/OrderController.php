@@ -50,6 +50,9 @@ class OrderControllerClass implements ControllerInterface {
             case 3:
                 $this->setOrderPrepared();
                 break;
+            case 4:
+                $this->getAllOrders();
+                break;
             default:
                 $errors = array();
                 $this->data [] = false;
@@ -62,14 +65,27 @@ class OrderControllerClass implements ControllerInterface {
         return $this->data;
     }
 
+    public function getAllOrders() {
+        $result = $this->orderADO->findAll()->fetchAll(PDO::FETCH_OBJ);
+
+        if ($result != null && is_array($result)) {
+            $this->data[] = true;
+            $this->data[] = $result;
+        } else {
+            $this->data[] = false;
+            $this->errors[] = "Sorry there has been an error in the server, try again later or in a few minuts.";
+            $this->data[] = $this->errors;
+        }
+    }
+
     public function setOrderPrepared() {
         $json = json_decode(stripslashes($this->jsonData));
-        
+
         $result = $this->orderADO->updateOrderStatus($json->orderId, 3)->rowCount();
-        
-        if($result>0){
+
+        if ($result > 0) {
             $this->data[] = true;
-        }else{
+        } else {
             $this->data[] = false;
             $this->errors[] = "There has been an error in the server while processing the orders of the chef, try again later.";
             $this->data[] = $this->errors;

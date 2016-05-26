@@ -3,6 +3,8 @@
 require_once "ControllerInterface.php";
 require_once "../model/Users/UserClass.php";
 require_once "../model/persist/Users/UserADO.php";
+require_once "../model/Users/ClientClass.php";
+require_once "../model/persist/Users/ClientADO.php";
 require_once '../lib/swiftmailer-5.x/swift_required.php';
 
 class UserController implements ControllerInterface {
@@ -374,6 +376,12 @@ class UserController implements ControllerInterface {
             $this->errors[] = "There's no session opened.";
             $this->data[] = $this->errors;
         }
+    }
+    
+    private function getClient(){
+        $result = $this->helperAdo->findClientId();
+        $this->data[] = true;
+        $this->data[] = $result->fetchAll();
     }
 
 }

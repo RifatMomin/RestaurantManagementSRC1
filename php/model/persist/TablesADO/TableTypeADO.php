@@ -18,7 +18,7 @@ class TableTypeADO {
 
     public function create($tableType) {
         //var_dump($tableType);
-        $array=[$tableType->getName()];
+        $array=[$tableType->getNameType()];
         
         return $this->dataSource->executionInsert(self::INSERT_TABLE_TYPE, $array);
     }

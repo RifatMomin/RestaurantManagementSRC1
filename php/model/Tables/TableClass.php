@@ -14,69 +14,78 @@
 class TableClass {
     
     //attributes
-    private $tableId;
-    private $type;
-    private $status;
-    private $location;
+    private $table_id;
+    private $type_id;
+    private $table_status;
+    private $table_location;
     private $capacity;
+    private $active;
     
-    function __construct($tableId="", $type="", $status="", $location="", $capacity="") {
-        $this->tableId = $tableId;
-        $this->type = $type;
-        $this->status = $status;
-        $this->location = $location;
+    function __construct($table_id, $type_id, $table_status, $table_location, $capacity, $active) {
+        $this->table_id = $table_id;
+        $this->type_id = $type_id;
+        $this->table_status = $table_status;
+        $this->table_location = $table_location;
         $this->capacity = $capacity;
+        $this->active = $active;
     }
 
-    function getTableId() {
-        return $this->tableId;
+    function getTable_id() {
+        return $this->table_id;
     }
 
-    function getType() {
-        return $this->type;
+    function getType_id() {
+        return $this->type_id;
     }
 
-    function getStatus() {
-        return $this->status;
+    function getTable_status() {
+        return $this->table_status;
     }
 
-    function getLocation() {
-        return $this->location;
+    function getTable_location() {
+        return $this->table_location;
     }
 
     function getCapacity() {
         return $this->capacity;
     }
-
-    function setTableId($tableId) {
-        $this->tableId = $tableId;
+    
+    function getActive(){
+        return $this->active;
     }
 
-    function setType($type) {
-        $this->type = $type;
+    function setTable_id($table_id) {
+        $this->table_id = $table_id;
     }
 
-    function setStatus($status) {
-        $this->status = $status;
+    function setType_id($type_id) {
+        $this->type_id = $type_id;
     }
 
-    function setLocation($location) {
-        $this->location = $location;
+    function setTable_status($table_status) {
+        $this->table_status = $table_status;
+    }
+
+    function setTable_location($table_location) {
+        $this->table_location = $table_location;
     }
 
     function setCapacity($capacity) {
         $this->capacity = $capacity;
     }
- 
+    function setActive($active){
+        $this->active = $active;
+    }
+
     function getAll(){
         $data = [];
         
-        $data['tableId'] = $this->getTableId();
-        $data['type'] = $this->getType();
-        $data['status'] = $this->getStatus();
-        $data['location'] = $this->getLocation();
+        $data['table_id'] = $this->getTable_id();
+        $data['type_id'] = $this->getType_id();
+        $data['$table_status'] = $this->getTable_status();
+        $data['table_location'] = $this->getTable_location();
         $data['capacity'] = $this->getCapacity();
-        
+        $data['active'] = $this->getActive();
         return $data;
     }
 

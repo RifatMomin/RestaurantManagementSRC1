@@ -14,10 +14,8 @@ class TableStatusADO {
     }
 
     public function findAll() {
-        //var_dump($obj);
         return $this->dataSource->execution(self::SELECT_ALL_TABLE_STATUS,$array=[]);
-        //return $obj;
-        
+       
     }
 
 

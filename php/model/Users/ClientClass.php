@@ -4,25 +4,33 @@
  * autor  Roberto Plana
  * version 2012/09
  */
- require_once "../EntityInterface.php";
+
 class ClientClass extends UserClass {
 
     
     //attributes+
+    private $userId;
     private $clientId;
     
     //constructor
     function __construct() {  
-        parent::__construct($id, $username, $password, $name, $username, $email, $phone, $address, $city, $zipCode, $registerDate, $role);  
+        $this->userId = $userId;
         $this->clientId = $clientId;  
     }  
     
-    //getters
+    //getters and setters
+    function getUserId() {
+        return $this->userId;
+    }
+
+    function setUserId($userId) {
+        $this->userId = $userId;
+    }
+
     public function getClientId() {  
          return $this->clientId;  
     }  
-    
-    //setters
+
     public function setClientId($clientId) {
         $this->clientId = clientId;
     }

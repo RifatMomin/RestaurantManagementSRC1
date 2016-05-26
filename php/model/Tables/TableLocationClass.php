@@ -14,30 +14,30 @@
 class TableLocationClass{
     
     //attributes
-    private $id;
-    private $name;
+    private $location_id;
+    private $name_location;
     
     //constructor
-    function __construct($id, $name) {  
-        $this->id = $id;
-        $this->name=$name;
+    function __construct($location_id, $name_location) {  
+        $this->location_id = $location_id;
+        $this->name_location=$name_location;
     } 
     
     //getters
-    public function getId(){
-        return $this->id;
+    public function getLocationId(){
+        return $this->location_id;
     }
     
-    public function getName(){
-        return $this->name;
+    public function getNameLocation(){
+        return $this->name_location;
     }
     
     //setters
-    public function setId(){
-        $this->id=$id;
+    public function setLocationId(){
+        $this->location_id=$location_id;
     }
     
-    public function setName(){
-        $this->name=$name;
+    public function setNameLocation(){
+        $this->name_location=$name_location;
     }
 }

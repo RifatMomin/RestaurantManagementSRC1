@@ -29,7 +29,8 @@ $(document).ready(function () {
  * @author Rifat Momin Momin and Victor Moreno
  */
 (function () {
-    var restaurantApp = angular.module("restaurantApp", ['angular-media-preview', 'angularUtils.directives.dirPagination', 'ng-currency']);
+
+    var restaurantApp = angular.module("restaurantApp", ['angular-media-preview', 'angularUtils.directives.dirPagination', 'ng-currency','ngAnimate', 'ui.bootstrap']);
 
     /**
      * This the principal CONTROLLER of the main.js page. 
@@ -429,7 +430,7 @@ $(document).ready(function () {
         $scope.hideButtonAddTable = false;
         $scope.loadingTables = true;
         $scope.tableModify = new TableObj();
-        $scope.tableObj = new TableObj();
+        //$scope.table = new TableObj();
 
         //Menus
         $scope.newMenu = new MenuObj();
@@ -1553,22 +1554,21 @@ $(document).ready(function () {
          */
         $scope.addTableLocation = function () {
             $scope.newTableLocation = angular.copy($scope.newTableLocation);
-            console.log($scope.newTableLocation);
+            //console.log($scope.newTableLocation);
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 2, JSONData: JSON.stringify($scope.newTableLocation)});
 
             promise.then(function (data) {
                 if (data[0] === true) {
                     if (angular.isArray(data[1])) {
-                        //$scope.cancelCourse();
-                        //$scope.getCourseTypes();
+                        $scope.getTableLocations();
                         successMessage("Table Location successfully added");
 
                         $("#buttonAddTableLocation").show();
                         $("#tableLocationsForm").hide();
-                        $("tableLocationsForm").$setPristine();
                     }
                 } else {
                     errorGest(data);
+                    console.log(data);
                 }
             });
         };
@@ -1604,7 +1604,7 @@ $(document).ready(function () {
          * @date 2016/05/19
          */
         $scope.modifyTableLocation = function (tableLocationModify) {
-            //console.log($scope.courseModify);
+
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 4, JSONData: JSON.stringify($scope.tableLocationModify)});
 
             promise.then(function (data) {
@@ -1762,7 +1762,7 @@ $(document).ready(function () {
          * @date 2016/05/19
          */
         $scope.modifyTableType = function (tableTypeModify) {
-            //console.log($scope.courseModify);
+
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 8, JSONData: JSON.stringify($scope.tableTypeModify)});
 
             promise.then(function (data) {
@@ -1801,6 +1801,7 @@ $(document).ready(function () {
         };
 
         //TABLE STATUS
+        $scope.defaultTableStatus = 2;
 
         /**
          * @name getTableStatus
@@ -1829,7 +1830,6 @@ $(document).ready(function () {
 
 
         //TABLES
-
         $scope.getTables = function () {
             $scope.currentPage = 1;
             $scope.arrayTables = [];
@@ -1852,9 +1852,10 @@ $(document).ready(function () {
                             $scope.tableStatus = new TableStatusObj();
                             $scope.tableStatus.construct(data[1][index].table_status_id, data[1][index].name_status);
 
-                            newTable.construct(data[1][index].table_id, $scope.tableType, $scope.tableStatus, $scope.tableLocation, data[1][index].capacity);
+                            newTable.construct(data[1][index].table_id, $scope.tableType, $scope.tableStatus, $scope.tableLocation, data[1][index].capacity, data[1][index].active);
                             $scope.arrayTables.push(newTable);
-                            //console.log($scope.arrayTables);
+
+                            console.log($scope.arrayTables);
                         });
 
                         //$log.info($scope.menuItems);
@@ -1902,8 +1903,8 @@ $(document).ready(function () {
          * @author Rifat Momin
          * @date 2016/05/23
          */
-        $scope.editTableForm = function (table) {
-            $scope.tableTypeModify = angular.copy(table);
+        $scope.editTableForm = function (tableModify) {
+            $scope.tableModify = angular.copy(tableModify);
             $("#modifyTablesModal").modal("show");
 
         };
@@ -1918,20 +1919,18 @@ $(document).ready(function () {
         $scope.addTable = function () {
 
             $scope.newTable = angular.copy($scope.newTable);
-            $scope.tablesArray = [$scope.newTable.type_id, $scope.newTable.table_status, $scope.newTable.table_location, $scope.newTable.capacity];
-            console.log($scope.tablesArray);
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 10, JSONData: JSON.stringify($scope.tablesArray)});
+
+            console.log($scope.newTable);
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 10, JSONData: JSON.stringify($scope.newTable)});
 
             promise.then(function (data) {
                 if (data[0] === true) {
-                    console.log($scope.newTable);
+                    //console.log($scope.newTable);
                     $scope.getTables();
                     successMessage("Table added");
 
                     $("#buttonAddTable").show();
                     $("#newTableForm").hide();
-
-
                 } else {
                     errorGest(data);
                 }
@@ -1939,26 +1938,27 @@ $(document).ready(function () {
         };
 
         /*
-         * @name removeTable
-         * @description Removes table from db
+         * @name tableActive
+         * @description changes active value for a table
          * @version 1
          * @author Rifat Momin
-         * @date 2016/05/23
+         * @date 2016/05/26
          */
-        $scope.removeTable = function (tableId) {
-
-            if (confirm("Are you sure you want to delete this table?")) {
-                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 11, JSONData: JSON.stringify({id: tableId})});
-
-                promise.then(function (data) {
-                    if (data[0] === true) {
-                        $scope.getTables();
-                        successMessage("Table Successfully Deleted");
-                    } else {
-                        errorGest(data);
-                    }
-                });
+        $scope.tableActive = function (table) {
+            console.log(table.active);
+            if (table.active !== false) {
+                table.active = '1';
+            } else {
+                table.active = '0';
             }
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 14, JSONData: JSON.stringify(table)});
+
+            promise.then(function (data) {
+                if (data[0] !== true) {
+                    errorGest(data);
+                }
+            });
         };
 
         /*
@@ -1969,7 +1969,8 @@ $(document).ready(function () {
          * @date 2016/05/23
          */
         $scope.modifyTable = function (tableModify) {
-            //console.log($scope.courseModify);
+
+            console.log($scope.tableModify);
             var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 12, JSONData: JSON.stringify($scope.tableModify)});
 
             promise.then(function (data) {
@@ -1985,9 +1986,6 @@ $(document).ready(function () {
             });
         };
 
-
-
-
     });
 
 
@@ -2001,6 +1999,95 @@ $(document).ready(function () {
     restaurantApp.controller("customerController", function ($scope, accessService, $log, $http) {
         //Scope variables to control the flow of the page
         $scope.actionCustomer = 1;
+
+        //Historic variables
+        $scope.allOrderHistoric = [];
+        $scope.orderHistoric = null;
+        $scope.newOrder = new OrderObj();
+
+        //Review variables
+        $scope.newReview = new ReviewObj();
+        $scope.reviewRating = [1,2,3,4,5,6,7,8,9,10];
+        //Rating variables
+
+        /*$scope.viewRate = function () {
+            $log.info($scope.newReview.menuVariety);
+        };
+
+        $interval($scope.viewRate, 1000);*/
+
+        /*
+         * @name getOrderHistoric
+         * @description Gets all order history
+         * from the logged in client
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/24
+         */
+        $scope.getOrderHistoric = function () {
+            $scope.currentPage = 1;
+            $scope.allOrderHistoric = [];
+            $scope.existingOrders = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 9, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $.each(data[1], function (index) {
+                            $scope.newOrder = new OrderObj();
+
+                            var menu = new MenuObj();
+                            menu.construct(data[1][index].menu_id, data[1][index].image, data[1][index].price, data[1][index].description, data[1][index].personalized, data[1][index].active);
+
+                            $scope.newOrder.construct(data[1][index].order_id, data[1][index].status_id, data[1][index].table_id, data[1][index].chef_id, data[1][index].waiter_id, data[1][index].client_id, menu, data[1][index].order_date, data[1][index].total_price);
+                            $scope.allOrderHistoric.push($scope.newOrder);
+                           console.log($scope.arrayTables);
+                        });
+
+                        //$log.info($scope.menuItems);
+                        $scope.existingOrders = false;
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+
+        /*
+         * @name addReview
+         * @description inserts a 
+         * restaurant review
+         * @version 1
+         * @author Rifat Momin
+         * @date 2016/05/25
+         */
+        $scope.addReview = function () {
+            $scope.newReview = new ReviewObj();
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 4, action: 2, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+
+                        successMessage("Review inserted");
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+
+
 
         //Scopes that corresponds to make an order
         $scope.userOrder = new OrderObj();//The object that is used to do de order
