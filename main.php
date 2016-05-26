@@ -67,11 +67,11 @@ and open the template in the editor.
         
         
         <!--Chef Template-->
-        <chef-template ng-controller="chefController as chefCtrl" ng-if="rolePage == 1"></chef-template>
+        <chef-template ng-controller="chefController as chefrCtrl" ng-if="rolePage == 1"></chef-template>
         
         
         <!--Waiter Template-->
-        
+        <waiter-template ng-controller="waiterController as waiterCtrl" ng-if="rolePage == 2"></waiter-template>
         
         <!--Customer Template-->
         <customer-template ng-controller="customerController as customerCtrl" ng-if="rolePage == 0"></customer-template>

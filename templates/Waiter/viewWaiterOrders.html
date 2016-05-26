@@ -1,14 +1,14 @@
-<div class="page-header" ng-init="getOrdersChef()">
-    <h3>You have these orders to prepare <small>Today is: {{$parent.date| date:'yyyy-MM-dd'}}</small></h3>    
+<div class="page-header" ng-init="getOrdersWaiter()">
+    <h3>You have these orders to serve <small>Today is: {{$parent.date| date:'yyyy-MM-dd'}}</small></h3>    
 </div>
 
 
 <div class="col-xs-12">
-    <div class="alert alert-success" ng-if='arrayOrdersToServe.length == 0 && !chargingOrders'>
-        <h4>You don't have any order right now, you can take a break! <span class="glyphicon glyphicon-thumbs-up"></span></h4>
+    <div class="alert alert-success" ng-if='arrayOrdersWaiter.length == 0 && !chargingOrders'>
+        <h4>You don't have any order to serve right now, you can take a break! <span class="glyphicon glyphicon-thumbs-up"></span></h4>
     </div>
     
-    <div class="table-responsive" ng-if="arrayOrdersToServe.length > 0">
+    <div class="table-responsive" ng-if="arrayOrdersWaiter.length > 0">
         <table class="table table-hover">
             <thead>
             <th>Order ID</th>
@@ -19,7 +19,7 @@
             <th class="text-center">Menu Prepared</th>
             </thead>
             <tbody>
-                <tr dir-paginate="order in arrayOrdersToServe | itemsPerPage: pageSize" current-page="currentPage">                    
+                <tr dir-paginate="order in arrayOrdersWaiter | itemsPerPage: pageSize" current-page="currentPage">                    
                     <td>{{order.orderId}}</td>
                     <td>{{order.table}}</td>
                     <td>{{order.menu.name}}</td>

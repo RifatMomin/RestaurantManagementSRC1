@@ -2388,7 +2388,7 @@ $(document).ready(function () {
             promise.then(function (data) {
                 if (data[0] === true) {
                     stopInterval = $interval($scope.getOrdersChef, 2000);
-                    $scope.getOrdersChef();                    
+                    $scope.getOrdersChef();
                 } else {
                     errorGest("The order can't be changed to prepared, contact with your admin.");
                 }
@@ -2398,6 +2398,68 @@ $(document).ready(function () {
 
     });
 
+    restaurantApp.controller("waiterController", function ($scope, accessService, $log, $interval) {
+        //Scope variables to control the flow of the page
+        $scope.actionWaiter = 1;
+        $scope.itemsPerPage = 5;
+        $scope.currentPage = 1;
+        $scope.chargingOrders = false;
+
+        //Chef orders
+        $scope.arrayOrdersWaiter = [];
+
+        var stopInterval; //->This var is the promise that is returned from the $interval     
+
+        $scope.getOrdersWaiter = function () {
+//            if (angular.isDefined(stopInterval)) {
+//                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 1, action: 4, JSONData: angular.toJson("")});
+//
+//                promise.then(function (data) {
+//                    if (data[0] === true) {
+//                        if (angular.isArray(data[1])) {
+//                            $scope.arrayOrdersToServe = [];
+//                            $.each(data[1], function (index, itemOrder) {
+//
+//                                var newOrder = new OrderObj();
+//                                var itemsNameString = itemOrder.items_menu.split(";");
+//                                var itemsPriority = itemOrder.item_priority.split(";");
+//                                var itemsArray = [];
+//                                $.each(itemsNameString, function (index, itemName) {
+//                                    var newItem = new MenuItemObj();
+//                                    var course = new CourseObj();
+//                                    course.construct("", "", itemsPriority[index])
+//                                    newItem.setName(itemName);
+//                                    newItem.setCourse(course);
+//                                    itemsArray.push(newItem);
+//                                });
+//
+//                                var menu = new MenuObj();
+//                                menu.construct(itemOrder.menu_id, itemOrder.menu_name, itemOrder.menu_image, itemOrder.menu_price, "", "");
+//                                menu.setItems(itemsArray);
+//                                newOrder.construct(itemOrder.order_id, itemOrder.status_id, itemOrder.table_id, itemOrder.chef_id, itemOrder.waiter_id, itemOrder.client_id, menu, itemOrder.order_date, itemOrder.total_price);
+//
+//                                $scope.arrayOrdersWaiter.push(newOrder);
+//                            });
+//                            $scope.chargingOrders = false;
+//
+//                        } else {
+//                            errorGest(data);
+//                        }
+//                    } else {
+//                        errorGest(data);
+//                    }
+//
+//                });
+//            } else {
+//                $log.error("Stop Interval not defined");
+//            }
+        };
+
+        //Set when the function is executed
+        //This is to get the effect of 'Real - Time'           
+        //stopInterval = $interval($scope.getOrdersWaiter, 2000);
+    });
+
 
     /*
      * ***** TEMPLATES *****
@@ -2405,6 +2467,27 @@ $(document).ready(function () {
      * The templates are used to display different contents on the page
      * without change the location of the URL
      */
+    restaurantApp.directive("waiterTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Waiter/waiterTemplate.html",
+            controller: function () {
+            },
+            controllerAs: 'waiterTemplate'
+        };
+    });
+
+    restaurantApp.directive("viewWaiterOrders", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Waiter/viewWaiterOrders.html",
+            controller: function () {
+            },
+            controllerAs: 'viewWaiterOrders'
+        };
+    });
+
+
     restaurantApp.directive("tableTables", function () {
         return {
             restrict: 'E',

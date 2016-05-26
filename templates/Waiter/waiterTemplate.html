@@ -1,0 +1,37 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
+
+            </a>
+            <a class="navbar-brand">{{restaurantInfo.name}}</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav" >                        
+                <li ng-class="{'active': actionWaiter == 1}"><a class="link" ng-click="actionWaiter = 1">Orders to serve <span class="badge">{{arrayOrdersWaiter.length}}</span></a></li>
+<!--                <li ng-class="{'active': actionWaiter == 2}"><a class="link" ng-click="actionWaiter = 2">Reviews</a></li>
+                <li ng-class="{'active': actionWaiter == 3}"><a class="link" ng-click="actionWaiter = 3">Order Historic</a></li>-->
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" ng-click="action = 5; openModalData()" data-toggle="popover"><span class="glyphicon glyphicon-user"></span>{{userLoggedIn.username}}</a></li>
+                <li><a href="#" ng-click="logOut()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrap">
+    <div class="container">    
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">           
+            <view-waiter-orders ng-if="actionWaiter == 1"></view-waiter-orders>
+        </div>
+    </div>
+</div>
+
+
