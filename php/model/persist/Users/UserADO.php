@@ -18,15 +18,25 @@ class UserADO implements EntityInterfaceADO {
     const SELECT_BY_EMAIL = "SELECT username FROM users WHERE email = ?";
     const SELECT_BY_ID = "SELECT * FROM users WHERE user_id = ?";
     const SELECT_BY_PASS = "SELECT * FROM users WHERE user_password = ? AND user_id = ?";
+    const SELECT_CLIENT_ID = "SELECT * FROM client WHERE user_id = ?";
+    const SELECT_CHEF_ID = "SELECT * FROM chef WHERE user_id = ?";
     const INSERT_USERS = "INSERT INTO `users` (`username`, `user_password`, `user_name`, `surname`, `email`, `phone`, `address`, `city`, `zip_code`,`image`, `role`) VALUES (?,SHA1(?),?,?,?,?,?,?,?,?,0)";
     const UPDATE_PASSWD = "UPDATE users SET user_password = ? WHERE user_password= ? and email= ? ";
     const UPDATE_PASSWD_ID = "UPDATE users SET user_password = ? WHERE user_id = ? ";
     const UPDATE_USER_INFO = "UPDATE `users` SET `user_name`=? ,`surname`=?,`email`=?,`phone`=?,`address`=?,`city`=?,`zip_code`=?,`image`=? WHERE user_id = ?";
-
+    
     private $dataSource;
 
     public function __construct() {
         $this->dataSource = DBConnect::getInstance();
+    }
+    
+    public function selectChefId($chefId){
+        return $this->dataSource->execution(self::SELECT_CHEF_ID,$array=[$chefId]);
+    }
+    
+    public function selectClientId($userId) {
+        return $this->dataSource->execution(self::SELECT_CLIENT_ID, $array = [$userId]);
     }
 
     /**
@@ -151,7 +161,7 @@ class UserADO implements EntityInterfaceADO {
         $userId = $_SESSION['connectedUser'];
         $array = [$pass, $userId];
 
-        return $this->dataSource->execution(self::UPDATE_PASSWD_ID,$array);
+        return $this->dataSource->execution(self::UPDATE_PASSWD_ID, $array);
     }
 
 }

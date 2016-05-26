@@ -25,7 +25,6 @@ and open the template in the editor.
 
         <!--Bootstrap CSS-->
         <link href="css/bootstrap-3.3.6-dist-pers/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="css/bootstrap-switch/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css"/>
         
         <link href="css/index.css" rel="stylesheet" type="text/css"/>
 
@@ -48,6 +47,7 @@ and open the template in the editor.
         <script src="js/frameworks/angular/angular-media-preview-master/src/angular-media-preview.module.js" type="text/javascript"></script>
 
         <!--Model and Control-->
+        <script src="js/model/Orders/OrderObj.js" type="text/javascript"></script>
         <script src="js/model/Tables/TableTypeObj.js" type="text/javascript"></script>
         <script src="js/model/Tables/TableStatusObj.js" type="text/javascript"></script>
         <script src="js/model/Tables/TableLocationObj.js" type="text/javascript"></script>
@@ -67,7 +67,7 @@ and open the template in the editor.
         
         
         <!--Chef Template-->
-        
+        <chef-template ng-controller="chefController as chefCtrl" ng-if="rolePage == 1"></chef-template>
         
         
         <!--Waiter Template-->

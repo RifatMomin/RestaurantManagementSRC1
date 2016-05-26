@@ -20,12 +20,12 @@ class MenuADO implements EntityInterfaceADO {
     //Queries
     const SELECT_ALL = 'SELECT * FROM menu WHERE personalized = 1';
     const SELECT_ALL_CLIENTS = 'SELECT * FROM menu WHERE personalized = 1 and `active` = 1';
-    const INSERT_MENU = "INSERT INTO `menu` (`image`, `price`, `description`, `personalized`, `active`) VALUES ( ?, ?, ?, ?, ?)";
+    const INSERT_MENU = "INSERT INTO `menu` (`name`,`image`, `price`, `description`, `personalized`, `active`) VALUES (?, ?, ?, ?, ?, ?)";
     const INSERT_MENU_HAS_ITEM = "INSERT INTO `menu_has_item` (`menu_id`, `item_id`) VALUES (?, ?)";
     const UPDATE_ACTIVE = "UPDATE `menu` SET active = ? WHERE `menu_id` = ?";
-    const UPDATE = "UPDATE `menu` SET `image`=?,`price`=?,`description`=? WHERE `menu_id`=?";
+    const UPDATE = "UPDATE `menu` SET `image`=?,`price`=?,`description`=?, `name` = ? WHERE `menu_id`=?";
     const DELETE_ITEMS_MENU = "DELETE FROM `menu_has_item` WHERE `menu_id` = ?";
-    
+
     private $dbSource;
     private $meal;
 
@@ -49,6 +49,7 @@ class MenuADO implements EntityInterfaceADO {
     public function create($menu) {
         //`image`, `price`, `description`, `personalized`, `active`
         $vector = [
+            $menu->getName(),
             $menu->getImage(),
             $menu->getPrice(),
             $menu->getDescription(),
@@ -58,9 +59,9 @@ class MenuADO implements EntityInterfaceADO {
 
         return $this->dbSource->executeTransaction(self::INSERT_MENU, $vector);
     }
-    
-    public function deleteItemsFromMenu($menuId){
-        return $this->dbSource->execution(self::DELETE_ITEMS_MENU,$array=[$menuId]);
+
+    public function deleteItemsFromMenu($menuId) {
+        return $this->dbSource->execution(self::DELETE_ITEMS_MENU, $array = [$menuId]);
     }
 
     public function delete($entity) {
@@ -68,10 +69,12 @@ class MenuADO implements EntityInterfaceADO {
     }
 
     public function update($menu) {
-          $array=[$menu->getImage(), 
-                  $menu->getPrice(),
-                  $menu->getDescription(),
-                  $menu->getMenuId()];
+        $array = [$menu->getImage(),
+            $menu->getPrice(),
+            $menu->getDescription(),
+            $menu->getName(),
+            $menu->getMenuId()
+        ];
         return $this->dbSource->execution(self::UPDATE, $array);
     }
 

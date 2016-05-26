@@ -10,13 +10,13 @@
                 <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
 
             </a>
-            <a class="navbar-brand">Welcome {{userLoggedIn.name}}</a>
+            <a class="navbar-brand">{{restaurantInfo.name}}</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav" >                        
-                <li><a href="#" ng-click="actionCustomer = 1">Make an Order</a></li>
-                <li><a href="#" ng-click="actionCustomer = 2">Reviews</a></li>
-                <li><a href="#" ng-click="actionCustomer = 3">Order Historic</a></li>
+                <li ng-class="{'active': actionCustomer == 1}"><a class="link" ng-click="actionCustomer = 1">Order Now!</a></li>
+                <li ng-class="{'active': actionCustomer == 2}"><a class="link" ng-click="actionCustomer = 2">Reviews</a></li>
+                <li ng-class="{'active': actionCustomer == 3}"><a class="link" ng-click="actionCustomer = 3">Order Historic</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

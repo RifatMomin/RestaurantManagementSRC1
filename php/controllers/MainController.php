@@ -5,6 +5,7 @@ require_once "./TableController.php";
 require_once "./UserControllerClass.php";
 require_once "./FileControllerClass.php";
 require_once "./RestaurantInfoControllerClass.php";
+require_once "./OrderController.php";
 require_once "./MenuControllerClass.php";
 require_once "./ReviewsController.php";
 require_once "./CourseController.php";

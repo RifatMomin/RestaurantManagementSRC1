@@ -18,7 +18,7 @@
  * JQUERY CODE
  */
 $(document).ready(function () {
-    $('.btn').button('reset');
+    //$('.btn').button('reset');
 
 
 });
@@ -150,7 +150,7 @@ $(document).ready(function () {
          * @date 2016/05/06
          */
         $scope.getUserInfo = function () {
-            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 0, action: 10570, JSONData: JSON.stringify("")});
+            var promise = accessService.getData("php/controllers/MainController.php", false, "POST", {controllerType: 0, action: 10570, JSONData: JSON.stringify("")});
 
             promise.then(function (data) {
                 if (data[0] === true) {
@@ -433,7 +433,7 @@ $(document).ready(function () {
 
         //Menus
         $scope.newMenu = new MenuObj();
-        $scope.newMenu.construct(0, "", 3, "Menu Description", 1);
+        $scope.newMenu.construct(0, "Menu Name", "", 3, "Menu Description", 1);
         $scope.allMenus = [];
         $scope.menuItemsFiltered = [];
         $scope.loadingMenus = true;
@@ -479,7 +479,7 @@ $(document).ready(function () {
                         //Iterate all the menus
                         $.each(data[1], function (index) {
                             var newMenu = new MenuObj();
-                            newMenu.construct(data[1][index].menu_id, data[1][index].image, data[1][index].price, data[1][index].description, 1);
+                            newMenu.construct(data[1][index].menu_id, data[1][index].name, data[1][index].image, data[1][index].price, data[1][index].description, 1);
                             if (data[1][index].active == 0) {
                                 newMenu.active = false;
                             } else {
@@ -707,7 +707,6 @@ $(document).ready(function () {
                     $scope.menuAux.items.push($scope.dataMenu.item);
                 }
             }
-            $log.info($scope.menuAux.items);
         };
 
         $scope.removeItemFromMenuModify = function (item) {
@@ -718,7 +717,6 @@ $(document).ready(function () {
                 $scope.menuAux.items.splice(index, 1);
             }
 
-            $log.info($scope.menuAux.items);
         };
 
         $scope.cancelImageModifyMenu = function () {
@@ -1992,9 +1990,411 @@ $(document).ready(function () {
 
     });
 
+
+
+
+
+
+
+
+    //CUSTOMER CONTROLLER
     restaurantApp.controller("customerController", function ($scope, accessService, $log, $http) {
         //Scope variables to control the flow of the page
         $scope.actionCustomer = 1;
+
+        //Scopes that corresponds to make an order
+        $scope.userOrder = new OrderObj();//The object that is used to do de order
+        $scope.userOrder.setTotalPrice(0);
+        $scope.orderProgress = {step: 1, percent: 33.3, min: 0, max: 100};
+        $scope.menusArray = [];
+        $scope.arrayTables = [];
+        $scope.menuItems = [];
+        $scope.additionalItems = [];
+        $scope.additionalItem;
+
+        //Orders
+        $scope.finishAndPay = function () {
+            $scope.userOrder.setClient($scope.$parent.userLoggedIn);
+            $scope.userOrder = angular.copy($scope.userOrder);
+
+            if ($scope.additionalItems.length > 0) {
+                $scope.createMenuPersonalized();
+            } else {
+                $scope.insertOrder();
+            }
+
+        };
+
+        $scope.createMenuPersonalized = function () {
+            var newMenuAux = angular.copy($scope.userOrder.menu);
+
+            var date = new Date();
+            var today = "_" + date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+
+            newMenuAux.setName("Menu_" + $scope.userLoggedIn.name + today);
+            newMenuAux.setImage("images/menus/image.jpg");
+            newMenuAux.setPersonalized(0);
+            newMenuAux.setDescription("");
+            newMenuAux.setActive(0);
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10000, JSONData: angular.toJson(newMenuAux)});
+
+            promise.then(function (data) {
+                //If the menu insert is OK, now insert his menu items
+                $.each($scope.additionalItems, function (index, item) {
+                    newMenuAux.items.push(item);
+                });
+
+                if (data[0] === true) {
+                    newMenuAux.setMenuId(data[1].menuId);
+
+                    $log.info(newMenuAux);
+                    var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10010, JSONData: angular.toJson(newMenuAux)});
+
+                    promise.then(function (data) {
+                        if (data[0] === true) {
+                            $scope.insertOrder(newMenuAux.getMenuId());
+                        }
+                    });
+                }
+            });
+        };
+
+
+        $scope.insertOrder = function (menuId) {
+            if (menuId != null) {
+                $scope.userOrder.menu.setMenuId(menuId);
+            }
+            //Send the order to the server
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 1, action: 1, JSONData: angular.toJson($scope.userOrder)});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    successMessage("You order has been processed, in a few minutes you will have it! ");
+                }
+            });
+        };
+
+        $scope.changeTotalPrice = function (menu) {
+            $scope.userOrder.totalPrice = 0;
+            $scope.userOrder.totalPrice = parseFloat(parseFloat($scope.userOrder.totalPrice) + parseFloat(menu.price));
+        };
+
+        $scope.addAdditionalItem = function (item) {
+            var notFound = true;
+            //Search for the product in the menu of the order
+            $.each($scope.userOrder.menu.items, function (index, it) {
+                if (it.itemId == item.itemId) {
+                    notFound = false;
+                }
+            });
+
+            if (notFound) {
+                if ($scope.additionalItems.indexOf(item) == -1) {
+                    $scope.userOrder.totalPrice = parseFloat($scope.userOrder.totalPrice) + parseFloat(item.price);
+                    $scope.additionalItems.push(item);
+                }
+            } else {
+                alert("This item is alredy in the menu!");
+            }
+        };
+
+        $scope.removeAdditionalItem = function (item) {
+            var position = $scope.additionalItems.indexOf(item);
+            if (position >= 0) {
+                $scope.userOrder.totalPrice -= item.price;
+                $scope.additionalItems.splice(position, 1);
+            }
+        };
+
+        $scope.getTables = function () {
+            $scope.arrayTables = [];
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 7, action: 9, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $.each(data[1], function (index) {
+                            var newTable = new TableObj();
+
+                            var tableLocation = new TableLocationObj();
+                            tableLocation.construct(data[1][index].location_id, data[1][index].name_location);
+
+                            var tableType = new TableTypeObj();
+                            tableType.construct(data[1][index].type_id, data[1][index].name_type);
+
+                            var tableStatus = new TableStatusObj();
+                            tableStatus.construct(data[1][index].table_status_id, data[1][index].name_status);
+
+                            newTable.construct(data[1][index].table_id, tableType, tableStatus, tableLocation, data[1][index].capacity);
+                            $scope.arrayTables.push(newTable);
+
+                        });
+
+                        $scope.userOrder.table = $scope.arrayTables[0];
+                        $log.info($scope.arrayTables);
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        $scope.getMenus = function () {
+            $scope.menusArray = [];
+            $scope.loadingMenus = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 10055, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        //$log.info(data[1]);
+                        //Iterate all the menus
+                        $.each(data[1], function (index) {
+                            var newMenu = new MenuObj();
+                            newMenu.construct(data[1][index].menu_id, data[1][index].name, data[1][index].image, data[1][index].price, data[1][index].description, 1);
+                            if (data[1][index].active == 0) {
+                                newMenu.active = false;
+                            } else {
+                                newMenu.active = true;
+                            }
+
+
+                            //Iterate the items of the menu if there are items
+                            if (typeof data[1][index].items !== 'undefined') {
+                                $.each(data[1][index].items, function (i) {
+                                    var menuItem = new MenuItemObj();
+                                    var course = new CourseObj();
+                                    course.construct(data[1][index].items[i].course_id, data[1][index].items[i].course_name, data[1][index].items[i].priority);
+                                    menuItem.construct(data[1][index].items[i].item_id, course, data[1][index].items[i].item_name, data[1][index].items[i].item_image, data[1][index].items[i].item_price);
+                                    newMenu.items.push(menuItem);
+                                });
+                            } else {
+                                newMenu.items = [];
+                            }
+
+
+
+                            //Push the menu constructed
+                            $scope.menusArray.push(newMenu);
+
+                        });
+                        $scope.userOrder.totalPrice = $scope.menusArray[0].price;
+                    } else {
+                        errorGest("An error occured in the server, please try again later");
+                    }
+                    $scope.userOrder.setMenu($scope.menusArray[0]);
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+        $scope.backStepOrder = function () {
+            $("#step" + $scope.orderProgress.step).hide("slide", {direction: "right"}, 800);
+            $scope.orderProgress.step--;
+            $("#step" + $scope.orderProgress.step).show("slide", {direction: "left"}, 800);
+
+            if ($scope.orderProgress.percent > 60) {
+                $scope.orderProgress.percent = $scope.orderProgress.percent - 33.3;
+                $("#progressBar").css("width", $scope.orderProgress.percent + "%");
+            }
+
+        };
+
+        $scope.nextStepOrder = function () {
+            if ($scope.orderProgress.percent > 60) {
+                $("#step2").hide("slide", {direction: "left"}, 800);
+                $scope.orderProgress.percent = 100;
+                $("#progressBar").css("width", "100%");
+                $scope.orderProgress.step = 3;
+                $("#step3").show("slide", {direction: "right"}, 800);
+            } else {
+                if ($scope.orderProgress.max > $scope.orderProgress.percent) {
+                    $("#step" + $scope.orderProgress.step).hide("slide", {direction: "left"}, 800);
+                    $scope.orderProgress.step++;
+                    $scope.orderProgress.percent = $scope.orderProgress.percent + 33.3;
+                    $("#progressBar").css("width", $scope.orderProgress.percent + "%");
+                    $("#step" + $scope.orderProgress.step).show("slide", {direction: "right"}, 800);
+                }
+            }
+        };
+
+        $scope.setTableOrder = function (table) {
+            $scope.userOrder.setTable(table);
+
+            $log.info($scope.userOrder.table);
+        };
+
+        /**
+         * @name getMenuItems
+         * @description Gets the menu items from the database
+         * @version 1
+         * @author Victor Moreno García
+         * @date 2016/05/16
+         */
+        $scope.getMenuItems = function () {
+            $scope.currentPage = 1;
+            $scope.menuItems = [];
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 3, action: 11100, JSONData: JSON.stringify({none: ""})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        $.each(data[1], function (i) {
+                            var newMenuItem = new MenuItemObj();
+                            var course = new CourseObj();
+                            //Constructu the course object to put into the menu item
+                            course.construct(data[1][i].course_id, data[1][i].course_name, data[1][i].priority);
+                            //Constructu the main menu item
+                            newMenuItem.construct(data[1][i].item_id, course, data[1][i].name, data[1][i].image, data[1][i].price);
+
+                            //The ingredients are in a String separated by a semicolon
+                            //We need to separate it with HTML format
+                            var ingredientsMenuItem = [];
+                            var ingredientsName = data[1][i].ingredient_name.split(";");
+                            var ingredientsId = data[1][i].ingredient_id.split(";");
+                            var ingredientsPrice = data[1][i].ingredient_price.split(";");
+
+                            //Iterate all the ingredients in the object
+                            $.each(ingredientsId, function (i) {
+                                var ingredient = new IngredientObj();
+                                ingredient.construct(ingredientsId[i], ingredientsName[i], ingredientsPrice[i]);
+                                ingredientsMenuItem.push(ingredient);
+                            });
+
+                            newMenuItem.setIngredients(ingredientsMenuItem);
+
+                            $scope.menuItems.push(newMenuItem);
+
+                        });
+                        $scope.additionalItem = $scope.menuItems[0];
+                    } else {
+                        errorGest("Sorry. There has been an error. Try again later or contact with us.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+
+        };
+
+        /**
+         * @name getCourseTypes
+         * @description Gets the course Types from the server
+         * @version 2
+         * @author Victor Moreno García / Rifat Momin
+         * @date 2016/05/17
+         */
+        $scope.getCourseTypes = function (pagination) {
+            $scope.arrayCourseType = [];
+            $scope.currentPage = 1;
+            $scope.loadingCourses = true;
+
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 6, action: 1, JSONData: JSON.stringify("")});
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    if (angular.isArray(data[1])) {
+                        //$log.info(data[1]);
+                        $.each(data[1], function (i) {
+                            var course = new CourseObj();
+                            course.construct(data[1][i].course_id, data[1][i].course_name, data[1][i].priority);
+                            $scope.arrayCourseType.push(course);
+                        });
+                    } else {
+                        errorGest("Can't get the course types at this moment, try again later.");
+                    }
+                } else {
+                    errorGest(data);
+                }
+            });
+        };
+
+    });
+
+    restaurantApp.controller("chefController", function ($scope, accessService, $log, $interval) {
+        //Scope variables to control the flow of the page
+        $scope.actionChef = 1;
+        $scope.itemsPerPage = 5;
+        $scope.currentPage = 1;
+        $scope.chargingOrders = true;
+
+        //Chef orders
+        $scope.arrayOrdersToServe = [];
+
+        var stopInterval; //->This var is the promise that is returned from the $interval     
+
+        $scope.getOrdersChef = function () {
+            if (angular.isDefined(stopInterval)) {
+                var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 1, action: 2, JSONData: angular.toJson("")});
+
+                promise.then(function (data) {
+                    if (data[0] === true) {
+                        if (angular.isArray(data[1])) {
+                            $scope.arrayOrdersToServe = [];
+                            $.each(data[1], function (index, itemOrder) {
+
+                                var newOrder = new OrderObj();
+                                var itemsNameString = itemOrder.items_menu.split(";");
+                                var itemsPriority = itemOrder.item_priority.split(";");
+                                var itemsArray = [];
+                                $.each(itemsNameString, function (index, itemName) {
+                                    var newItem = new MenuItemObj();
+                                    var course = new CourseObj();
+                                    course.construct("", "", itemsPriority[index])
+                                    newItem.setName(itemName);
+                                    newItem.setCourse(course);
+                                    itemsArray.push(newItem);
+                                });
+
+                                var menu = new MenuObj();
+                                menu.construct(itemOrder.menu_id, itemOrder.menu_name, itemOrder.menu_image, itemOrder.menu_price, "", "");
+                                menu.setItems(itemsArray);
+                                newOrder.construct(itemOrder.order_id, itemOrder.status_id, itemOrder.table_id, itemOrder.chef_id, itemOrder.waiter_id, itemOrder.client_id, menu, itemOrder.order_date, itemOrder.total_price);
+
+                                $scope.arrayOrdersToServe.push(newOrder);
+                            });
+                            $scope.chargingOrders = false;
+
+                        } else {
+                            errorGest(data);
+                        }
+                    } else {
+                        errorGest(data);
+                    }
+
+                });
+            } else {
+                $log.error("Stop Interval not defined");
+            }
+        };
+
+        //Set when the function is executed
+        //This is to get the effect of 'Real - Time'           
+        stopInterval = $interval($scope.getOrdersChef, 2000);
+
+        $scope.setOrderPrepared = function (orderId) {
+            var promiseInterval = $interval.cancel(stopInterval);//Stop the interval
+            $log.info(promiseInterval);
+            stopInterval = undefined;
+            var promise = accessService.getData("php/controllers/MainController.php", true, "POST", {controllerType: 1, action: 3, JSONData: angular.toJson({orderId: orderId})});
+
+            promise.then(function (data) {
+                if (data[0] === true) {
+                    stopInterval = $interval($scope.getOrdersChef, 2000);
+                    $scope.getOrdersChef();                    
+                } else {
+                    errorGest("The order can't be changed to prepared, contact with your admin.");
+                }
+            });
+        };
+
 
     });
 
@@ -2183,7 +2583,7 @@ $(document).ready(function () {
         };
 
     });
-    
+
     restaurantApp.directive("orderHistoricTemplate", function () {
         return {
             restrict: 'E',
@@ -2195,7 +2595,7 @@ $(document).ready(function () {
         };
 
     });
-    
+
     restaurantApp.directive("viewReviewsTemplate", function () {
         return {
             restrict: 'E',
@@ -2204,6 +2604,30 @@ $(document).ready(function () {
 
             },
             controllerAs: 'viewReviewsTemplate'
+        };
+
+    });
+
+    restaurantApp.directive("chefTemplate", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Chef/chefTemplate.html",
+            controller: function () {
+
+            },
+            controllerAs: 'chefTemplate'
+        };
+
+    });
+
+    restaurantApp.directive("viewChefOrders", function () {
+        return {
+            restrict: 'E',
+            templateUrl: "templates/Chef/viewChefOrders.html",
+            controller: function () {
+
+            },
+            controllerAs: 'viewChefOrders'
         };
 
     });

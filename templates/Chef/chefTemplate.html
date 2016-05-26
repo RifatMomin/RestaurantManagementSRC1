@@ -10,14 +10,13 @@
                 <img class="img-thumbnail" src="images/LOGO-PROJECT.png" alt="" width="50" height="50"/>
 
             </a>
-            <a class="navbar-brand">Admin Page</a>
+            <a class="navbar-brand">{{restaurantInfo.name}}</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav" >                        
-                <li ng-class="{'active': actionAdmin==1}"><a href="#" ng-click="actionAdmin=1">Menus</a></li>
-                <li ng-class="{'active': actionAdmin==2}"><a href="#" ng-click="actionAdmin=2">Courses</a></li>
-                <li ng-class="{'active': actionAdmin==3}"><a hreF='#' ng-click="actionAdmin=3">Tables</a></li>
-                <li ng-class="{'active': actionAdmin==4}"><a href='#' ng-click="actionAdmin=4">My Restaurant Info</a></li>
+                <li ng-class="{'active': actionChef == 1}"><a class="link" ng-click="actionChef = 1">View Orders for Me</a></li>
+<!--                <li ng-class="{'active': actionChef == 2}"><a class="link" ng-click="actionChef = 2">Reviews</a></li>
+                <li ng-class="{'active': actionChef == 3}"><a class="link" ng-click="actionChef = 3">Order Historic</a></li>-->
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -29,15 +28,8 @@
 </nav>
 <div class="wrap">
     <div class="container">    
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">
-            <!--CRUD MENUS, INGREDIENTS, TABLES-->
-            <menus-template ng-if="actionAdmin == 1"></menus-template>
-            <courses-template ng-if="actionAdmin == 2"></courses-template>
-            <tables-template ng-if="actionAdmin == 3"></tables-template>
-            <!--CRUD Restaurant Info-->
-            <restaurant-info-template ng-if="actionAdmin == 4"></restaurant-info-template>
-            
-            
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 center-block">           
+            <view-chef-orders ng-if="actionChef == 1"></view-chef-orders>
         </div>
     </div>
 </div>

@@ -1,3 +1,150 @@
-<div class="page-header">
-    <h3>Make an Order in our Restaurant <small>Today is: {{$parent.date | date:'yyyy-MM-dd'}}</small></h3>
+<div class="page-header" ng-init="getMenus();getTables();getCourseTypes();getMenuItems()">
+    <h3>Make an Order in our Restaurant <small>Today is: {{$parent.date| date:'yyyy-MM-dd'}}</small></h3>    
 </div>
+
+<div class="col-xs-12">
+    <div clasS="row">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="{{orderProgress.percent}}" aria-valuemin="{{orderProgress.min}}" aria-valuemax="{{orderProgress.max}}" style="width: 33.3%;">
+                <strong>Step {{orderProgress.step}}</strong>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <h4 class="pull-right">Total Price of your Order: {{userOrder.totalPrice| currency}}</h4>
+        </div>
+    </div>
+
+    <div class="row" id="step1">
+        <div class="col-lg-6 col-md-6 col-xs-12">
+            <div class="row">
+                <h4>Select the menu</h4>
+                <select class="form-control" ng-model="userOrder.menu" ng-change="changeTotalPrice(userOrder.menu)" ng-options="menu.name for menu in menusArray track by menu.menuId">
+
+                </select>
+            </div>
+
+            <div class="row">
+                <h4>Select the table: </h4>
+                <div class="col-xs-12">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary" ng-click="setTableOrder(table)" ng-class="{'active': $index == 0}" ng-repeat="table in arrayTables">
+                            <input type="radio" name="tableRestaurant" id="tableRestaurant{{$index}}" autocomplete="off" > Table {{table.tableId}}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <h4>Table Properties:</h4>
+                    <p ng-class='{"text-danger": userOrder.table.tableStatus.id == 1, "text-success": userOrder.table.tableStatus.id == 2}'><strong>Status: </strong>{{userOrder.table.tableStatus.name}}</p>
+                    <p><strong>Location: </strong>{{userOrder.table.tableLocation.name}}</p>
+                    <p><strong>Type: </strong>{{userOrder.table.tableType.name}}</p>
+                    <p><strong>Capacity: </strong>{{userOrder.table.capacity}}</p>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class='alert alert-danger' ng-if="userOrder.table.tableStatus.id == 1">
+                        <p>We are sorry, but the table that you have selected is occupied.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-lg-5 col-md-5 col-xs-12 well pull-right">
+            <h4 class="text-center">Menu Selected: </h4>
+            <div class="col-xs-12">
+                <div class="col-xs-12">
+                    <img  class="img-responsive media-preview  center-block" ng-src="{{userOrder.menu.image}}" alt="{{userOrder.menu.name}}"/>
+                </div>
+                <p><strong>Name: </strong>{{userOrder.menu.name}}</p>
+                <p class="text-justify"><strong>Description:</strong> {{userOrder.menu.description}}</p>
+                <p>
+                    <strong>Items: </strong>
+                <ul>
+                    <li ng-repeat="item in userOrder.menu.items">{{item.name}}</li>
+                </ul>
+                </p>
+                <p class="text-right lead">
+                    <strong>Price: </strong> {{userOrder.menu.price| currency}}
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row" id="step2" hidden>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>Do you want to add more items to your menu? </h3>
+                <button class="btn btn-success" ng-click="add = true">YES!</button>
+                <button class="btn btn-danger" ng-hide="add" ng-click="nextStepOrder();">NAH...</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6 animate-show center-block" ng-show="add">
+                <!--                <div class="form-group">
+                                    <label>Item type: </label>
+                                    <select class="form-control" ng-model="itemType.id" ng-options="item.name for item in menuItems track by item.menuItemId"></select>
+                                </div>         -->
+
+                <div class="form-group">
+                    <label>Item Price: ({{additionalItem.price| currency}})</label>
+                    <select class="form-control" ng-model="additionalItem" ng-options="item.name group by item.course.name for item in menuItems track by item.itemId"></select>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-info" ng-click="addAdditionalItem(additionalItem)"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                </div>
+
+                <div class="form-group table-responsive" ng-if="additionalItems.length > 0">
+                    <table class="table table-condensed">
+                        <thead>
+                        <th></th>
+                        <th>Item Type</th>
+                        <th>Item</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in additionalItems">
+                                <td> <a class="link text-danger" ng-click='removeAdditionalItem(item)'><span class="glyphicon glyphicon-remove"></span>Remove</a></td>
+                                <td>{{item.course.name}}</td>
+                                <td>{{item.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row" id="step3" hidden>
+        <h2>Is your order correct?</h2>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <p><strong>Menu: </strong>{{userOrder.menu.name}}</p>
+                <p><strong>Table Number:  </strong>{{userOrder.table.tableId}}</p>
+                <p>
+                    <strong>Additional Items: </strong> <span ng-if="additionalItems == 0">None</span>    
+                </p>
+                <ul ng-if="additionalItems.length > 0">
+                    <li ng-repeat="item in additionalItems">{{item.name}}</li>
+                </ul>
+                
+
+            </div>
+
+        </div>
+    </div>
+    
+        <nav>
+            <ul class="pager">
+                <li><button class="btn btn-default pull-left" ng-if="orderProgress.step > 1" ng-click="backStepOrder();">< Previous</a></li>
+                <!--            <li><a href="#"  ng-click="nextStepOrder();orderProgress.step = orderProgress.step + 1" >Next</a></li>-->
+                <li><button class="btn btn-default pull-right" ng-click="nextStepOrder();" ng-hide="orderProgress.step == 3" ng-disabled="userOrder.table.tableStatus.id == 1">Next ></button></li>
+                <li><button class="btn btn-success pull-right" ng-click="finishAndPay();" ng-if="orderProgress.step == 3">Finish <span class="glyphicon glyphicon-ok"></span></button></li>
+            </ul>
+        </nav>
+    
+    </div>

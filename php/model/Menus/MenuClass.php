@@ -10,6 +10,7 @@ require_once "../model/EntityInterface.php";
 class MenuClass implements EntityInterface {
 
     private $menuId;
+    private $name;
     private $items = [];
     private $active;
     private $personalized;
@@ -17,7 +18,8 @@ class MenuClass implements EntityInterface {
     private $image;
     private $price;
 
-    function __construct($menuId, $items, $activate, $personalized, $description, $image, $price) {
+    function __construct($menuId,$name, $items, $activate, $personalized, $description, $image, $price) {
+        $this->name = $name;
         $this->menuId = $menuId;
         $this->items = $items;
         $this->active = $activate;
@@ -27,6 +29,15 @@ class MenuClass implements EntityInterface {
         $this->price = $price;
     }
 
+    function getName() {
+        return $this->name;
+    }
+
+    function setName($name) {
+        $this->name = $name;
+    }
+
+        
     function getMenuId() {
         return $this->menuId;
     }

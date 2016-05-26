@@ -239,7 +239,7 @@ class MenuControllerClass implements ControllerInterface {
 
 
         //Create the object review to pass it to the ADO
-        $menu = new MenuClass($menuDecoded->menuId, $menuDecoded->items, $menuDecoded->active, $menuDecoded->personalized, $menuDecoded->description, $menuDecoded->image, $menuDecoded->price);
+        $menu = new MenuClass($menuDecoded->menuId, $menuDecoded->name, $menuDecoded->items, $menuDecoded->active, $menuDecoded->personalized, $menuDecoded->description, $menuDecoded->image, $menuDecoded->price);
 
         $result = $this->menuADO->update($menu)->rowCount();
 
@@ -257,10 +257,10 @@ class MenuControllerClass implements ControllerInterface {
     }
 
     public function insertMenu() {
-        $menuDecoded = json_decode($this->jsonData);
-
-        //Create the object review to pass it to the ADO
-        $menu = new MenuClass(null, $menuDecoded->items, $menuDecoded->active, $menuDecoded->personalized, $menuDecoded->description, $menuDecoded->image, $menuDecoded->price);
+        $menuDecoded = json_decode($this->jsonData);        
+        
+//        //Create the object menu to pass it to the ADO
+        $menu = new MenuClass(null,$menuDecoded->name, $menuDecoded->items, $menuDecoded->active, $menuDecoded->personalized, $menuDecoded->description, $menuDecoded->image, $menuDecoded->price);
 
         $result = $this->menuADO->create($menu);
 
@@ -295,6 +295,7 @@ class MenuControllerClass implements ControllerInterface {
                 $menuArray = [];
                 //Put the menu properties
                 $menuArray['menu_id'] = $menu->menu_id;
+                $menuArray['name'] = $menu->name;
                 $menuArray['description'] = $menu->description;
                 $menuArray['image'] = $menu->image;
                 $menuArray['price'] = $menu->price;
@@ -341,6 +342,7 @@ class MenuControllerClass implements ControllerInterface {
                 $menuArray = [];
                 //Put the menu properties
                 $menuArray['menu_id'] = $menu->menu_id;
+                $menuArray['name'] = $menu->name;
                 $menuArray['description'] = $menu->description;
                 $menuArray['image'] = $menu->image;
                 $menuArray['price'] = $menu->price;
@@ -488,46 +490,6 @@ class MenuControllerClass implements ControllerInterface {
             $this->data[] = $arrayCourses;
         } else {
             $this->data[] = false;
-        }
-    }
-
-    public function deleteCourse() {
-        $jsonDecoded = json_decode($this->jsonData);
-
-        $courseId = $jsonDecoded;
-        //Construct the review
-        $course = new MenuClass();
-        $course->setId($courseId);
-
-        $result = MenuItemADO::delete($course);
-
-        if ($result->rowCount() > 0) {
-            $this->data [] = true;
-        } else {
-            $this->data[] = false;
-        }
-    }
-
-    public function updateCourse() {
-        $courseDecoded = json_decode($this->jsonData);
-
-        //Create the object review to pass it to the ADO
-        $course = new MenuItemClass();
-
-        $course->setAll("", $courseDecoded->courseId, $courseDecoded->priority);
-        $result = CourseADO::update($course);
-
-        if ($result->rowCount() > 0) {
-            $this->data [] = true;
-            $this->data [] = "Course updated";
-        } else if ($result->rowCount() == 0) {
-            $errors = [0, "Course could not be updated."];
-            $this->data[] = false;
-            $this->data[] = $errors;
-        } else {
-            $errors = [1, "Server Error, try again later."];
-            $this->data[] = false;
-            $this->data[] = $errors;
         }
     }
 

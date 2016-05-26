@@ -162,6 +162,7 @@ $(document).ready(function(){
             promise.then(function (data) {
                 $scope.user.setPassword("");
                 if (data[0] === true) {
+                    sessionStorage.setItem("connectedUser",data[1]);
                     window.open("main.php", "_self");
                 } else {
                     errorGest(data);
@@ -598,7 +599,7 @@ $(document).ready(function(){
                 $http({
                     url: url,
                     method: method,
-                    asyn: async,
+                    async: async,
                     params: params,
                     data: data
                 })

@@ -7,11 +7,11 @@
 
 MenuItemObj = function () {
     
-    this.itemId = null;
-    this.course = null;
-    this.name = null;
-    this.image = null;
-    this.price = null;
+    this.itemId = 0;
+    this.course = new CourseObj();
+    this.name = "";
+    this.image = "";
+    this.price = 0;
     this.ingredients = [];
 
     this.construct = function(itemId, course, name, image, price){

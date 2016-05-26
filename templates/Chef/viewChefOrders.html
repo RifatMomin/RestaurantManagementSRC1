@@ -1,0 +1,46 @@
+<div class="page-header" ng-init="getOrdersChef()">
+    <h3>You have these orders to serve <small>Today is: {{$parent.date| date:'yyyy-MM-dd'}}</small></h3>    
+</div>
+
+
+<div class="col-xs-12">
+    <div class="alert alert-success" ng-if='arrayOrdersToServe.length == 0 && !chargingOrders'>
+        <h4>You don't have any order right now, you can take a break! :)</h4>
+    </div>
+    
+    <div class="table-responsive" ng-if="arrayOrdersToServe.length > 0">
+        <table class="table table-hover">
+            <thead>
+            <th>Order ID</th>
+            <th>Table Nº</th>
+            <th>Menu Name</th>
+            <th>Menu Items</th>
+            <th>Order Time</th>
+            <th class="text-center">Menu Prepared</th>
+            </thead>
+            <tbody>
+                <tr dir-paginate="order in arrayOrdersToServe | itemsPerPage: pageSize" current-page="currentPage">                    
+                    <td>{{order.orderId}}</td>
+                    <td>{{order.table}}</td>
+                    <td>{{order.menu.name}}</td>
+                    <td>
+                        <ul>
+                            <li ng-repeat="item in order.menu.items| orderBy: 'course.priority'">{{item.name}}-{{item.course.priority}}</li>
+                        </ul>
+                    </td>
+                    <td>{{order.date}}</td>
+                    <td class="text-center">
+                        <button ng-click='setOrderPrepared(order.orderId)' class='btn btn-sm btn-success'><span class='glyphicon glyphicon-ok'></span> OK</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <div class="text-center" boundary-links="true" >	
+                <dir-pagination-controls boundary-links="true" template-url="templates/dir-pagination-controls.html"></dir-pagination-controls>
+            </div>
+        </div>
+
+    </div>
+</div>

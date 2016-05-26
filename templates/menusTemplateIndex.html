@@ -9,6 +9,7 @@
                 <img ng-src="{{menu.image}}" style="width:100%; height:auto;" alt="First slide">
                 <div class="container">
                     <div class="carousel-caption hidden-xs">
+                        <h3>{{menu.name}}</h3>
                         <h4>{{menu.description}}</h4>
                         <p>
                         <ul class="list-unstyled" ng-repeat="item in menu.items| orderBy: 'priority'">

@@ -5,7 +5,7 @@
  *
  * @author victor
  */
-require_once "EntityInterface.php";
+require_once "../model/EntityInterface.php";
 
 class OrderClass implements EntityInterface {
 
@@ -15,20 +15,31 @@ class OrderClass implements EntityInterface {
     private $chefId;
     private $waiterId;
     private $clientId;
+    private $menuId;
     private $date;
     private $totalPrice;
+    
 
-    function __construct($orderId, $statusId, $tableId, $chefId, $waiterId, $clientId, $date, $totalPrice) {
+    function __construct($orderId, $statusId, $tableId, $chefId, $waiterId, $clientId, $menuId, $date, $totalPrice) {
         $this->orderId = $orderId;
         $this->statusId = $statusId;
         $this->tableId = $tableId;
         $this->chefId = $chefId;
         $this->waiterId = $waiterId;
         $this->clientId = $clientId;
+        $this->menuId = $menuId;
         $this->date = $date;
         $this->totalPrice = $totalPrice;
     }
 
+    function getMenuId() {
+        return $this->menuId;
+    }
+
+    function setMenuId($menuId) {
+        $this->menuId = $menuId;
+    }
+        
     function getOrderId() {
         return $this->orderId;
     }
@@ -102,6 +113,7 @@ class OrderClass implements EntityInterface {
         $data['chefId'] = $this->getChefId();
         $data['waiterId'] = $this->getWaiterId();
         $data['clientId'] = $this->getClientId();
+        $data['menuId'] = $this->getMenuId();
         $data['date'] = $this->getDate();
         $data['totalPrice'] = $this->getTotalPrice();
 

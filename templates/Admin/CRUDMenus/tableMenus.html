@@ -7,6 +7,10 @@
     <button class="btn btn-primary pull-right" ng-click="getMenus(true)"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12">
         <form class="well" id="newMenuForm" name="newMenuForm" novalidate hidden>
+            <div class="form-group" ng-class="{'has-error': newMenuForm.menuName.$invalid && !newMenuForm.menuDescription.$pristine, 'has-success': newMenuForm.menuName.$valid && !newMenuForm.menuDescription.$pristine}">
+                <label>Name:  </label>
+                <input type="text" class="form-control" name="menuName" ng-model="newMenu.name" ng-maxlength="25"/>
+            </div>
             <div class="form-group" ng-class="{'has-error': newMenuForm.menuDescription.$invalid && !newMenuForm.menuDescription.$pristine, 'has-success': newMenuForm.menuDescription.$valid && !newMenuForm.menuDescription.$pristine}">
                 <label>Description:  </label>
                 <textarea rows="3" cols="" type="text" class="form-control" name="menuDescription" ng-model="newMenu.description" ng-maxlength="180" required></textarea>
@@ -90,6 +94,7 @@
     <table class="table table-stripped">
         <thead>
         <th></th>
+        <th>Name</th>
         <th>Description</th>
         <th>Price</th>
         <th>Items</th>
@@ -99,6 +104,7 @@
         <tbody>
             <tr dir-paginate="menu in allMenus | itemsPerPage: pageSize" current-page="currentPage">
                 <td><img class="img-responsive menuItemImage" ng-src="{{menu.getImage()}}" alt="{{menu.getDescription()}}"/></td>
+                <td>{{menu.name}}</td>
                 <td><p>{{menu.getDescription()}}</p></td>
                 <td>{{menu.getPrice() | currency}}</td>       
                 <td>
@@ -136,6 +142,11 @@
 
             <div class="modal-body">
                 <form novalidate name="modifyMenuForm">
+                    <div class="form-group" ng-class="{'has-error': modifyMenuForm.menuName.$invalid && !modifyMenuForm.menuDescription.$pristine, 'has-success': modifyMenuForm.menuName.$valid && !modifyMenuForm.menuDescription.$pristine}">
+                        <label>Name:  </label>
+                        <input type="text" class="form-control" name="menuName" ng-model="menuAux.name" ng-maxlength="25"/>
+                    </div>
+                    
                     <div class="form-group" ng-class="{'has-error': modifyMenuForm.menuDescription.$invalid && !modifyMenuForm.menuDescription.$pristine, 'has-success': modifyMenuForm.menuDescription.$valid && !modifyMenuForm.menuDescription.$pristine}">
                         <label>Description:  </label>
                         <textarea rows="3" cols="" type="text" class="form-control" name="menuDescription" ng-model="menuAux.description" ng-maxlength="180" required></textarea>

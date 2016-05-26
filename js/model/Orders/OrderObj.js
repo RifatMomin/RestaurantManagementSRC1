@@ -12,20 +12,28 @@ OrderObj = function () {
     this.chef = null;
     this.waiter = null;
     this.client = null;
+    this.menu = null;
     this.date = null;
     this.totalPrice = null;
 
-    this.construct = function(orderId,status,table,chef,waiter,client,date,totalPrice){
+    this.construct = function (orderId, status, table, chef, waiter, client, menu, date, totalPrice) {
         this.setOrderId(orderId);
         this.setStatus(status);
         this.setTable(table);
         this.setChef(chef);
         this.setWaiter(waiter);
         this.setClient(client);
+        this.setMenu(menu);
         this.setDate(date);
         this.setTotalPrice(totalPrice);
     };
-
+    
+    this.setMenu = function(menu){
+        this.menu = menu;
+    }
+    this.getMenu = function(){
+        return this.menu;
+    }
     this.setOrderId = function (orderId) {
         this.orderId = orderId;
     }
